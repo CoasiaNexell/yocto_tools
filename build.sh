@@ -159,6 +159,6 @@ if [ ${INTERACTIVE_MODE} == "true" ];then
     python ./tools/build_and_update_interactive.py ${MACHINE_NAME} ${IMAGE_TYPE}
 else
     gen_and_copy_bbappend
-#    bitbake_run
-#    fusing_images
+    bitbake_run
+    fusing_images
 fi
