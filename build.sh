@@ -14,6 +14,7 @@ BOARD_PREFIX=
 BOARD_POSTFIX=
 
 INTERACTIVE_MODE=false
+OPTEE_CLEAN=false
 
 function check_usage()
 {
@@ -44,9 +45,8 @@ function parse_args()
 		    MACHINE_NAME=$1;
 		    shift;
 		    IMAGE_TYPE=$2;
-		    split_machine_name;
-		    optee_clean;
-		    exit 1;
+		    OPTEE_CLEAN=true;
+		    break;
 		    ;;
 		-h )
 		    usage;
@@ -62,7 +62,7 @@ function parse_args()
 
 function usage()
 {
-    echo -e "\nUsage: $0 [-i interactive] <machine-name> <image-type>\n"
+    echo -e "\nUsage: $0 [-i interactive -c opteeClean] <machine-name> <image-type>\n"
     echo -e " <machine-name> : "
     echo -e "        s5p6818-artik710-raptor or s5p6818-artik710-raptor or s5p6818-artik710-raptor or s5p4418-avn-ref ...\n"
     echo -e " <image-type> : "
@@ -113,6 +113,13 @@ function bitbake_run()
     cd $ROOT_PATH/yocto
     source poky/oe-init-build-env build-${MACHINE_NAME}-${IMAGE_TYPE}
     ../meta-nexell/tools/envsetup.sh ${MACHINE_NAME} ${IMAGE_TYPE}
+    if [ ${OPTEE_CLEAN} == "true" ];then
+	echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
+        echo -e "\033[47;34m                       Optee Clean SSTATE                           \033[0m"
+        echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"    
+
+        ../meta-nexell/tools/optee_clean_${BOARD_NAME}.sh
+    fi
     bitbake ${MACHINE_NAME}-${IMAGE_TYPE}
 }
 
@@ -134,7 +141,7 @@ function fusing_images()
     echo -e "\033[0;36m  1. cd $ROOT_PATH/yocto/${RESULT_DIR}                                        \033[0m\n"
     echo -e "\033[0;36m     ../meta-nexell/tools/update_${BOARD_SOCNAME}.sh -p partmap_emmc.txt -r . \033[0m\n"
     echo -e "\033[0;36m     or                                                                       \033[0m\n"
-    echo -e "\033[0;36m  2. ./tools/update.sh                                                        \033[0m\n"
+    echo -e "\033[0;36m  2. ./tools/update.sh ${MACHINE_NAME} ${IMAGE_TYPE}                          \033[0m\n"
     echo -e "\033[0;34m ---------------------------------------------------------------------------- \033[0m\n"
 }
 

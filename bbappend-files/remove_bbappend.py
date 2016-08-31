@@ -79,8 +79,12 @@ def rm_bbappend_files(bbappendfile,curWorkingPath,hashData) :
     L_PATHS = hashData[INDEX_GEN_PATH]
 
     BBAPPEND_FILE_PATH = curWorkingPath + "/yocto/meta-nexell" + L_PATHS[1] + '/' + bbappendfile
-
+    dummy_FILE_PATH = curWorkingPath + "/yocto/meta-nexell" + L_PATHS[1] + '/dummy'
     os.system("rm -rf " + BBAPPEND_FILE_PATH)
+    os.system("rm -rf " + dummy_FILE_PATH)
+
+    BBAPPEND_FILE_PATH2 = curWorkingPath + "/tools/bbappend-files" + L_PATHS[1] + '/' + bbappendfile
+    os.system("rm -rf " + BBAPPEND_FILE_PATH2)
 
 def main(arg1):
     rm_bbappend_paths(arg1)
