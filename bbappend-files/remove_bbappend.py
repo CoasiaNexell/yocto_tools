@@ -65,7 +65,8 @@ HASH_RECIPENAME_PATH = {
     'linux-s5p6818-avn-ref_%.bbappend':         ['OFF',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
 					               ['0001-Yocto-mali400-Kbuild-compile-error-fix.patch','0001-drm_lcd.patch']],
 
-    'testsuite_%.bbappend' :            ['ON',['/apps/testsuite',R_TESTSUITE,'/testsuite'],[]],
+    'testsuite-s5p4418_%.bbappend' :            ['ON',['/apps/testsuite',R_TESTSUITE,'/testsuite'],[]],
+    'testsuite-s5p6818_%.bbappend' :            ['ON',['/apps/testsuite',R_TESTSUITE,'/testsuite'],[]],
 }
 
 def rm_bbappend_paths(curWorkingPath) :
