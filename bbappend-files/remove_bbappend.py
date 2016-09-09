@@ -56,13 +56,13 @@ HASH_RECIPENAME_PATH = {
     'nx-v4l2_%.bbappend':               ['ON',['/library/nx-v4l2',R_NX_LIBS,'/nx-v4l2'],[]],
     'nx-video-api_%.bbappend':          ['ON',['/library/nx-video-api',R_NX_LIBS,'/nx-video-api'],['0001-nx-video-api-install-error-fix.patch']],
 
-    'linux-s5p4418-avn-ref_%.bbappend':     ['OFF',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
+    'linux-s5p4418-avn-ref_%.bbappend':     ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
 				           ['0001-Yocto-avn-ref-defconfig-changed-for-QT-working.patch','0001-Yocto-mali400-Kbuild-compile-error-fix.patch']],
-    'linux-s5p4418-navi-ref_%.bbappend':    ['OFF',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
+    'linux-s5p4418-navi-ref_%.bbappend':    ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
 				           ['0001-Yocto-navi-ref-defconfig-changed-for-QT-working.patch', '0001-Yocto-mali400-Kbuild-compile-error-fix.patch']],
-    'linux-s5p6818-artik710-raptor_%.bbappend': ['OFF',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
+    'linux-s5p6818-artik710-raptor_%.bbappend': ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
 						       ['0001-Yocto-mali400-Kbuild-compile-error-fix.patch']],
-    'linux-s5p6818-avn-ref_%.bbappend':         ['OFF',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
+    'linux-s5p6818-avn-ref_%.bbappend':         ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
 					               ['0001-Yocto-mali400-Kbuild-compile-error-fix.patch','0001-drm_lcd.patch']],
 
     'testsuite-s5p4418_%.bbappend' :            ['ON',['/apps/testsuite',R_TESTSUITE,'/testsuite'],[]],

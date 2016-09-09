@@ -38,6 +38,43 @@ TEMPLATE2=[
     "addtask mypatch after do_patch",
 ]
 
+TEMPLATE_KERNEL=[
+    "### Nexell - For Yocto build with using local source, Below lines are auto generated codes",
+    "",
+    "S = \"${WORKDIR}/git\"",
+    "B = \"${S}\"",
+    "",
+    "do_externalKenelSrcUsing() {",
+    "    cd ${WORKDIR}",
+    "    rm -rf git",
+    "    ln -sf ${_SRC_PATH_BY_GEN_} git",
+    "",
+    "    cd ${STAGING_KERNEL_DIR}/..",
+    "    rm -rf ${STAGING_KERNEL_DIR}",
+    "    ln -sf ${S} kernel-source",
+    "}",
+    "addtask externalKenelSrcUsing before do_kernel_configme after do_unpack",
+    "",
+    "do_fetch() {",
+    "    :",
+    "}",
+    "do_unpack() {",
+    "    :",
+    "}",
+    "do_kernel_checkout() {",
+    "    :",
+    "}",
+    "do_validate_branches() {",
+    "    :",
+    "}",
+    "do_patch() {",
+    "    :",
+    "}",
+    "do_kernel_configme() {",
+    "    :",
+    "}",
+]
+
 TEMPLATE_SRC_URI="SRC_URI=\"file://${_SRC_PATH_BY_GEN_}\""
 
 ###  ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -91,13 +128,13 @@ HASH_RECIPENAME_PATH = {
     'nx-v4l2_%.bbappend':               ['ON',['/library/nx-v4l2',R_NX_LIBS,'/nx-v4l2'],[]],
     'nx-video-api_%.bbappend':          ['ON',['/library/nx-video-api',R_NX_LIBS,'/nx-video-api'],['0001-nx-video-api-install-error-fix.patch']],
 
-    'linux-s5p4418-avn-ref_%.bbappend':     ['OFF',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
+    'linux-s5p4418-avn-ref_%.bbappend':     ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
 				           ['0001-Yocto-avn-ref-defconfig-changed-for-QT-working.patch','0001-Yocto-mali400-Kbuild-compile-error-fix.patch']],
-    'linux-s5p4418-navi-ref_%.bbappend':    ['OFF',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
+    'linux-s5p4418-navi-ref_%.bbappend':    ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
 				           ['0001-Yocto-navi-ref-defconfig-changed-for-QT-working.patch', '0001-Yocto-mali400-Kbuild-compile-error-fix.patch']],
-    'linux-s5p6818-artik710-raptor_%.bbappend': ['OFF',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
-						       ['0001-Yocto-mali400-Kbuild-compile-error-fix.patch']],
-    'linux-s5p6818-avn-ref_%.bbappend':         ['OFF',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
+    'linux-s5p6818-artik710-raptor_%.bbappend': ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
+						       ['0001-Yocto-mali400-Kbuild-compile-error-fix.patch','0001-Yocto-ZONEORDER-changed.patch']],
+    'linux-s5p6818-avn-ref_%.bbappend':         ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
 					               ['0001-Yocto-mali400-Kbuild-compile-error-fix.patch','0001-drm_lcd.patch']],
 
     'testsuite-s5p6818_%.bbappend' :            ['ON',['/apps/testsuite',R_TESTSUITE,'/testsuite'],[]],
@@ -122,29 +159,45 @@ def gen_bbappend_files(bbappendfile,curWorkingPath,hashData) :
     INTO_BBAPPEND_PATCH_FILE=""
     print BBAPPEND_FILE_PATH
     f = open(BBAPPEND_FILE_PATH,'w')
-    for i in TEMPLATE1 :
-        f.write(i+"\n")
 
-    f.write("\n"+TEMPLATE_SRC_URI)
-    f.write("\n")
+    #kernel
+    if L_PATHS[1]==R_KERNEL :
+        for patch in L_PATCH_FILES :
+            kernel_patch_copy(curWorkingPath+"/yocto/meta-nexell"+R_KERNEL+"/files/"+patch, INTO_BBAPPEND_SRC_PATH)
 
-    if len(L_PATCH_FILES) > 0 :
-        for i in TEMPLATE2 :
+        for i in TEMPLATE_KERNEL :
+            f.write(i+"\n")
+            
+        f.write("\n"+TEMPLATE_SRC_URI)
+        f.write("\n")
+        
+    #others
+    else :
+        for i in TEMPLATE1 :
             f.write(i+"\n")
 
-        for i in L_PATCH_FILES :
-            f.write("SRC_URI+=\"file://"+i+"\""+"\n")
-            INTO_BBAPPEND_PATCH_FILE += "patch -p1 < ${WORKDIR}/"+i+";"
-        
+        f.write("\n"+TEMPLATE_SRC_URI)
         f.write("\n")
-	f.write("\n_PATCH_FILE_BY_GEN_=\"" + INTO_BBAPPEND_PATCH_FILE + "\"")
+
+        if len(L_PATCH_FILES) > 0 :
+            for i in TEMPLATE2 :
+                f.write(i+"\n")
+
+            for i in L_PATCH_FILES :
+                f.write("SRC_URI+=\"file://"+i+"\""+"\n")
+                INTO_BBAPPEND_PATCH_FILE += "patch -p1 < ${WORKDIR}/"+i+";"
+        
+            f.write("\n")
+            f.write("\n_PATCH_FILE_BY_GEN_=\"" + INTO_BBAPPEND_PATCH_FILE + "\"")
 
     f.write("\n_SRC_PATH_BY_GEN_=\""   + INTO_BBAPPEND_SRC_PATH + "\"")
     f.write("\n_MOV_PATH_BY_GEN_=\""   + INTO_BBAPPEND_MOV_PATH + "\"")
 
     f.close()
 
-
+def kernel_patch_copy(patchPath, kernelSrcPath) :
+    os.system("cp "+patchPath+" "+kernelSrcPath)
+    
 def main(arg1):
     gen_bbappend_paths(arg1)
 

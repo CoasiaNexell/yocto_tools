@@ -16,7 +16,7 @@ BOARD_POSTFIX=
 ARM_ARCH=
 
 INTERACTIVE_MODE=false
-OPTEE_CLEAN=false
+CLEAN_BUILD=false
 KERNEL_BUILD=false
 
 function check_usage()
@@ -40,7 +40,7 @@ function parse_args()
 		    MACHINE_NAME=$1;
 		    shift;
 		    IMAGE_TYPE=$2;
-		    OPTEE_CLEAN=true;
+		    CLEAN_BUILD=true;
 		    break;
 		    ;;
 		-k )
@@ -123,12 +123,21 @@ function bitbake_run()
     cd $ROOT_PATH/yocto
     source poky/oe-init-build-env build-${MACHINE_NAME}-${IMAGE_TYPE}
     ../meta-nexell/tools/envsetup.sh ${MACHINE_NAME} ${IMAGE_TYPE}
-    if [ ${OPTEE_CLEAN} == "true" ];then
-	echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
-        echo -e "\033[47;34m                       Optee Clean SSTATE                           \033[0m"
-        echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"    
 
-        ../meta-nexell/tools/optee_clean_${BOARD_NAME}.sh
+    if [ ${CLEAN_BUILD} == "true" ];then
+	echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
+        echo -e "\033[47;34m                          Clean Build                               \033[0m"
+        echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
+	if [ ${BOARD_SOCNAME} == "s5p6818" ];then
+            ../meta-nexell/tools/optee_clean_${BOARD_NAME}.sh
+            bitbake -c cleanall testsuite-s5p6818
+
+        else
+            bitbake -c cleanall testsuite-s5p4418
+	fi
+
+        bitbake -c cleanall virtual/kernel gst-plugins-camera gst-plugins-renderer gst-plugins-scaler gst-plugins-video-dec gst-plugins-video-enc \
+		            gst-plugins-video-sink libdrm-nx libomxil-nx nx-drm-allocator nx-gst-meta nx-renderer nx-scaler nx-v4l2 nx-video-api
     fi
     bitbake ${MACHINE_NAME}-${IMAGE_TYPE}
 }
