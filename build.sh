@@ -80,6 +80,9 @@ function usage()
     echo " ex) $0 s5p4418-navi-ref qt"
     echo " ex) $0 s5p4418-navi-ref tiny"
     echo " ex) $0 s5p4418-navi-ref tinyui"
+    echo " ex) $0 s5p4418-cluster-ref qt"
+    echo " ex) $0 s5p4418-cluster-ref tiny"
+    echo " ex) $0 s5p4418-cluster-ref tinyui"
     echo ""
 }
 
@@ -218,6 +221,8 @@ function build_kernel()
 	    file_name_dtb="s5p4418-avn_ref*.dtb"
 	elif [ ${BOARD_PREFIX} == "navi" ]; then
 	    file_name_dtb="s5p4418-navi_ref*.dtb"
+	elif [ ${BOARD_PREFIX} == "cluster" ]; then
+	    file_name_dtb="s5p4418-cluster_ref*.dtb"
 	fi
     fi
 
