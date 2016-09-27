@@ -107,7 +107,7 @@ HASH_RECIPENAME_PATH = {
     'optee-os_%.bbappend':         ['ON',['/secure/optee/optee_os',R_OPTEE,'/secure/optee_os'],          ['0001-optee-os-compile-error-patch.patch']],
     'optee-test_%.bbappend':       ['ON',['/secure/optee/optee_test',R_OPTEE,'/secure/optee_test'],      []],
 
-    's5p4418-avn-ref-uboot_%.bbappend':         ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],['0001-bootcmd-add-for-avn-yocto.patch']],
+    's5p4418-avn-ref-uboot_%.bbappend':         ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],['0001-bootcmd-add-for-avn-s5p4418.patch']],
     's5p4418-navi-ref-uboot_%.bbappend':        ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],['0001-bootcmd-add-for-navi-yocto.patch']],
     's5p6818-artik710-raptor-uboot_%.bbappend': ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
     's5p6818-avn-ref-uboot_%.bbappend':         ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],['0001-bootcmd-add-for-avn-s5p6818.patch']],
@@ -128,13 +128,13 @@ HASH_RECIPENAME_PATH = {
     'nx-v4l2_%.bbappend':               ['ON',['/library/nx-v4l2',R_NX_LIBS,'/nx-v4l2'],[]],
     'nx-video-api_%.bbappend':          ['ON',['/library/nx-video-api',R_NX_LIBS,'/nx-video-api'],['0001-nx-video-api-install-error-fix.patch']],
 
-    'linux-s5p4418-avn-ref_%.bbappend':     ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
+    'linux-s5p4418-avn-ref_%.bbappend':     ['ON',['/kernel/kernel-${LINUX_VERSION}',R_KERNEL,'/kernel-${LINUX_VERSION}'],
 				           ['0001-Yocto-avn-ref-defconfig-changed-for-QT-working.patch','0001-Yocto-mali400-Kbuild-compile-error-fix.patch']],
-    'linux-s5p4418-navi-ref_%.bbappend':    ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
-				           ['0001-Yocto-navi-ref-defconfig-changed-for-QT-working.patch', '0001-Yocto-mali400-Kbuild-compile-error-fix.patch']],
-    'linux-s5p6818-artik710-raptor_%.bbappend': ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
+    'linux-s5p4418-navi-ref_%.bbappend':    ['ON',['/kernel/kernel-${LINUX_VERSION}',R_KERNEL,'/kernel-${LINUX_VERSION}'],
+				           ['0001-Yocto-mali400-Kbuild-compile-error-fix.patch']],
+    'linux-s5p6818-artik710-raptor_%.bbappend': ['ON',['/kernel/kernel-${LINUX_VERSION}',R_KERNEL,'/kernel-${LINUX_VERSION}'],
 						       ['0001-Yocto-mali400-Kbuild-compile-error-fix.patch','0001-Yocto-ZONEORDER-changed.patch']],
-    'linux-s5p6818-avn-ref_%.bbappend':         ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
+    'linux-s5p6818-avn-ref_%.bbappend':         ['ON',['/kernel/kernel-${LINUX_VERSION}',R_KERNEL,'/kernel-${LINUX_VERSION}'],
 					               ['0001-Yocto-mali400-Kbuild-compile-error-fix.patch','0001-drm_lcd.patch']],
 
     'testsuite-s5p6818_%.bbappend' :            ['ON',['/apps/testsuite',R_TESTSUITE,'/testsuite'],[]],
