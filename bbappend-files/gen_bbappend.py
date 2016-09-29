@@ -108,7 +108,7 @@ HASH_RECIPENAME_PATH = {
     'optee-test_%.bbappend':       ['ON',['/secure/optee/optee_test',R_OPTEE,'/secure/optee_test'],      []],
 
     's5p4418-avn-ref-uboot_%.bbappend':         ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],['0001-bootcmd-add-for-avn-s5p4418.patch']],
-    's5p4418-navi-ref-uboot_%.bbappend':        ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],['0001-bootcmd-add-for-navi-yocto.patch']],
+    's5p4418-navi-ref-uboot_%.bbappend':        ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
     's5p6818-artik710-raptor-uboot_%.bbappend': ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
     's5p6818-avn-ref-uboot_%.bbappend':         ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],['0001-bootcmd-add-for-avn-s5p6818.patch']],
     
