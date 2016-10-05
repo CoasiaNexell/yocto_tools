@@ -24,7 +24,7 @@ TEMPLATE1=[
     "",
     "do_myp() {",
     "    rm -rf ${S}",
-    "    cp -a ${WORKDIR}${_MOV_PATH_BY_GEN_} ${S}",
+    "    cp -a ${WORKDIR}${_SRC_PATH_BY_GEN_} ${S}",
     "    rm -rf ${WORKDIR}/home",
     "}",
     "addtask myp before do_patch after do_unpack",
