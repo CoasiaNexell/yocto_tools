@@ -17,11 +17,16 @@ ARM_ARCH=
 
 INTERACTIVE_MODE=false
 CLEAN_BUILD=false
-KERNEL_BUILD=false
+
+BUILD_ALL=true
+BUILD_BL1=false
+BUILD_UBOOT=false
+BUILD_OPTEE=false
+BUILD_KERNEL=false
 
 function check_usage()
 {
-    if [ $argc -gt 3 -o $argc -lt 2 ]
+    if [ $argc -lt 2 ]
     then
 	echo "Invalid argument check usage please"
 	usage
@@ -30,55 +35,47 @@ function check_usage()
 }
 function parse_args()
 {
-    ARGS=$(getopt -o c:k:h -- "$@");
+    ARGS=$(getopt -o cht: -- "$@");
     eval set -- "$ARGS";
-    
+
     while true; do
             case "$1" in
-		-c )
-		    shift;
-		    MACHINE_NAME=$1;
-		    shift;
-		    IMAGE_TYPE=$2;
-		    CLEAN_BUILD=true;
-		    break;
-		    ;;
-		-k )
-		    shift;
-		    MACHINE_NAME=$1;
-		    shift;
-		    IMAGE_TYPE=$2;
-		    KERNEL_BUILD=true;
-		    break;
-		    ;;
-		-h )
-		    usage;
-		    exit 1;
-		    ;;
-                -- )
-		    shift;
-		    break;
-		    ;;
+		-c ) CLEAN_BUILD=true; shift 1 ;;
+		-t ) case "$2" in
+			 bl1    ) BUILD_ALL=false; BUILD_BL1=true ;;
+			 uboot  ) BUILD_ALL=false; BUILD_UBOOT=true ;;
+			 kernel ) BUILD_ALL=false; BUILD_KERNEL=true ;;
+			 optee  ) BUILD_ALL=false; BUILD_OPTEE=true ;;
+			 *      ) usage; exit 1 ;;
+		     esac
+		     shift 2 ;;
+		-h ) usage; exit 1 ;;
+                -- ) break ;;
             esac
     done
 }
 
 function usage()
 {
-    echo -e "\nUsage: $0 [-i interactive -c opteeClean] <machine-name> <image-type>\n"
+    echo -e "\nUsage: $0 <machine-name> <image-type> [-c -t bl1 -t u-boot -t kernel -t optee] \n"
     echo -e " <machine-name> : "
     echo -e "        s5p6818-artik710-raptor or s5p6818-artik710-raptor or s5p6818-artik710-raptor or s5p4418-avn-ref ...\n"
     echo -e " <image-type> : "
     echo -e "        qt, tiny, sato, tinyui \n"
-    echo " ex) $0 s5p6818-artik710-raptor tiny"
-    echo " ex) $0 s5p6818-artik710-raptor sato"
+    echo -e " -c : cleanbuild"
+    echo -e " -t bl1    : if you want to build only u-boot, specify this, default no"
+    echo -e " -t u-boot : if you want to build only u-boot, specify this, default no"
+    echo -e " -t kernel : if you want to build only kernel, specify this, default no"
+    echo -e " -t optee  : if you want to build only optee, specify this, default no\n"
+    echo " ex) $0 s5p6818-artik710-raptor tiny -c -t kernel"
+    echo " ex) $0 s5p6818-artik710-raptor sato -c -t uboot"
     echo " ex) $0 s5p6818-artik710-raptor qt"
     echo " ex) $0 s5p6818-avn-ref tiny"
     echo " ex) $0 s5p6818-avn-ref qt"
     echo " ex) $0 s5p4418-avn-ref qt"    
     echo " ex) $0 s5p4418-avn-ref tiny"
-    echo " ex) $0 s5p4418-navi-ref qt"
-    echo " ex) $0 s5p4418-navi-ref tiny"
+    echo " ex) $0 s5p4418-navi-ref qt -t kernel -t uboot -t bl1"
+    echo " ex) $0 s5p4418-navi-ref tiny -c"
     echo " ex) $0 s5p4418-navi-ref tinyui"
     echo ""
 }
@@ -115,7 +112,8 @@ function gen_and_copy_bbappend()
 function bitbake_run()
 {
     local ROOT_PATH=${TOP}
-    
+    local CLEAN_RECIPES=
+
     echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
     echo -e "\033[47;34m                       Bitbake Auto Running                         \033[0m"
     echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"    
@@ -130,16 +128,48 @@ function bitbake_run()
         echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
 	if [ ${BOARD_SOCNAME} == "s5p6818" ];then
             ../meta-nexell/tools/optee_clean_${BOARD_NAME}.sh
-            bitbake -c cleanall testsuite-s5p6818
-
+            CLEAN_RECIPES+=" testsuite-s5p6818"
         else
-            bitbake -c cleanall testsuite-s5p4418
+            CLEAN_RECIPES+=" testsuite-s5p4418"
 	fi
 
-        bitbake -c cleanall virtual/kernel gst-plugins-camera gst-plugins-renderer gst-plugins-scaler gst-plugins-video-dec gst-plugins-video-enc \
-		            gst-plugins-video-sink libdrm-nx libomxil-nx nx-drm-allocator nx-gst-meta nx-renderer nx-scaler nx-v4l2 nx-video-api
+	CLEAN_RECIPES+=" ${MACHINE_NAME}-${IMAGE_TYPE} virtual/kernel"
     fi
-    bitbake ${MACHINE_NAME}-${IMAGE_TYPE}
+
+    local BITBAKE_ARGS=
+    if [ ${BUILD_ALL} == "false" ];then
+        if [ ${BUILD_KERNEL} == "true" ]; then
+            BITBAKE_ARGS+=" virtual/kernel"
+        fi
+        if [ ${BUILD_BL1} == "true" ]; then
+            BITBAKE_ARGS+=" ${MACHINE_NAME}-bl1"
+        fi
+        if [ ${BUILD_UBOOT} == "true" ]; then
+            BITBAKE_ARGS+=" ${MACHINE_NAME}-uboot"
+        fi
+        if [ ${BUILD_OPTEE} == "true" ]; then
+            BITBAKE_ARGS+=" optee-build optee-linuxdriver"
+        fi
+
+	CLEAN_RECIPES+=" $BITBAKE_ARGS"
+	bitbake -c cleanall $CLEAN_RECIPES
+	echo -e "\033[47;34m CLEAN TARGET : $CLEAN_RECIPES \033[0m"
+	echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
+        echo -e "\033[47;34m                          Partial Build                             \033[0m"
+        echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
+	echo -e "\033[47;34m $BITBAKE_ARGS \033[0m"
+	echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
+	bitbake $BITBAKE_ARGS
+    else
+	echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
+        echo -e "\033[47;34m                          All Build                               \033[0m"
+        echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
+        if [ ${CLEAN_BUILD} == "true" ];then
+            bitbake -c cleanall $CLEAN_RECIPES
+        fi
+	echo -e "\033[47;34m CLEAN TARGET : $CLEAN_RECIPES \033[0m"
+        bitbake ${MACHINE_NAME}-${IMAGE_TYPE}
+    fi
 }
 
 function move_images()
@@ -148,7 +178,7 @@ function move_images()
     RESULT_DIR="result-${MACHINE_NAME}-${IMAGE_TYPE}"
     
     cd $ROOT_PATH/yocto/build-${MACHINE_NAME}-${IMAGE_TYPE}
-    ../meta-nexell/tools/result-file-move.sh ${MACHINE_NAME} ${IMAGE_TYPE}    
+    ../meta-nexell/tools/result-file-move.sh ${MACHINE_NAME} ${IMAGE_TYPE} ${BUILD_ALL}
 }
 
 function convert_images()
@@ -184,74 +214,6 @@ function optee_clean()
     ../meta-nexell/tools/optee_clean_${BOARD_NAME}.sh
 }
 
-function build_kernel()
-{
-    local ROOT_PATH=${TOP}
-    local KERNEL_PATH=$ROOT_PATH/kernel/kernel-4.1.15
-    local KERNEL_DEFCONFIG=
-    local dts_file=
-    local KERNEL_BUILD_OUT=${TOP}/kernel_build_out
-    local CROSS_COMPILE32="${ROOT_PATH}/yocto/build-${MACHINE_NAME}-${IMAGE_TYPE}/tmp/sysroots/x86_64-linux/usr/bin/arm-poky-linux-gnueabi/arm-poky-linux-gnueabi-"
-    local CROSS_COMPILE64="${ROOT_PATH}/yotco/build-${MACHINE_NAME}-${IMAGE_TYPE}/tmp/sysroots/x86_64-linux/usr/bin/aarch64-poky-linux/aarch64-poky-linux-"
-    local KERNEL_IMAGE_TYPE=
-    local KERNEL_COMMON_FLAGS=
-    local file_name_dtb=
-    
-    echo ${ROOT_PATH}
-    cd ${ROOT_PATH}
-    if [ ! -d kernel_build_out ]; then
-	mkdir kernel_build_out
-    fi
-
-    
-    if [ ${BOARD_SOCNAME} == "s5p6818" ];then
-	KERNEL_IMAGE_TYPE="Image"
-	KERNEL_COMMON_FLAGS="ARCH=${ARM_ARCH} CROSS_COMPILE=${CROSS_COMPILE64}"
-    else
-	KERNEL_IMAGE_TYPE="zImage"
-	KERNEL_COMMON_FLAGS="ARCH=${ARM_ARCH} CROSS_COMPILE=${CROSS_COMPILE32}"
-    fi
-    
-    if [ ${MACHINE_NAME} == "s5p6818-artik710-raptor" ];then
-	dts_file=$KERNEL_PATH/arch/${ARM_ARCH}/boot/dts/nexell/s5p6818-artik710.dtsi
-	KERNEL_DEFCONFIG="artik710_raptor_defconfig"
-	file_name_dtb="s5p6818-artik710-raptor*.dtb"
-    elif [ ${MACHINE_NAME} == "s5p6818-avn-ref" ];then
-        dts_file=$KERNEL_PATH/arch/${ARM_ARCH}/boot/dts/nexell/s5p6818-avn-ref-common.dtsi
-	KERNEL_DEFCONFIG="s5p6818_avn_ref_defconfig"
-	file_name_dtb="s5p6818-avn-ref*.dtb"
-    else
-	dts_file=$KERNEL_PATH/arch/${ARM_ARCH}/boot/dts/${BOARD_SOCNAME}-${BOARD_PREFIX}_${BOARD_POSTFIX}-rev00.dts
-	KERNEL_DEFCONFIG="${BOARD_SOCNAME}_${BOARD_PREFIX}_${BOARD_POSTFIX}_defconfig"
-	if [ ${BOARD_PREFIX} == "avn" ]; then
-	    file_name_dtb="s5p4418-avn_ref*.dtb"
-	elif [ ${BOARD_PREFIX} == "navi" ]; then
-	    file_name_dtb="s5p4418-navi_ref*.dtb"
-	fi
-    fi
-
-    echo ${MACHINE_NAME}
-    echo ${KERNEL_DEFCONFIG}
-    
-    cd ${KERNEL_PATH}
-    make ARCH=${ARM_ARCH} distclean
-    make ARCH=${ARM_ARCH} ${KERNEL_DEFCONFIG}
-
-    make ${KERNEL_COMMON_FLAGS} ${KERNEL_IMAGE_TYPE} -j8
-    make ${KERNEL_COMMON_FLAGS} dtbs
-    make ${KERNEL_COMMON_FLAGS} modules -j8
-
-    make ${KERNEL_COMMON_FLAGS} modules_install INSTALL_MOD_PATH=${KERNEL_BUILD_OUT} INSTALL_MOD_STRIP=1
-
-    cp arch/${ARM_ARCH}/boot/${KERNEL_IMAGE_TYPE} ${KERNEL_BUILD_OUT}
-    cp arch/${ARM_ARCH}/boot/dts/${file_name_dtb} ${KERNEL_BUILD_OUT} 
-
-    #move result files
-    cp ${KERNEL_BUILD_OUT}/${KERNEL_IMAGE_TYPE} $ROOT_PATH/yocto/${RESULT_DIR}
-    cp ${KERNEL_BUILD_OUT}/*.dtb $ROOT_PATH/yocto/${RESULT_DIR}
-}
-
-
 parse_args $@
 check_usage
 split_machine_name
@@ -259,9 +221,5 @@ split_machine_name
 gen_and_copy_bbappend
 bitbake_run
 move_images
-
-if [ ${KERNEL_BUILD} == "true" ];then
-    build_kernel
-fi
-
 convert_images
+
