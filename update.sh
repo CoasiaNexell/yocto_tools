@@ -13,9 +13,11 @@ BOARD_NAME=
 BOARD_PREFIX=
 BOARD_POSTFIX=
 
+PARTIAL_UPDATE_ARGS=
+
 function check_usage()
 {
-    if [ $argc != 2 ]
+    if [ $argc -lt 2 ]
     then
 	echo "Invalid argument check usage please"
 	usage
@@ -25,17 +27,45 @@ function check_usage()
 
 function usage()
 {
-    echo "Usage: $0 <machine-name> <image-type>"
-    echo "    ex) $0 s5p6818-artik710-raptor tiny"
-    echo "    ex) $0 s5p6818-artik710-raptor sato"
+    echo "Usage: $0 <machine-name> <image-type> [-t bl1 -t uboot -t env -t kernel -t rootfs]"
+    echo " -t bl1\t: if you want to update only bl1, specify this, default no"
+    echo " -t uboot\t: if you want to update only bootloader, specify this, default no"
+    echo " -t env\t: if you want to update only env, specify this, default no"
+    echo " -t kernel\t: if you want to update only boot partition, specify this, default no"
+    echo " -t rootfs\t: if you want to update only root partition, specify this, default no"
+    echo "    ex) $0 s5p6818-artik710-raptor tiny -t bl1"
+    echo "    ex) $0 s5p6818-artik710-raptor sato -t kernel"
     echo "    ex) $0 s5p6818-artik710-raptor qt"
-    echo "    ex) $0 s5p6818-avn-ref qt"
+    echo "    ex) $0 s5p6818-avn-ref qt -t kernel -t uboot"
     echo "    ex) $0 s5p6818-avn-ref tiny"
     echo "    ex) $0 s5p4418-avn-ref qt"
     echo "    ex) $0 s5p4418-avn-ref tiny"
     echo "    ex) $0 s5p4418-navi-ref qt"
-    echo "    ex) $0 s5p4418-navi-ref tiny"
+    echo "    ex) $0 s5p4418-navi-ref tiny -t uboot -t bl1 -env -t kernel"
     echo "    ex) $0 s5p4418-navi-ref tinyui"
+
+}
+
+function parse_args()
+{
+    ARGS=$(getopt -o t:h -- "$@");
+    eval set -- "$ARGS";
+
+    while true; do
+        case "$1" in
+            -t ) case "$2" in
+                     bl1    ) PARTIAL_UPDATE_ARGS+=" -t bl1" ;;
+                     uboot  ) PARTIAL_UPDATE_ARGS+=" -t uboot" ;;
+                     env    ) PARTIAL_UPDATE_ARGS+=" -t env" ;;
+                     kernel ) PARTIAL_UPDATE_ARGS+=" -t kernel" ;;
+                     rootfs ) PARTIAL_UPDATE_ARGS+=" -t rootfs" ;;
+                     *      ) usage; exit 1 ;;
+                 esac
+                 shift 2 ;;
+            -h ) usage; exit 1 ;;
+            -- ) break ;;
+        esac
+    done
 }
 
 function split_machine_name()
@@ -53,8 +83,8 @@ function binary_download()
     echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
     echo -e "\033[47;34m                      Target Downloading...                         \033[0m"
     echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"    
-       
-    ./yocto/meta-nexell/tools/update_${BOARD_SOCNAME}.sh -p $ROOT_PATH/yocto/${RESULT_DIR}/partmap_emmc.txt -r $ROOT_PATH/yocto/${RESULT_DIR}
+
+    ./yocto/meta-nexell/tools/update_${BOARD_SOCNAME}.sh -p $ROOT_PATH/yocto/${RESULT_DIR}/partmap_emmc.txt -r $ROOT_PATH/yocto/${RESULT_DIR} ${PARTIAL_UPDATE_ARGS}
 
     echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
     echo -e "\033[47;34m   Download Complete                                                \033[0m"    
@@ -63,5 +93,6 @@ function binary_download()
 }
 
 check_usage
+parse_args $@
 split_machine_name
 binary_download
