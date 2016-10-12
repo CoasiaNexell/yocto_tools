@@ -57,14 +57,14 @@ function parse_args()
 
 function usage()
 {
-    echo -e "\nUsage: $0 <machine-name> <image-type> [-c -t bl1 -t u-boot -t kernel -t optee] \n"
+    echo -e "\nUsage: $0 <machine-name> <image-type> [-c -t bl1 -t uboot -t kernel -t optee] \n"
     echo -e " <machine-name> : "
     echo -e "        s5p6818-artik710-raptor or s5p6818-artik710-raptor or s5p6818-artik710-raptor or s5p4418-avn-ref ...\n"
     echo -e " <image-type> : "
     echo -e "        qt, tiny, sato, tinyui \n"
     echo -e " -c : cleanbuild"
-    echo -e " -t bl1    : if you want to build only u-boot, specify this, default no"
-    echo -e " -t u-boot : if you want to build only u-boot, specify this, default no"
+    echo -e " -t bl1    : if you want to build only bl1, specify this, default no"
+    echo -e " -t uboot : if you want to build only uboot, specify this, default no"
     echo -e " -t kernel : if you want to build only kernel, specify this, default no"
     echo -e " -t optee  : if you want to build only optee, specify this, default no\n"
     echo " ex) $0 s5p6818-artik710-raptor tiny -c -t kernel"
