@@ -123,12 +123,8 @@ function bitbake_run()
     ../meta-nexell/tools/envsetup.sh ${MACHINE_NAME} ${IMAGE_TYPE}
 
     if [ ${CLEAN_BUILD} == "true" ];then
-	echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
-        echo -e "\033[47;34m                          Clean Build                               \033[0m"
-        echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
-	if [ ${BOARD_SOCNAME} == "s5p6818" ];then
-            ../meta-nexell/tools/optee_clean_${BOARD_NAME}.sh
-            CLEAN_RECIPES+=" testsuite-s5p6818"
+	if [ ${BOARD_SOCNAME} == "s5p6818" ];then            
+            CLEAN_RECIPES+=" testsuite-s5p6818 optee-build optee-linuxdriver"
         else
             CLEAN_RECIPES+=" testsuite-s5p4418"
 	fi
@@ -152,6 +148,7 @@ function bitbake_run()
         fi
 
 	CLEAN_RECIPES+=" $BITBAKE_ARGS"
+
 	bitbake -c cleanall $CLEAN_RECIPES
 	echo -e "\033[47;34m CLEAN TARGET : $CLEAN_RECIPES \033[0m"
 	echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
@@ -162,7 +159,7 @@ function bitbake_run()
 	bitbake $BITBAKE_ARGS
     else
 	echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
-        echo -e "\033[47;34m                          All Build                               \033[0m"
+        echo -e "\033[47;34m                          All Build                                 \033[0m"
         echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
         if [ ${CLEAN_BUILD} == "true" ];then
             bitbake -c cleanall $CLEAN_RECIPES

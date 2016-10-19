@@ -36,13 +36,12 @@ function parse_args()
 
 function usage()
 {
-    echo -e "\nUsage: $0 <machine-name> <image-type> [-c openssl systemd qtquick1 ...] \n"
+    echo -e "\nUsage: $0 <machine-name> <image-type> [virtual/kernel openssl systemd qtquick1 ...] \n"
     echo -e " <machine-name> : "
     echo -e "        s5p6818-artik710-raptor or s5p6818-artik710-raptor or s5p6818-artik710-raptor or s5p4418-avn-ref ...\n"
     echo -e " <image-type> : "
     echo -e "        qt, tiny, sato, tinyui \n"
-    echo -e " -c : clean recipes"
-    echo " ex) $0 s5p4418-navi-ref qt -c openssl qtquick1"
+    echo " ex) $0 s5p4418-navi-ref qt virtual/kernel openssl qtquick1"
     echo ""
 }
 
@@ -68,7 +67,7 @@ function bitbake_run()
     bitbake -c cleanall $CLEAN_ARGS
 }
 
-parse_args $@
 check_usage
+parse_args $@
 split_machine_name
 bitbake_run
