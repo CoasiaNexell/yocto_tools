@@ -123,7 +123,7 @@ function bitbake_run()
     ../meta-nexell/tools/envsetup.sh ${MACHINE_NAME} ${IMAGE_TYPE}
 
     if [ ${CLEAN_BUILD} == "true" ];then
-	if [ ${BOARD_SOCNAME} == "s5p6818" ];then            
+	if [ ${BOARD_SOCNAME} == "s5p6818" ];then
             CLEAN_RECIPES+=" testsuite-s5p6818 optee-build optee-linuxdriver"
         else
             CLEAN_RECIPES+=" testsuite-s5p4418"
@@ -145,6 +145,10 @@ function bitbake_run()
         fi
         if [ ${BUILD_OPTEE} == "true" ]; then
             BITBAKE_ARGS+=" optee-build optee-linuxdriver"
+        else
+            if [ ${BOARD_SOCNAME} == "s5p6818" -a ${BUILD_UBOOT} == "true" -a ${BUILD_OPTEE} == "false" ]; then
+                BITBAKE_ARGS+=" optee-build optee-linuxdriver"
+            fi
         fi
 
 	CLEAN_RECIPES+=" $BITBAKE_ARGS"
