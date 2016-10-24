@@ -21,6 +21,7 @@ R_TESTSUITE='/recipes-application/testsuite'
 HASH_RECIPENAME_PATH = {
     's5p4418-avn-ref-bl1.bbappend':         ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], ['0001-bl1-AVN.patch']],
     's5p4418-navi-ref-bl1.bbappend':        ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], ['0001-NAVI-NSP4330-Bl1-Board-SETTING.patch']],
+    's5p4418-hs-iot-bl1.bbappend':        ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], [],
     's5p6818-artik710-raptor-bl1.bbappend': ['ON',['/bl1/bl1-s5p6818',R_BL1,'/bl1-s5p6818'], []],
     's5p6818-avn-ref-bl1.bbappend':         ['ON',['/bl1/bl1-s5p6818',R_BL1,'/bl1-s5p6818'], ['0001-s5p6818-avn-bl1.patch']],
 
@@ -37,6 +38,7 @@ HASH_RECIPENAME_PATH = {
 
     's5p4418-avn-ref-uboot_%.bbappend':         ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],['0001-bootcmd-add-for-avn-yocto.patch']],
     's5p4418-navi-ref-uboot_%.bbappend':        ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],['0001-bootcmd-add-for-navi-yocto.patch']],
+    's5p4418-hs-iot-uboot_%.bbappend':          ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[],
     's5p6818-artik710-raptor-uboot_%.bbappend': ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
     's5p6818-avn-ref-uboot_%.bbappend':         ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],['0001-bootcmd-add-for-avn-s5p6818.patch']],
     
@@ -56,10 +58,9 @@ HASH_RECIPENAME_PATH = {
     'nx-v4l2_%.bbappend':               ['ON',['/library/nx-v4l2',R_NX_LIBS,'/nx-v4l2'],[]],
     'nx-video-api_%.bbappend':          ['ON',['/library/nx-video-api',R_NX_LIBS,'/nx-video-api'],['0001-nx-video-api-install-error-fix.patch']],
 
-    'linux-s5p4418-avn-ref_%.bbappend':     ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
-				           ['0001-Yocto-avn-ref-defconfig-changed-for-QT-working.patch','0001-Yocto-mali400-Kbuild-compile-error-fix.patch']],
-    'linux-s5p4418-navi-ref_%.bbappend':    ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
-				           ['0001-Yocto-navi-ref-defconfig-changed-for-QT-working.patch', '0001-Yocto-mali400-Kbuild-compile-error-fix.patch']],
+    'linux-s5p4418-avn-ref_%.bbappend':     ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],[]],
+    'linux-s5p4418-navi-ref_%.bbappend':    ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],[]],
+    'linux-s5p4418-hs-iot_%.bbappend':      ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],[]],
     'linux-s5p6818-artik710-raptor_%.bbappend': ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
 						       ['0001-Yocto-mali400-Kbuild-compile-error-fix.patch']],
     'linux-s5p6818-avn-ref_%.bbappend':         ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
