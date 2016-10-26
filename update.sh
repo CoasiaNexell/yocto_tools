@@ -85,6 +85,9 @@ function binary_download()
     echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
     echo -e "\033[47;34m                      Target Downloading...                         \033[0m"
     echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"    
+    echo "./yocto/meta-nexell/tools/update_${BOARD_SOCNAME}.sh"
+    echo " -p $ROOT_PATH/yocto/${RESULT_DIR}/partmap_emmc.txt"
+    echo " -r $ROOT_PATH/yocto/${RESULT_DIR} ${PARTIAL_UPDATE_ARGS}"
 
     ./yocto/meta-nexell/tools/update_${BOARD_SOCNAME}.sh -p $ROOT_PATH/yocto/${RESULT_DIR}/partmap_emmc.txt -r $ROOT_PATH/yocto/${RESULT_DIR} ${PARTIAL_UPDATE_ARGS}
 
