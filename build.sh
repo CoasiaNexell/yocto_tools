@@ -24,6 +24,9 @@ BUILD_UBOOT=false
 BUILD_OPTEE=false
 BUILD_KERNEL=false
 
+KERNEL_PATH=${TOP}/kernel/kernel-4.4.19
+NEED_KERNEL_MAKE_CLEAN=false
+
 function check_usage()
 {
     if [ $argc -lt 2 ]
@@ -130,12 +133,14 @@ function bitbake_run()
 	fi
 
 	CLEAN_RECIPES+=" ${MACHINE_NAME}-${IMAGE_TYPE} virtual/kernel"
+	NEED_KERNEL_MAKE_CLEAN=true
     fi
 
     local BITBAKE_ARGS=
     if [ ${BUILD_ALL} == "false" ];then
         if [ ${BUILD_KERNEL} == "true" ]; then
             BITBAKE_ARGS+=" virtual/kernel"
+            #NEED_KERNEL_MAKE_CLEAN=true
         fi
         if [ ${BUILD_BL1} == "true" ]; then
             BITBAKE_ARGS+=" ${MACHINE_NAME}-bl1"
@@ -153,6 +158,7 @@ function bitbake_run()
 
 	CLEAN_RECIPES+=" $BITBAKE_ARGS"
 
+        kernel_make_clean
 	bitbake -c cleanall $CLEAN_RECIPES
 	echo -e "\033[47;34m CLEAN TARGET : $CLEAN_RECIPES \033[0m"
 	echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
@@ -162,6 +168,7 @@ function bitbake_run()
 	echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
 	bitbake $BITBAKE_ARGS
     else
+        kernel_make_clean
 	echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
         echo -e "\033[47;34m                          All Build                                 \033[0m"
         echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
@@ -170,6 +177,19 @@ function bitbake_run()
         fi
 	echo -e "\033[47;34m CLEAN TARGET : $CLEAN_RECIPES \033[0m"
         bitbake ${MACHINE_NAME}-${IMAGE_TYPE}
+    fi
+}
+
+function kernel_make_clean()
+{
+    local oldpath=`pwd`
+    if [ $NEED_KERNEL_MAKE_CLEAN == true ];then
+        echo -e "\n ------------------------------------------------------------------ "
+        echo -e "                        make distclean                              "
+        echo -e " ------------------------------------------------------------------ "
+        cd ${KERNEL_PATH}
+        make distclean
+        cd $oldpath
     fi
 }
 
