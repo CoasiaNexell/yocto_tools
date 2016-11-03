@@ -2,11 +2,15 @@
 
 set -e
 
-TOP=`pwd`
+CURRENT_PATH=`dirname $0`
+TOOLS_PATH=`readlink -ev $CURRENT_PATH`
+ROOT_PATH=`readlink -ev ${TOOLS_PATH}/..`
+
 argc=$#
 MACHINE_NAME=$1
 IMAGE_TYPE=$2
-RESULT_DIR=
+RESULT_DIR="result-${MACHINE_NAME}-${IMAGE_TYPE}"
+RESULT_PATH=
 
 BOARD_SOCNAME=
 BOARD_NAME=
@@ -24,8 +28,14 @@ BUILD_UBOOT=false
 BUILD_OPTEE=false
 BUILD_KERNEL=false
 
-KERNEL_PATH=${TOP}/kernel/kernel-4.4.19
+KERNEL_PATH=`readlink -ev ${ROOT_PATH}/kernel/kernel-4.4.19`
 NEED_KERNEL_MAKE_CLEAN=false
+
+META_NEXELL_PATH=`readlink -ev ${ROOT_PATH}/yocto/meta-nexell`
+GENIVI_PATH=`readlink -e ${ROOT_PATH}/yocto/GENIVI`
+
+declare -a targets=("s5p4418-avn-ref" "s5p4418-navi-ref" "s5p6818-artik710-raptor" "s5p6818-avn-ref")
+declare -a imagetypes=("qt" "tiny" "sato" "tinyui" "genivi")
 
 function check_usage()
 {
@@ -34,6 +44,40 @@ function check_usage()
 	echo "Invalid argument check usage please"
 	usage
 	exit
+    fi
+
+    local existTarget=false
+    local existImageTypes=false
+
+    for i in ${targets[@]}
+    do
+        if [ $i == ${MACHINE_NAME} ]; then
+            existTarget=true
+            echo -e "\033[47;34m Select targets : $i \033[0m"
+            break
+        fi
+    done
+
+    for j in ${imagetypes[@]}
+    do
+        if [ $j == ${IMAGE_TYPE} ]; then
+            existImageTypes=true
+            echo -e "\033[47;34m Select imageTypes : $j \033[0m"
+            break
+        fi
+    done
+
+    if [ $existTarget == false ]; then
+        echo -e "\033[47;34m Please check you selected machine name ==> ${MACHINE_NAME} \033[0m"
+        echo -e "\033[47;34m Check again \033[0m"
+        usage
+        exit
+    fi
+    if [ $existImageTypes == false ]; then
+        echo -e "\033[47;34m Please check you selected image types ==> ${IMAGE_TYPE} \033[0m"
+        echo -e "\033[47;34m Maybe this imagetype does not support \033[0m"
+        usage
+        exit
     fi
 }
 function parse_args()
@@ -80,6 +124,7 @@ function usage()
     echo " ex) $0 s5p4418-navi-ref qt -t kernel -t uboot -t bl1"
     echo " ex) $0 s5p4418-navi-ref tiny -c"
     echo " ex) $0 s5p4418-navi-ref tinyui"
+    echo " ex) $0 s5p4418-navi-ref genivi"
     echo ""
 }
 
@@ -104,26 +149,34 @@ function gen_and_copy_bbappend()
     echo -e "\033[47;34m                       .bbappend files generate                     \033[0m"
     echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
     
-    local ROOT_PATH=${TOP}
-    cd $ROOT_PATH/tools/bbappend-files
-    ./gen_bbappend.sh $ROOT_PATH
-    cp -a $ROOT_PATH/tools/bbappend-files/recipes-* $ROOT_PATH/yocto/meta-nexell
+    cd ${TOOLS_PATH}/bbappend-files
+    ./gen_bbappend.sh ${ROOT_PATH}
+    cp -a ${TOOLS_PATH}/bbappend-files/recipes-* ${META_NEXELL_PATH}
 
     echo -e "\033[47;34m ------------------------ Generate Done ! ------------------------- \033[0m"
 }
 
 function bitbake_run()
 {
-    local ROOT_PATH=${TOP}
     local CLEAN_RECIPES=
 
     echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
     echo -e "\033[47;34m                       Bitbake Auto Running                         \033[0m"
     echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"    
-    
-    cd $ROOT_PATH/yocto
-    source poky/oe-init-build-env build-${MACHINE_NAME}-${IMAGE_TYPE}
-    ../meta-nexell/tools/envsetup.sh ${MACHINE_NAME} ${IMAGE_TYPE}
+
+    if [ ${IMAGE_TYPE} == "genivi" ]; then
+        #------------------------ Genivi platform setup ------------------------
+        cd ${GENIVI_PATH}
+        ${META_NEXELL_PATH}/tools/envsetup_genivi.sh ${MACHINE_NAME}
+        source init.sh nexell ${MACHINE_NAME}
+        #-----------------------------------------------------------------------
+    else
+        #------------------------ Nexell platform setup ------------------------
+        cd ${ROOT_PATH}/yocto
+        source poky/oe-init-build-env build-${MACHINE_NAME}-${IMAGE_TYPE}
+        ${META_NEXELL_PATH}/tools/envsetup.sh ${MACHINE_NAME} ${IMAGE_TYPE}
+        #-----------------------------------------------------------------------
+    fi
 
     if [ ${CLEAN_BUILD} == "true" ];then
 	if [ ${BOARD_SOCNAME} == "s5p6818" ];then
@@ -132,7 +185,11 @@ function bitbake_run()
             CLEAN_RECIPES+=" testsuite-s5p4418"
 	fi
 
-	CLEAN_RECIPES+=" ${MACHINE_NAME}-${IMAGE_TYPE} virtual/kernel"
+        if [ ${IMAGE_TYPE} == "genivi" ]; then
+            CLEAN_RECIPES+=" ${MACHINE_NAME}-qt virtual/kernel"
+        else
+            CLEAN_RECIPES+=" ${MACHINE_NAME}-${IMAGE_TYPE} virtual/kernel"
+        fi
 	NEED_KERNEL_MAKE_CLEAN=true
     fi
 
@@ -176,7 +233,16 @@ function bitbake_run()
             bitbake -c cleanall $CLEAN_RECIPES
         fi
 	echo -e "\033[47;34m CLEAN TARGET : $CLEAN_RECIPES \033[0m"
-        bitbake ${MACHINE_NAME}-${IMAGE_TYPE}
+
+        if [ ${IMAGE_TYPE} == "genivi" ]; then
+            #------------------------ Genivi platform build ------------------------
+            bitbake genivi-dev-platform
+            #-----------------------------------------------------------------------
+        else
+            #------------------------ Nexell platform build ------------------------
+            bitbake ${MACHINE_NAME}-${IMAGE_TYPE}
+            #-----------------------------------------------------------------------
+        fi
     fi
 }
 
@@ -188,6 +254,16 @@ function kernel_make_clean()
         echo -e "                        make distclean                              "
         echo -e " ------------------------------------------------------------------ "
         cd ${KERNEL_PATH}
+        file_count=$(ls -Rl ${KERNEL_PATH} | grep ^- | wc -l)
+        dir_size=$(du -sb ${KERNEL_PATH} | cut -f1)
+        if [ $file_count -lt 5 ] || [ $dir_size -lt 16 ]; then
+            echo -e " Strange kernel source! "
+            echo -e " Not exist files or kernel path broken "
+            echo -e " file count = $file_count   ==> ${KERNEL_PATH} "
+            echo -e " dir size   = $dir_size  ==> ${KERNEL_PATH} "
+            echo -e " ------------------------------------------------------------------ "
+            repo sync ${KERNEL_PATH}
+        fi
         make distclean
         cd $oldpath
     fi
@@ -195,44 +271,44 @@ function kernel_make_clean()
 
 function move_images()
 {
-    local ROOT_PATH=${TOP}
-    RESULT_DIR="result-${MACHINE_NAME}-${IMAGE_TYPE}"
-    
-    cd $ROOT_PATH/yocto/build-${MACHINE_NAME}-${IMAGE_TYPE}
-    ../meta-nexell/tools/result-file-move.sh ${MACHINE_NAME} ${IMAGE_TYPE} ${BUILD_ALL}
+    ${META_NEXELL_PATH}/tools/result-file-move.sh ${MACHINE_NAME} ${IMAGE_TYPE} ${BUILD_ALL}
+    RESULT_PATH=`readlink -ev ${ROOT_PATH}/yocto/${RESULT_DIR}`
 }
 
 function convert_images()
 {
-    local ROOT_PATH=${TOP}
-    RESULT_DIR="result-${MACHINE_NAME}-${IMAGE_TYPE}"
-
     echo -e "\n\033[0;34m ------------------------------------------------------------------ \033[0m"
     echo -e "\033[0;36m                      Convert images Running                        \033[0m"
     echo -e "\033[0;34m ------------------------------------------------------------------ \033[0m"
     
-    cd $ROOT_PATH/yocto/${RESULT_DIR}
-    ../meta-nexell/tools/convert_images.sh ${MACHINE_NAME} ${IMAGE_TYPE}
-    
-    echo -e "\n\033[0;34m --------------------------------------------------------------------------- \033[0m\n"
-    echo -e "\033[0;36m  1. cd $ROOT_PATH/yocto/${RESULT_DIR}                                        \033[0m\n"
-    echo -e "\033[0;36m     ../meta-nexell/tools/update_${BOARD_SOCNAME}.sh -p partmap_emmc.txt -r . \033[0m\n"
-    echo -e "\033[0;36m     or                                                                       \033[0m\n"
-    echo -e "\033[0;36m  2. ./tools/update.sh ${MACHINE_NAME} ${IMAGE_TYPE}                          \033[0m\n"
-    echo -e "\033[0;34m ---------------------------------------------------------------------------- \033[0m\n"
+    cd ${RESULT_PATH}
+    ${META_NEXELL_PATH}/tools/convert_images.sh ${MACHINE_NAME} ${IMAGE_TYPE}
+
+    echo -e "\n\033[0;34m ------------------------------------------------------------------------------------------ \033[0m\n"
+    echo -e "\033[0;36m  1. ${META_NEXELL_PATH}/tools/update.sh -p ${RESULT_PATH}/partmap_emmc.txt -r ${RESULT_PATH} \033[0m\n"
+    echo -e "\033[0;36m     or                                                                                       \033[0m\n"
+    echo -e "\033[0;36m  2. ${TOOLS_PATH}/update.sh ${MACHINE_NAME} ${IMAGE_TYPE}                                    \033[0m\n"
+    echo -e "\033[0;34m -------------------------------------------------------------------------------------------- \033[0m\n"
 }
 
 function optee_clean()
 {
-    local ROOT_PATH=${TOP}
-    
     echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
     echo -e "\033[47;34m                       Optee Clean SSTATE                           \033[0m"
     echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"    
-    
-    cd $ROOT_PATH/yocto
-    source poky/oe-init-build-env build-${MACHINE_NAME}-${IMAGE_TYPE}
-    ../meta-nexell/tools/optee_clean_${BOARD_NAME}.sh
+
+    if [ ${IMAGE_TYPE} == "genivi" ]; then
+        #------------------------ Genivi platform build ------------------------
+        source ${GENIVI_PATH}/init.sh nexell ${MACHINE_NAME}
+        #-----------------------------------------------------------------------
+    else
+        #------------------------ Nexell platform build ------------------------
+        cd ${ROOT_PATH}/yocto
+        source poky/oe-init-build-env build-${MACHINE_NAME}-${IMAGE_TYPE}
+        #-----------------------------------------------------------------------
+    fi
+
+    ${META_NEXELL_PATH}/tools/optee_clean_${BOARD_NAME}.sh
 }
 
 parse_args $@
@@ -243,4 +319,3 @@ gen_and_copy_bbappend
 bitbake_run
 move_images
 convert_images
-

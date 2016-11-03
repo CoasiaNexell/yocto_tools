@@ -2,7 +2,10 @@
 
 set -e
 
-TOP=`pwd`
+CURRENT_PATH=`dirname $0`
+TOOLS_PATH=`readlink -e $CURRENT_PATH`
+ROOT_PATH=`readlink -e ${TOOLS_PATH}/..`
+
 argc=$#
 MACHINE_NAME=$1
 IMAGE_TYPE=$2
@@ -55,10 +58,17 @@ function split_machine_name()
 
 function bitbake_run()
 {
-    local ROOT_PATH=${TOP}
-
-    cd $ROOT_PATH/yocto
-    source poky/oe-init-build-env build-${MACHINE_NAME}-${IMAGE_TYPE}
+    if [ ${IMAGE_TYPE} == "genivi" ]; then
+        #------------------------ Genivi platform setup ------------------------
+        cd ${GENIVI_PATH}
+        source init.sh nexell
+        #-----------------------------------------------------------------------
+    else
+        #------------------------ Nexell platform setup ------------------------
+        cd ${ROOT_PATH}/yocto
+        source poky/oe-init-build-env build-${MACHINE_NAME}-${IMAGE_TYPE}
+        #-----------------------------------------------------------------------
+    fi
 
     echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
     echo -e "\033[47;34m                          Clean Recipes                             \033[0m"

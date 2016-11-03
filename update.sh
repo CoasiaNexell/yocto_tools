@@ -2,11 +2,15 @@
 
 set -e
 
-TOP=`pwd`
+CURRENT_PATH=`dirname $0`
+TOOLS_PATH=`readlink -ev $CURRENT_PATH`
+ROOT_PATH=`readlink -ev ${TOOLS_PATH}/..`
+
 argc=$#
 MACHINE_NAME=$1
 IMAGE_TYPE=$2
 RESULT_DIR="result-$1-$2"
+RESULT_PATH=
 
 BOARD_SOCNAME=
 BOARD_NAME=
@@ -14,6 +18,9 @@ BOARD_PREFIX=
 BOARD_POSTFIX=
 
 PARTIAL_UPDATE_ARGS=
+
+META_NEXELL_PATH=`readlink -ev ${ROOT_PATH}/yocto/meta-nexell`
+GENIVI_PATH=`readlink -ev ${ROOT_PATH}/yocto/GENIVI`
 
 function check_usage()
 {
@@ -78,18 +85,16 @@ function split_machine_name()
 
 function binary_download()
 {
-    local ROOT_PATH=${TOP}
-
     echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
     echo -e "\033[47;34m                      Target Downloading...                         \033[0m"
     echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"    
 
-    ./yocto/meta-nexell/tools/update_${BOARD_SOCNAME}.sh -p $ROOT_PATH/yocto/${RESULT_DIR}/partmap_emmc.txt -r $ROOT_PATH/yocto/${RESULT_DIR} ${PARTIAL_UPDATE_ARGS}
+    RESULT_PATH=`readlink -e ${ROOT_PATH}/yocto/${RESULT_DIR}`
+    ${META_NEXELL_PATH}/tools/update.sh -p ${RESULT_PATH}/partmap_emmc.txt -r ${RESULT_PATH} ${PARTIAL_UPDATE_ARGS}
 
     echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
     echo -e "\033[47;34m   Download Complete                                                \033[0m"    
     echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"    
-
 }
 
 check_usage

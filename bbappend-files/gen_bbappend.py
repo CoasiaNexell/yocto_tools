@@ -157,7 +157,7 @@ def gen_bbappend_files(bbappendfile,curWorkingPath,hashData) :
     INTO_BBAPPEND_SRC_PATH = curWorkingPath + L_PATHS[0]  #host PC's local source path
     INTO_BBAPPEND_MOV_PATH = curWorkingPath + L_PATHS[2]  #move to yocto tmp/work path
     INTO_BBAPPEND_PATCH_FILE=""
-    print BBAPPEND_FILE_PATH
+    print BBAPPEND_FILE_PATH + "  ---> OK "
     f = open(BBAPPEND_FILE_PATH,'w')
 
     #kernel
