@@ -97,6 +97,7 @@ TEMPLATE_SRC_URI="SRC_URI=\"file://${_SRC_PATH_BY_GEN_}\""
 HASH_RECIPENAME_PATH = {
     's5p4418-avn-ref-bl1.bbappend':         ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], []],
     's5p4418-navi-ref-bl1.bbappend':        ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], []],
+    's5p4418-cluster-ref-bl1.bbappend':        ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], []],
     's5p6818-artik710-raptor-bl1.bbappend': ['ON',['/bl1/bl1-s5p6818',R_BL1,'/bl1-s5p6818'], []],
     's5p6818-avn-ref-bl1.bbappend':         ['ON',['/bl1/bl1-s5p6818',R_BL1,'/bl1-s5p6818'], []],
 
@@ -113,9 +114,10 @@ HASH_RECIPENAME_PATH = {
 
     's5p4418-avn-ref-uboot_%.bbappend':         ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
     's5p4418-navi-ref-uboot_%.bbappend':        ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
+    's5p4418-cluster-ref-uboot_%.bbappend':        ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
     's5p6818-artik710-raptor-uboot_%.bbappend': ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
     's5p6818-avn-ref-uboot_%.bbappend':         ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
-    
+
     'gst-plugins-camera_%.bbappend':    ['ON',['/library/gst-plugins-camera',R_GST_LIBS,'/gst-plugins-camera'],[]],
     'gst-plugins-renderer_%.bbappend':  ['ON',['/library/gst-plugins-renderer',R_GST_LIBS,'/gst-plugins-renderer'],[]],
     'gst-plugins-scaler_%.bbappend':    ['ON',['/library/gst-plugins-scaler',R_GST_LIBS,'/gst-plugins-scaler'],[]],
@@ -134,6 +136,7 @@ HASH_RECIPENAME_PATH = {
 
     'linux-s5p4418-avn-ref_%.bbappend':     ['ON',['/kernel/kernel-${LINUX_VERSION}',R_KERNEL,'/kernel-${LINUX_VERSION}'],[]],
     'linux-s5p4418-navi-ref_%.bbappend':    ['ON',['/kernel/kernel-${LINUX_VERSION}',R_KERNEL,'/kernel-${LINUX_VERSION}'],[]],
+    'linux-s5p4418-cluster-ref_%.bbappend':    ['ON',['/kernel/kernel-${LINUX_VERSION}',R_KERNEL,'/kernel-${LINUX_VERSION}'],[]],
     'linux-s5p6818-artik710-raptor_%.bbappend': ['ON',['/kernel/kernel-${LINUX_VERSION}',R_KERNEL,'/kernel-${LINUX_VERSION}'],[]],
     'linux-s5p6818-avn-ref_%.bbappend':         ['ON',['/kernel/kernel-${LINUX_VERSION}',R_KERNEL,'/kernel-${LINUX_VERSION}'],[]],
 
@@ -167,10 +170,10 @@ def gen_bbappend_files(bbappendfile,curWorkingPath,hashData) :
 
         for i in TEMPLATE_KERNEL :
             f.write(i+"\n")
-            
+
         f.write("\n"+TEMPLATE_SRC_URI)
         f.write("\n")
-        
+
     #others
     else :
         for i in TEMPLATE1 :
@@ -186,7 +189,7 @@ def gen_bbappend_files(bbappendfile,curWorkingPath,hashData) :
             for i in L_PATCH_FILES :
                 f.write("SRC_URI+=\"file://"+i+"\""+"\n")
                 INTO_BBAPPEND_PATCH_FILE += "patch -p1 < ${WORKDIR}/"+i+";"
-        
+
             f.write("\n")
             f.write("\n_PATCH_FILE_BY_GEN_=\"" + INTO_BBAPPEND_PATCH_FILE + "\"")
 
@@ -204,7 +207,7 @@ def gen_bbappend_files(bbappendfile,curWorkingPath,hashData) :
 
 def kernel_patch_copy(patchPath, kernelSrcPath) :
     os.system("cp "+patchPath+" "+kernelSrcPath)
-    
+
 def main(arg1):
     gen_bbappend_paths(arg1)
 
@@ -213,4 +216,4 @@ if __name__ == "__main__":
         main(sys.argv[1])
     finally :
         pass
-						   
+

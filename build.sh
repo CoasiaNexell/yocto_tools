@@ -34,7 +34,7 @@ NEED_KERNEL_MAKE_CLEAN=false
 META_NEXELL_PATH=`readlink -ev ${ROOT_PATH}/yocto/meta-nexell`
 GENIVI_PATH=`readlink -e ${ROOT_PATH}/yocto/GENIVI`
 
-declare -a targets=("s5p4418-avn-ref" "s5p4418-navi-ref" "s5p6818-artik710-raptor" "s5p6818-avn-ref")
+declare -a targets=("s5p4418-avn-ref" "s5p4418-navi-ref" "s5p6818-artik710-raptor" "s5p6818-avn-ref" "s5p4418-cluster-ref")
 declare -a imagetypes=("qt" "tiny" "sato" "tinyui" "genivi")
 
 function check_usage()
@@ -119,12 +119,16 @@ function usage()
     echo " ex) $0 s5p6818-artik710-raptor qt"
     echo " ex) $0 s5p6818-avn-ref tiny"
     echo " ex) $0 s5p6818-avn-ref qt"
-    echo " ex) $0 s5p4418-avn-ref qt"    
+    echo " ex) $0 s5p4418-avn-ref qt"
     echo " ex) $0 s5p4418-avn-ref tiny"
     echo " ex) $0 s5p4418-navi-ref qt -t kernel -t uboot -t bl1"
     echo " ex) $0 s5p4418-navi-ref tiny -c"
     echo " ex) $0 s5p4418-navi-ref tinyui"
     echo " ex) $0 s5p4418-navi-ref genivi"
+    echo " ex) $0 s5p4418-cluster-ref qt -t kernel -t uboot -t bl1"
+    echo " ex) $0 s5p4418-cluster-ref tiny -c"
+    echo " ex) $0 s5p4418-cluster-ref tinyui"
+    echo " ex) $0 s5p4418-cluster-ref genivi"
     echo ""
 }
 
@@ -140,7 +144,6 @@ function split_machine_name()
     else
 	ARM_ARCH="arm"
     fi
-    
 }
 
 function gen_and_copy_bbappend()
@@ -148,7 +151,7 @@ function gen_and_copy_bbappend()
     echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
     echo -e "\033[47;34m                       .bbappend files generate                     \033[0m"
     echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
-    
+
     cd ${TOOLS_PATH}/bbappend-files
     ./gen_bbappend.sh ${ROOT_PATH}
     cp -a ${TOOLS_PATH}/bbappend-files/recipes-* ${META_NEXELL_PATH}
@@ -162,7 +165,7 @@ function bitbake_run()
 
     echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
     echo -e "\033[47;34m                       Bitbake Auto Running                         \033[0m"
-    echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"    
+    echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
 
     if [ ${IMAGE_TYPE} == "genivi" ]; then
         #------------------------ Genivi platform setup ------------------------
@@ -280,7 +283,7 @@ function convert_images()
     echo -e "\n\033[0;34m ------------------------------------------------------------------ \033[0m"
     echo -e "\033[0;36m                      Convert images Running                        \033[0m"
     echo -e "\033[0;34m ------------------------------------------------------------------ \033[0m"
-    
+
     cd ${RESULT_PATH}
     ${META_NEXELL_PATH}/tools/convert_images.sh ${MACHINE_NAME} ${IMAGE_TYPE}
 
@@ -295,7 +298,7 @@ function optee_clean()
 {
     echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
     echo -e "\033[47;34m                       Optee Clean SSTATE                           \033[0m"
-    echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"    
+    echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
 
     if [ ${IMAGE_TYPE} == "genivi" ]; then
         #------------------------ Genivi platform build ------------------------
