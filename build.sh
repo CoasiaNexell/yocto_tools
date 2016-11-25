@@ -180,10 +180,14 @@ function bitbake_run()
 
     if [ ${CLEAN_BUILD} == "true" ];then
 	if [ ${BOARD_SOCNAME} == "s5p6818" ];then
-            CLEAN_RECIPES+=" testsuite-s5p6818 optee-build optee-linuxdriver"
-        else
-            CLEAN_RECIPES+=" testsuite-s5p4418"
+            CLEAN_RECIPES+=" optee-build optee-linuxdriver"
 	fi
+
+        if [ ${IMAGE_TYPE} == "tiny" -o ${IMAGE_TYPE} == "tinyui" ]; then
+           echo "tiny or tinyui build"
+        else
+           CLEAN_RECIPES+=" testsuite-${BOARD_SOCNAME}"
+        fi
 
         if [ ${IMAGE_TYPE} == "genivi" ]; then
             CLEAN_RECIPES+=" ${MACHINE_NAME}-qt virtual/kernel"
