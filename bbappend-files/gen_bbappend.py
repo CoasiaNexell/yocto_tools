@@ -120,12 +120,8 @@ HASH_RECIPENAME_PATH = {
     'gst-plugins-camera_%.bbappend':    ['ON',['/library/gst-plugins-camera',R_GST_LIBS,'/gst-plugins-camera'],[]],
     'gst-plugins-renderer_%.bbappend':  ['ON',['/library/gst-plugins-renderer',R_GST_LIBS,'/gst-plugins-renderer'],[]],
     'gst-plugins-scaler_%.bbappend':    ['ON',['/library/gst-plugins-scaler',R_GST_LIBS,'/gst-plugins-scaler'],[]],
-    'gst-plugins-video-dec_%.bbappend': ['ON',['/library/gst-plugins-video-dec',R_GST_LIBS,'/gst-plugins-video-dec'],[]],
-    'gst-plugins-video-enc_%.bbappend': ['ON',['/library/gst-plugins-video-enc',R_GST_LIBS,'/gst-plugins-video-enc'],[]],
-    'gst-plugins-video-sink_%.bbappend':['ON',['/library/gst-plugins-video-sink',R_GST_LIBS,'/gst-plugins-video-sink'],[]],
 
     'libdrm-nx_%.bbappend':             ['ON',['/library/libdrm',R_NX_LIBS,'/libdrm'],[]],
-    'libomxil-nx_%.bbappend':           ['ON',['/library/libomxil-nx',R_NX_LIBS,'/libomxil-nx'],[]],
     'nx-drm-allocator_%.bbappend':      ['ON',['/library/nx-drm-allocator',R_NX_LIBS,'/nx-drm-allocator'],[]],
     'nx-gst-meta_%.bbappend':           ['ON',['/library/nx-gst-meta',R_NX_LIBS,'/nx-gst-meta'],[]],
     'nx-renderer_%.bbappend':           ['ON',['/library/nx-renderer',R_NX_LIBS,'/nx-renderer'],[]],
