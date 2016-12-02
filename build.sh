@@ -21,6 +21,7 @@ ARM_ARCH=
 
 INTERACTIVE_MODE=false
 CLEAN_BUILD=false
+SDK_RELEASE=false
 
 BUILD_ALL=true
 BUILD_BL1=false
@@ -82,12 +83,13 @@ function check_usage()
 }
 function parse_args()
 {
-    ARGS=$(getopt -o cht: -- "$@");
+    ARGS=$(getopt -o csht: -- "$@");
     eval set -- "$ARGS";
 
     while true; do
             case "$1" in
 		-c ) CLEAN_BUILD=true; shift 1 ;;
+		-s ) SDK_RELEASE=true; shift 1 ;;
 		-t ) case "$2" in
 			 bl1    ) BUILD_ALL=false; BUILD_BL1=true ;;
 			 uboot  ) BUILD_ALL=false; BUILD_UBOOT=true ;;
@@ -104,11 +106,12 @@ function parse_args()
 
 function usage()
 {
-    echo -e "\nUsage: $0 <machine-name> <image-type> [-c -t bl1 -t uboot -t kernel -t optee] \n"
+    echo -e "\nUsage: $0 <machine-name> <image-type> [-c -t bl1 -t uboot -t kernel -t optee] [-s] \n"
     echo -e " <machine-name> : "
     echo -e "        s5p6818-artik710-raptor or s5p6818-artik710-raptor or s5p6818-artik710-raptor or s5p4418-avn-ref ...\n"
     echo -e " <image-type> : "
     echo -e "        qt, tiny, sato, tinyui \n"
+    echo -e " -s : sdk create"
     echo -e " -c : cleanbuild"
     echo -e " -t bl1    : if you want to build only bl1, specify this, default no"
     echo -e " -t uboot : if you want to build only uboot, specify this, default no"
@@ -119,12 +122,13 @@ function usage()
     echo " ex) $0 s5p6818-artik710-raptor qt"
     echo " ex) $0 s5p6818-avn-ref tiny"
     echo " ex) $0 s5p6818-avn-ref qt"
-    echo " ex) $0 s5p4418-avn-ref qt"    
+    echo " ex) $0 s5p4418-avn-ref qt"
     echo " ex) $0 s5p4418-avn-ref tiny"
     echo " ex) $0 s5p4418-navi-ref qt -t kernel -t uboot -t bl1"
     echo " ex) $0 s5p4418-navi-ref tiny -c"
     echo " ex) $0 s5p4418-navi-ref tinyui"
     echo " ex) $0 s5p4418-navi-ref genivi"
+    echo " ex) $0 s5p4418-navi-ref qt -s"
     echo ""
 }
 
@@ -174,7 +178,7 @@ function bitbake_run()
         #------------------------ Nexell platform setup ------------------------
         cd ${ROOT_PATH}/yocto
         source poky/oe-init-build-env build-${MACHINE_NAME}-${IMAGE_TYPE}
-        ${META_NEXELL_PATH}/tools/envsetup.sh ${MACHINE_NAME} ${IMAGE_TYPE}
+        ${META_NEXELL_PATH}/tools/envsetup.sh ${MACHINE_NAME} ${IMAGE_TYPE} ${SDK_RELEASE}
         #-----------------------------------------------------------------------
     fi
 
@@ -199,6 +203,14 @@ function bitbake_run()
 
     local BITBAKE_ARGS=
     if [ ${BUILD_ALL} == "false" ];then
+        if [ ${SDK_RELEASE} == "true" ]; then
+            echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
+            echo -e "\033[47;34m Strange arguments !!  Please check Usage!!                         \033[0m"
+            echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
+            usage
+            exit
+        fi
+
         if [ ${BUILD_KERNEL} == "true" ]; then
             BITBAKE_ARGS+=" virtual/kernel"
             #NEED_KERNEL_MAKE_CLEAN=true
@@ -243,9 +255,13 @@ function bitbake_run()
             bitbake genivi-dev-platform
             #-----------------------------------------------------------------------
         else
-            #------------------------ Nexell platform build ------------------------
-            bitbake ${MACHINE_NAME}-${IMAGE_TYPE}
-            #-----------------------------------------------------------------------
+            if [ ${SDK_RELEASE} == "true" ]; then
+                bitbake -c populate_sdk ${MACHINE_NAME}-${IMAGE_TYPE}
+            else
+                #------------------------ Nexell platform build ------------------------
+                bitbake ${MACHINE_NAME}-${IMAGE_TYPE}
+                #-----------------------------------------------------------------------
+            fi
         fi
     fi
 }
@@ -275,31 +291,43 @@ function kernel_make_clean()
 
 function move_images()
 {
-    ${META_NEXELL_PATH}/tools/result-file-move.sh ${MACHINE_NAME} ${IMAGE_TYPE} ${BUILD_ALL}
-    RESULT_PATH=`readlink -ev ${ROOT_PATH}/yocto/${RESULT_DIR}`
+    if [ ${SDK_RELEASE} == "true" ]; then
+        local build_path=`readlink -ev ${META_NEXELL_PATH}/../build-${MACHINE_NAME}-${IMAGE_TYPE}/tmp/deploy/sdk`
+        echo -e "\n\033[0;34m ------------------------------------------------------------------ \033[0m"
+        echo -e "\033[0;36m  Please check below path                                           \033[0m"
+        echo -e "  $build_path    "
+        echo -e "\033[0;34m ------------------------------------------------------------------ \033[0m"
+    else
+        ${META_NEXELL_PATH}/tools/result-file-move.sh ${MACHINE_NAME} ${IMAGE_TYPE} ${BUILD_ALL}
+        RESULT_PATH=`readlink -ev ${ROOT_PATH}/yocto/${RESULT_DIR}`
+    fi
 }
 
 function convert_images()
 {
-    echo -e "\n\033[0;34m ------------------------------------------------------------------ \033[0m"
-    echo -e "\033[0;36m                      Convert images Running                        \033[0m"
-    echo -e "\033[0;34m ------------------------------------------------------------------ \033[0m"
-    
-    cd ${RESULT_PATH}
-    ${META_NEXELL_PATH}/tools/convert_images.sh ${MACHINE_NAME} ${IMAGE_TYPE}
+    if [ ${SDK_RELEASE} == "true" ]; then
+        echo -e "\033[0;36m The SDK images does not require converting.                        \033[0m"
+    else
+	echo -e "\n\033[0;34m ------------------------------------------------------------------ \033[0m"
+	echo -e "\033[0;36m                      Convert images Running                        \033[0m"
+	echo -e "\033[0;34m ------------------------------------------------------------------ \033[0m"
 
-    echo -e "\n\033[0;34m ------------------------------------------------------------------------------------------ \033[0m\n"
-    echo -e "\033[0;36m  1. ${META_NEXELL_PATH}/tools/update.sh -p ${RESULT_PATH}/partmap_emmc.txt -r ${RESULT_PATH} \033[0m\n"
-    echo -e "\033[0;36m     or                                                                                       \033[0m\n"
-    echo -e "\033[0;36m  2. ${TOOLS_PATH}/update.sh ${MACHINE_NAME} ${IMAGE_TYPE}                                    \033[0m\n"
-    echo -e "\033[0;34m -------------------------------------------------------------------------------------------- \033[0m\n"
+	cd ${RESULT_PATH}
+	${META_NEXELL_PATH}/tools/convert_images.sh ${MACHINE_NAME} ${IMAGE_TYPE}
+
+	echo -e "\n\033[0;34m ------------------------------------------------------------------------------------------ \033[0m\n"
+	echo -e "\033[0;36m  1. ${META_NEXELL_PATH}/tools/update.sh -p ${RESULT_PATH}/partmap_emmc.txt -r ${RESULT_PATH} \033[0m\n"
+	echo -e "\033[0;36m     or                                                                                       \033[0m\n"
+	echo -e "\033[0;36m  2. ${TOOLS_PATH}/update.sh ${MACHINE_NAME} ${IMAGE_TYPE}                                    \033[0m\n"
+	echo -e "\033[0;34m -------------------------------------------------------------------------------------------- \033[0m\n"
+    fi
 }
 
 function optee_clean()
 {
     echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
     echo -e "\033[47;34m                       Optee Clean SSTATE                           \033[0m"
-    echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"    
+    echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
 
     if [ ${IMAGE_TYPE} == "genivi" ]; then
         #------------------------ Genivi platform build ------------------------
