@@ -17,6 +17,7 @@ R_GST_LIBS='/recipes-nexell-libs/gst-plugins'
 R_NX_LIBS='/recipes-nexell-libs/nx-libs'
 R_TESTSUITE='/recipes-application/testsuite'
 R_GRAPHICS_XORG='/recipes-graphics/xorg-driver'
+R_QTAPPS='/recipes-qt/nexell-apps'
 
 TEMPLATE1=[
     "### Nexell - For Yocto build with using local source, Below lines are auto generated codes",
@@ -138,6 +139,8 @@ HASH_RECIPENAME_PATH = {
     'testsuite-s5p4418_%.bbappend' :            ['ON',['/apps/testsuite',R_TESTSUITE,'/testsuite'],[]],
 
     'xf86-video-armsoc-nexell_%.bbappend' :     ['ON',['/library/xf86-video-armsoc',R_GRAPHICS_XORG,'/xf86-video-armsoc'],[]],
+
+	'NxAudioPlayer_%.bbappend' :     ['ON',['/apps/QT/NxAudioPlayer',R_QTAPPS,'/apps/QT/NxAudioPlayer'],[]],
 }
 
 def gen_bbappend_paths(curWorkingPath) :
