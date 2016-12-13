@@ -141,6 +141,7 @@ HASH_RECIPENAME_PATH = {
     'xf86-video-armsoc-nexell_%.bbappend' :     ['ON',['/library/xf86-video-armsoc',R_GRAPHICS_XORG,'/xf86-video-armsoc'],[]],
 
 	'NxAudioPlayer_%.bbappend' :     ['ON',['/apps/QT/NxAudioPlayer',R_QTAPPS,'/apps/QT/NxAudioPlayer'],[]],
+    'NxQuickRearCam_%.bbappend' :     ['ON',['/apps/QT/NxQuickRearCam',R_QTAPPS,'/apps/QT/NxQuickRearCam'],[]],
 }
 
 def gen_bbappend_paths(curWorkingPath) :

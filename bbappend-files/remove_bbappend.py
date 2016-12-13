@@ -16,7 +16,7 @@ R_UBOOT='/recipes-bsp/u-boot'
 R_GST_LIBS='/recipes-nexell-libs/gst-plugins'
 R_NX_LIBS='/recipes-nexell-libs/nx-libs'
 R_TESTSUITE='/recipes-application/testsuite'
-
+R_QTAPPS='/recipes-qt/nexell-apps'
 
 HASH_RECIPENAME_PATH = {
     's5p4418-avn-ref-bl1.bbappend':         ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], ['0001-bl1-AVN.patch']],
@@ -63,6 +63,9 @@ HASH_RECIPENAME_PATH = {
 
     'testsuite-s5p4418_%.bbappend' :            ['ON',['/apps/testsuite',R_TESTSUITE,'/testsuite'],[]],
     'testsuite-s5p6818_%.bbappend' :            ['ON',['/apps/testsuite',R_TESTSUITE,'/testsuite'],[]],
+
+    'NxAudioPlayer_%.bbappend' :                ['ON',['/apps/QT/NxAudioPlayer',R_QTAPPS,'/apps/QT/NxAudioPlayer'],[]],
+    'NxQuickRearCam_%.bbappend' :                ['ON',['/apps/QT/NxQuickRearCam',R_QTAPPS,'/apps/QT/NxQuickRearCam'],[]],
 }
 
 def rm_bbappend_paths(curWorkingPath) :
