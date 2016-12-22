@@ -66,6 +66,7 @@ HASH_RECIPENAME_PATH = {
 
     'NxAudioPlayer_%.bbappend' :                ['ON',['/apps/QT/NxAudioPlayer',R_QTAPPS,'/apps/QT/NxAudioPlayer'],[]],
     'NxQuickRearCam_%.bbappend' :                ['ON',['/apps/QT/NxQuickRearCam',R_QTAPPS,'/apps/QT/NxQuickRearCam'],[]],
+    'NxVideoPlayer_%.bbappend' :                ['ON',['/apps/QT/NxVideoPlayer',R_QTAPPS,'/apps/QT/NxVideoPlayer'],[]],
 }
 
 def rm_bbappend_paths(curWorkingPath) :
