@@ -252,7 +252,11 @@ function bitbake_run()
 
         if [ ${IMAGE_TYPE} == "genivi" ]; then
             #------------------------ Genivi platform build ------------------------
-            bitbake genivi-dev-platform
+            if [ ${SDK_RELEASE} == "true" ]; then
+                bitbake genivi-dev-platform-sdk -c populate_sdk
+            else
+                bitbake genivi-dev-platform
+            fi
             #-----------------------------------------------------------------------
         else
             if [ ${SDK_RELEASE} == "true" ]; then
