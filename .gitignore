@@ -33,12 +33,8 @@ bbappend-files/recipes-kernel/linux/linux-s5p6818-avn-ref_%.bbappend
 bbappend-files/recipes-nexell-libs/gst-plugins/gst-plugins-camera_%.bbappend
 bbappend-files/recipes-nexell-libs/gst-plugins/gst-plugins-renderer_%.bbappend
 bbappend-files/recipes-nexell-libs/gst-plugins/gst-plugins-scaler_%.bbappend
-bbappend-files/recipes-nexell-libs/gst-plugins/gst-plugins-video-dec_%.bbappend
-bbappend-files/recipes-nexell-libs/gst-plugins/gst-plugins-video-enc_%.bbappend
-bbappend-files/recipes-nexell-libs/gst-plugins/gst-plugins-video-sink_%.bbappend
 
 bbappend-files/recipes-nexell-libs/nx-libs/libdrm-nx_%.bbappend
-bbappend-files/recipes-nexell-libs/nx-libs/libomxil-nx_%.bbappend
 bbappend-files/recipes-nexell-libs/nx-libs/nx-drm-allocator_%.bbappend
 bbappend-files/recipes-nexell-libs/nx-libs/nx-gst-meta_%.bbappend
 bbappend-files/recipes-nexell-libs/nx-libs/nx-renderer_%.bbappend

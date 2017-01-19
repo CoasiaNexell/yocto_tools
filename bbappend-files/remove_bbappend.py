@@ -16,30 +16,31 @@ R_UBOOT='/recipes-bsp/u-boot'
 R_GST_LIBS='/recipes-nexell-libs/gst-plugins'
 R_NX_LIBS='/recipes-nexell-libs/nx-libs'
 R_TESTSUITE='/recipes-application/testsuite'
+R_GRAPHICS_XORG='/recipes-graphics/xorg-driver'
 R_QTAPPS='/recipes-qt/nexell-apps'
 
 HASH_RECIPENAME_PATH = {
-    's5p4418-avn-ref-bl1.bbappend':         ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], ['0001-bl1-AVN.patch']],
-    's5p4418-navi-ref-bl1.bbappend':        ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], ['0001-NAVI-NSP4330-Bl1-Board-SETTING.patch']],
+    's5p4418-avn-ref-bl1.bbappend':         ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], []],
+    's5p4418-navi-ref-bl1.bbappend':        ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], []],
     's5p6818-artik710-raptor-bl1.bbappend': ['ON',['/bl1/bl1-s5p6818',R_BL1,'/bl1-s5p6818'], []],
-    's5p6818-avn-ref-bl1.bbappend':         ['ON',['/bl1/bl1-s5p6818',R_BL1,'/bl1-s5p6818'], ['0001-s5p6818-avn-bl1.patch']],
+    's5p6818-avn-ref-bl1.bbappend':         ['ON',['/bl1/bl1-s5p6818',R_BL1,'/bl1-s5p6818'], []],
 
     'arm-trusted-firmware_%.bbappend':      ['ON',['/secure/arm-trusted-firmware','/recipes-bsp/arm-trusted-firmware','/arm-trusted-firmware'],
-					     ['0001-ATF-SECURE_ON-flags-setting.patch']],
+					     []],
 
     'l-loader_%.bbappend':                  ['ON',['/secure/l-loader','/recipes-bsp/l-loader','/l-loader'],[]],
 
-    'optee-build_%.bbappend':      ['ON',['/secure/optee/optee_build',R_OPTEE,'/secure/optee_build'],    ['0001-optee-build-customize-for-yocto.patch']],
+    'optee-build_%.bbappend':      ['ON',['/secure/optee/optee_build',R_OPTEE,'/secure/optee_build'],    []],
     'optee-client_%.bbappend':     ['ON',['/secure/optee/optee_client',R_OPTEE,'/secure/optee_client'],  []],
     'optee-linuxdriver_%.bbappend':['ON',['/secure/optee/optee_linuxdriver',R_OPTEE,'/secure/optee_linuxdriver'],[]],
-    'optee-os_%.bbappend':         ['ON',['/secure/optee/optee_os',R_OPTEE,'/secure/optee_os'],          ['0001-optee-os-compile-error-patch.patch']],
+    'optee-os_%.bbappend':         ['ON',['/secure/optee/optee_os',R_OPTEE,'/secure/optee_os'],          []],
     'optee-test_%.bbappend':       ['ON',['/secure/optee/optee_test',R_OPTEE,'/secure/optee_test'],      []],
 
-    's5p4418-avn-ref-uboot_%.bbappend':         ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],['0001-bootcmd-add-for-avn-yocto.patch']],
-    's5p4418-navi-ref-uboot_%.bbappend':        ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],['0001-bootcmd-add-for-navi-yocto.patch']],
+    's5p4418-avn-ref-uboot_%.bbappend':         ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
+    's5p4418-navi-ref-uboot_%.bbappend':        ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
     's5p6818-artik710-raptor-uboot_%.bbappend': ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
-    's5p6818-avn-ref-uboot_%.bbappend':         ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],['0001-bootcmd-add-for-avn-s5p6818.patch']],
-    
+    's5p6818-avn-ref-uboot_%.bbappend':         ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
+
     'gst-plugins-camera_%.bbappend':    ['ON',['/library/gst-plugins-camera',R_GST_LIBS,'/gst-plugins-camera'],[]],
     'gst-plugins-renderer_%.bbappend':  ['ON',['/library/gst-plugins-renderer',R_GST_LIBS,'/gst-plugins-renderer'],[]],
     'gst-plugins-scaler_%.bbappend':    ['ON',['/library/gst-plugins-scaler',R_GST_LIBS,'/gst-plugins-scaler'],[]],
@@ -50,19 +51,17 @@ HASH_RECIPENAME_PATH = {
     'nx-renderer_%.bbappend':           ['ON',['/library/nx-renderer',R_NX_LIBS,'/nx-renderer'],[]],
     'nx-scaler_%.bbappend':             ['ON',['/library/nx-scaler',R_NX_LIBS,'/nx-scaler'],[]],
     'nx-v4l2_%.bbappend':               ['ON',['/library/nx-v4l2',R_NX_LIBS,'/nx-v4l2'],[]],
-    'nx-video-api_%.bbappend':          ['ON',['/library/nx-video-api',R_NX_LIBS,'/nx-video-api'],['0001-nx-video-api-install-error-fix.patch']],
+    'nx-video-api_%.bbappend':          ['ON',['/library/nx-video-api',R_NX_LIBS,'/nx-video-api'],[]],
 
-    'linux-s5p4418-avn-ref_%.bbappend':     ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
-				           ['0001-Yocto-avn-ref-defconfig-changed-for-QT-working.patch','0001-Yocto-mali400-Kbuild-compile-error-fix.patch']],
-    'linux-s5p4418-navi-ref_%.bbappend':    ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
-				           ['0001-Yocto-navi-ref-defconfig-changed-for-QT-working.patch', '0001-Yocto-mali400-Kbuild-compile-error-fix.patch']],
-    'linux-s5p6818-artik710-raptor_%.bbappend': ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
-						       ['0001-Yocto-mali400-Kbuild-compile-error-fix.patch']],
-    'linux-s5p6818-avn-ref_%.bbappend':         ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],
-					               ['0001-Yocto-mali400-Kbuild-compile-error-fix.patch','0001-drm_lcd.patch']],
+    'linux-s5p4418-avn-ref_%.bbappend':     ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],  []],
+    'linux-s5p4418-navi-ref_%.bbappend':    ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],  []],
+    'linux-s5p6818-artik710-raptor_%.bbappend': ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'], []],
+    'linux-s5p6818-avn-ref_%.bbappend':         ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'], []],
 
     'testsuite-s5p4418_%.bbappend' :            ['ON',['/apps/testsuite',R_TESTSUITE,'/testsuite'],[]],
     'testsuite-s5p6818_%.bbappend' :            ['ON',['/apps/testsuite',R_TESTSUITE,'/testsuite'],[]],
+
+    'xf86-video-armsoc-nexell_%.bbappend' :     ['ON',['/library/xf86-video-armsoc',R_GRAPHICS_XORG,'/xf86-video-armsoc'],[]],
 
     'NxAudioPlayer_%.bbappend' :                ['ON',['/apps/QT/NxAudioPlayer',R_QTAPPS,'/apps/QT/NxAudioPlayer'],[]],
     'NxQuickRearCam_%.bbappend' :                ['ON',['/apps/QT/NxQuickRearCam',R_QTAPPS,'/apps/QT/NxQuickRearCam'],[]],
