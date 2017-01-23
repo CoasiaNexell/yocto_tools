@@ -260,7 +260,8 @@ function bitbake_run()
             #-----------------------------------------------------------------------
         else
             if [ ${SDK_RELEASE} == "true" ]; then
-                bitbake -c populate_sdk ${MACHINE_NAME}-${IMAGE_TYPE}
+                echo -e "\033[47;34m bitbake -c populate_sdk ${BOARD_SOCNAME}-${IMAGE_TYPE}-sdk \033[0m"
+                bitbake -c populate_sdk ${BOARD_SOCNAME}-${IMAGE_TYPE}-sdk
             else
                 #------------------------ Nexell platform build ------------------------
                 bitbake ${MACHINE_NAME}-${IMAGE_TYPE}
