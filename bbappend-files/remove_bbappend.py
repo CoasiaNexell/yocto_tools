@@ -24,6 +24,7 @@ HASH_RECIPENAME_PATH = {
     's5p4418-navi-ref-bl1.bbappend':        ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], []],
     's5p6818-artik710-raptor-bl1.bbappend': ['ON',['/bl1/bl1-s5p6818',R_BL1,'/bl1-s5p6818'], []],
     's5p6818-avn-ref-bl1.bbappend':         ['ON',['/bl1/bl1-s5p6818',R_BL1,'/bl1-s5p6818'], []],
+    's5p4418-smart-voice-bl1.bbappend':     ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], []],
 
     'arm-trusted-firmware_%.bbappend':      ['ON',['/secure/arm-trusted-firmware','/recipes-bsp/arm-trusted-firmware','/arm-trusted-firmware'],
 					     []],
@@ -40,6 +41,7 @@ HASH_RECIPENAME_PATH = {
     's5p4418-navi-ref-uboot_%.bbappend':        ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
     's5p6818-artik710-raptor-uboot_%.bbappend': ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
     's5p6818-avn-ref-uboot_%.bbappend':         ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
+    's5p4418-smart-voice-uboot_%.bbappend':     ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
 
     'gst-plugins-camera_%.bbappend':    ['ON',['/library/gst-plugins-camera',R_GST_LIBS,'/gst-plugins-camera'],[]],
     'gst-plugins-renderer_%.bbappend':  ['ON',['/library/gst-plugins-renderer',R_GST_LIBS,'/gst-plugins-renderer'],[]],
@@ -53,10 +55,11 @@ HASH_RECIPENAME_PATH = {
     'nx-v4l2_%.bbappend':               ['ON',['/library/nx-v4l2',R_NX_LIBS,'/nx-v4l2'],[]],
     'nx-video-api_%.bbappend':          ['ON',['/library/nx-video-api',R_NX_LIBS,'/nx-video-api'],[]],
 
-    'linux-s5p4418-avn-ref_%.bbappend':     ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],  []],
-    'linux-s5p4418-navi-ref_%.bbappend':    ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],  []],
+    'linux-s5p4418-avn-ref_%.bbappend':         ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],  []],
+    'linux-s5p4418-navi-ref_%.bbappend':        ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],  []],
     'linux-s5p6818-artik710-raptor_%.bbappend': ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'], []],
     'linux-s5p6818-avn-ref_%.bbappend':         ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'], []],
+    'linux-s5p4418-smart-voice_%.bbappend':     ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],  []],
 
     'testsuite-s5p4418_%.bbappend' :            ['ON',['/apps/testsuite',R_TESTSUITE,'/testsuite'],[]],
     'testsuite-s5p6818_%.bbappend' :            ['ON',['/apps/testsuite',R_TESTSUITE,'/testsuite'],[]],
@@ -64,7 +67,7 @@ HASH_RECIPENAME_PATH = {
     'xf86-video-armsoc-nexell_%.bbappend' :     ['ON',['/library/xf86-video-armsoc',R_GRAPHICS_XORG,'/xf86-video-armsoc'],[]],
 
     'NxAudioPlayer_%.bbappend' :                ['ON',['/apps/QT/NxAudioPlayer',R_QTAPPS,'/apps/QT/NxAudioPlayer'],[]],
-    'NxQuickRearCam_%.bbappend' :                ['ON',['/apps/QT/NxQuickRearCam',R_QTAPPS,'/apps/QT/NxQuickRearCam'],[]],
+    'NxQuickRearCam_%.bbappend' :               ['ON',['/apps/QT/NxQuickRearCam',R_QTAPPS,'/apps/QT/NxQuickRearCam'],[]],
     'NxVideoPlayer_%.bbappend' :                ['ON',['/apps/QT/NxVideoPlayer',R_QTAPPS,'/apps/QT/NxVideoPlayer'],[]],
 }
 

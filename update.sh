@@ -50,7 +50,7 @@ function usage()
     echo "    ex) $0 s5p4418-navi-ref qt"
     echo "    ex) $0 s5p4418-navi-ref tiny -t uboot -t bl1 -env -t kernel"
     echo "    ex) $0 s5p4418-navi-ref tinyui"
-
+    echo "    ex) $0 s5p4418-smart-voice smartvoice"
 }
 
 function parse_args()
