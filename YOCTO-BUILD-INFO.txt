@@ -1,0 +1,6 @@
+-----------------------------
+NEXELL YOCTO BUILD INFOMATION
+-----------------------------
+Commit ID, Commit Message
+Commit update date
+-----------------------------

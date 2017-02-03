@@ -328,6 +328,11 @@ function convert_images()
     fi
 }
 
+function make_build_info()
+{
+    ${TOOLS_PATH}/make_build_info.sh ${RESULT_PATH}
+}
+
 function optee_clean()
 {
     echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
@@ -356,3 +361,4 @@ gen_and_copy_bbappend
 bitbake_run
 move_images
 convert_images
+make_build_info
