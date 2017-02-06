@@ -22,6 +22,7 @@ ARM_ARCH=
 INTERACTIVE_MODE=false
 CLEAN_BUILD=false
 SDK_RELEASE=false
+NUMBER_THREADS="-1"
 
 BUILD_ALL=true
 BUILD_BL1=false
@@ -83,13 +84,14 @@ function check_usage()
 }
 function parse_args()
 {
-    ARGS=$(getopt -o csht: -- "$@");
+    ARGS=$(getopt -o csht:n: -- "$@");
     eval set -- "$ARGS";
 
     while true; do
             case "$1" in
 		-c ) CLEAN_BUILD=true; shift 1 ;;
 		-s ) SDK_RELEASE=true; shift 1 ;;
+                -n ) NUMBER_THREADS="$2"; shift 2 ;;
 		-t ) case "$2" in
 			 bl1    ) BUILD_ALL=false; BUILD_BL1=true ;;
 			 uboot  ) BUILD_ALL=false; BUILD_UBOOT=true ;;
@@ -171,14 +173,14 @@ function bitbake_run()
     if [ ${IMAGE_TYPE} == "genivi" ]; then
         #------------------------ Genivi platform setup ------------------------
         cd ${GENIVI_PATH}
-        ${META_NEXELL_PATH}/tools/envsetup_genivi.sh ${MACHINE_NAME}
+        ${META_NEXELL_PATH}/tools/envsetup_genivi.sh ${MACHINE_NAME} ${NUMBER_THREADS}
         source init.sh nexell ${MACHINE_NAME}
         #-----------------------------------------------------------------------
     else
         #------------------------ Nexell platform setup ------------------------
         cd ${ROOT_PATH}/yocto
         source poky/oe-init-build-env build-${MACHINE_NAME}-${IMAGE_TYPE}
-        ${META_NEXELL_PATH}/tools/envsetup.sh ${MACHINE_NAME} ${IMAGE_TYPE} ${SDK_RELEASE}
+        ${META_NEXELL_PATH}/tools/envsetup.sh ${MACHINE_NAME} ${IMAGE_TYPE} ${NUMBER_THREADS} ${SDK_RELEASE}
         #-----------------------------------------------------------------------
     fi
 
