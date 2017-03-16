@@ -335,6 +335,19 @@ function make_build_info()
     ${TOOLS_PATH}/make_build_info.sh ${RESULT_PATH}
 }
 
+function make_standalone_tools()
+{
+    mkdir -p ${RESULT_PATH}/tools
+
+    cp -a ${META_NEXELL_PATH}/tools/${MACHINE_NAME}/* ${RESULT_PATH}/tools/
+    cp -a ${META_NEXELL_PATH}/tools/standalone-fastboot-download.sh ${RESULT_PATH}/tools/
+    cp -a ${META_NEXELL_PATH}/tools/standalone-uboot-by-usb-download.sh ${RESULT_PATH}/tools/
+
+    cp -a ${META_NEXELL_PATH}/tools/usb-downloader ${RESULT_PATH}/tools/
+
+    cp -a ${RESULT_PATH}/partition.txt ${RESULT_PATH}/tools/
+}
+
 function optee_clean()
 {
     echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
@@ -364,3 +377,4 @@ bitbake_run
 move_images
 convert_images
 make_build_info
+make_standalone_tools
