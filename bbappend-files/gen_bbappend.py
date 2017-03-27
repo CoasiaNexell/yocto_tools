@@ -103,8 +103,7 @@ HASH_RECIPENAME_PATH = {
     's5p6818-avn-ref-bl1.bbappend':         ['ON',['/bl1/bl1-s5p6818',R_BL1,'/bl1-s5p6818'], []],
     's5p4418-smart-voice-bl1.bbappend':     ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], []],
 
-    'arm-trusted-firmware_%.bbappend':      ['ON',['/secure/arm-trusted-firmware','/recipes-bsp/arm-trusted-firmware','/arm-trusted-firmware'],
-					     ['0001-ATF-SECURE_ON-flags-setting.patch']],
+    'arm-trusted-firmware_%.bbappend':      ['ON',['/secure/arm-trusted-firmware','/recipes-bsp/arm-trusted-firmware','/arm-trusted-firmware'],[]],
 
     'l-loader_%.bbappend':                  ['ON',['/secure/l-loader','/recipes-bsp/l-loader','/l-loader'],[]],
 
