@@ -1,0 +1,101 @@
+h1. Introduction
+
+These files are result files built by nexell build tools.
+
+bc. ---------------------------------------------------------------------------------
+
+h2. Files
+
+bc. YOCTO-BUILD-INFO.txt
+    Version file that describes information about version.
+    This file also includes the last commit id, log, time about each repository
+    developed by Nexell.
+YOCTO.result-s5p4418-navi-ref-qt.INFO.DoNotChange
+    Never removed nor changed, because this file used tools/standardalone-uboot-by-usb-download.sh
+bl1-emmcboot.bin
+    bl1 binary for emmc boot
+boot.img
+    boot partition image that includes kernel Image(zImage), dtbs, ramdisk
+params.bin
+    u-boot env binary
+partmap.txt
+    partmap file that is used by u-boot to make partition at boot storage
+rootfs.img
+    root filesystem files that file format is ext4
+singleimage-emmcboot.bin
+    3rd boot emmc images
+u-boot.bin
+    u-boot image for using usb boot mode
+uInitrd
+    ramdisk file
+zImage
+    kernel image
+total-binary.tar.gz
+    Above all files compressed file.
+    If you download this file, enough install fusing on your device
+tools/partmap_emmc.txt
+    partmap file that is used by u-boot to make partition at boot storage
+tools/standalone-fastboot-download.sh
+    using fastboot, download on your device
+tools/standalone-uboot-by-usb-download.sh
+    using usb-downloader, download on your device
+tools/usb-downloader
+    Linux PC Tool that can download images to target board by usb interface.
+    This file used by boot_by_usb.sh so you do not need to care.
+
+bc. ---------------------------------------------------------------------------------
+
+h3. How to boot when target board boot mode is usb
+
+bc.. Run below commands
+$ ./tools/standalone-uboot-by-usb-download.sh
+
+Consequently you must see like below log message in host machine
+------------------------------------------------------------
+USB Download Tool
+
+============================================================
+Nexell USB Downloader Version 1.4.2-artik, Mar  3 2017, 15:36:32
+Second Boot Mode
+processor type  : nxp4330
+nsih file       : NULL
+bin file        : NULL
+secondboot file : /home/myrepo/yocto/result-s5p4418-navi-ref-tiny/bl1-navi-usb.bin
+download addr   : 0xFFFF0000
+start addr      : 0xFFFF0000
+NSIH[17] : 22392
+=> Downloading 16384 bytes
+=> Download Success!!!
+USB Download Tool
+
+=> Header Mode
+
+============================================================
+Nexell USB Downloader Version 1.4.2-artik, Mar  3 2017, 15:36:32
+Send Image width NSHI Header
+processor type  : nxp4330
+nsih file       : NULL
+bin file        : /home/myrepo/yocto/result-s5p4418-navi-ref-tiny/u-boot.bin
+secondboot file : NULL
+download addr   : 0x43c00000
+start addr      : 0x43c00000
+=> Downloading 422480 bytes
+=> Download Success!!!
+
+bc. ---------------------------------------------------------------------------------
+
+h4. update
+
+bc. In target console, run below command
+    # fastboot 0
+
+bc. In linux PC, Run below commands to update total images
+    $ ./tools/standalone-fastboot-download.sh
+
+bc. If you want to update partial, Run like below commands
+    $ ./tools/standalone-fastboot-download.sh -t <bl1> -t <uboot> -t <kernel>
+    ex> # $ ./tools/standalone-fastboot-download.sh -t kernel
+
+bc. If you need more information, please option with '-h '
+    ex> # ex> # $ ./tools/standalone-fastboot-download.sh -h
+

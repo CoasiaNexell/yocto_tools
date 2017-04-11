@@ -1,0 +1,56 @@
+h1. Get Source.
+
+bc. $ mkdir myrepo
+$ cd myrepo
+$ repo init -u git://git.nexell.co.kr/nexell/yocto/manifest
+$ repo sync
+
+bc. ------------------------------------------------------------------------
+
+h2. Build
+
+** Usage: ./tools/build.sh <machine-name> <image-type> [-c -t bl1 -t uboot -t kernel -t optee] [-s]
+
+bc..  <machine-name> :
+  s5p6818-artik710-raptor or s5p6818-artik710-raptor or s5p6818-artik710-raptor or s5p4418-avn-ref
+
+  <image-type> :
+  qt, tiny, sato, tinyui
+
+  -s : sdk create
+  -c : cleanbuild
+  -t bl1    : if you want to build only bl1, specify this, default no
+  -t uboot : if you want to build only uboot, specify this, default no
+  -t kernel : if you want to build only kernel, specify this, default no
+  -t optee  : if you want to build only optee, specify this, default no
+
+  ex) ./tools/build.sh s5p6818-artik710-raptor tiny -c -t kernel
+  ex) ./tools/build.sh s5p6818-artik710-raptor sato -c -t uboot
+  ex) ./tools/build.sh s5p6818-artik710-raptor qt
+  ex) ./tools/build.sh s5p6818-avn-ref tiny
+  ex) ./tools/build.sh s5p6818-avn-ref qt
+  ex) ./tools/build.sh s5p4418-avn-ref qt
+  ex) ./tools/build.sh s5p4418-avn-ref tiny
+  ex) ./tools/build.sh s5p4418-navi-ref qt -t kernel -t uboot -t bl1
+  ex) ./tools/build.sh s5p4418-navi-ref tiny -c
+  ex) ./tools/build.sh s5p4418-navi-ref tinyui
+  ex) ./tools/build.sh s5p4418-navi-ref genivi
+  ex) ./tools/build.sh s5p4418-navi-ref qt -s
+  ex) ./tools/build.sh s5p4418-smart-voice smartvoice -c
+
+bc. ------------------------------------------------------------------------
+
+h3. Update
+
+bc. In target console, run below command
+    #fastboot 0
+
+bc. In linux PC, Run below commands to update total images
+    $./tools/standalone-fastboot-download.sh
+
+bc. If you want to update partial, Run like below commands
+    $ ./tools/standalone-fastboot-download.sh -t <bl1> -t <uboot> -t <kernel>
+    ex> $./tools/standalone-fastboot-download.sh -t kernel
+
+bc. If you need more information, please option with '-h '
+    ex> $./tools/standalone-fastboot-download.sh -h

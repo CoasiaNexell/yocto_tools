@@ -300,6 +300,7 @@ function move_images()
 {
     if [ ${SDK_RELEASE} == "true" ]; then
         local build_path=`readlink -ev ${META_NEXELL_PATH}/../build-${MACHINE_NAME}-${IMAGE_TYPE}/tmp/deploy/sdk`
+        RESULT_PATH=$build_path
         echo -e "\n\033[0;34m ------------------------------------------------------------------ \033[0m"
         echo -e "\033[0;36m  Please check below path                                           \033[0m"
         echo -e "  $build_path    "
@@ -332,21 +333,31 @@ function convert_images()
 
 function make_build_info()
 {
-    ${TOOLS_PATH}/make_build_info.sh ${RESULT_PATH}
+    if [ ${SDK_RELEASE} == "false" ]; then
+        ${TOOLS_PATH}/make_build_info.sh ${RESULT_PATH}
+    fi
 }
 
 function make_standalone_tools()
 {
-    mkdir -p ${RESULT_PATH}/tools
+    if [ ${SDK_RELEASE} == "false" ]; then
+        mkdir -p ${RESULT_PATH}/tools
 
-    cp -a ${META_NEXELL_PATH}/tools/${MACHINE_NAME}/* ${RESULT_PATH}/tools/
-    cp -a ${META_NEXELL_PATH}/tools/standalone-fastboot-download.sh ${RESULT_PATH}/tools/
-    cp -a ${META_NEXELL_PATH}/tools/standalone-uboot-by-usb-download.sh ${RESULT_PATH}/tools/
+        cp -a ${META_NEXELL_PATH}/tools/${MACHINE_NAME}/* ${RESULT_PATH}/tools/
+        cp -a ${META_NEXELL_PATH}/tools/standalone-fastboot-download.sh ${RESULT_PATH}/tools/
+        cp -a ${META_NEXELL_PATH}/tools/standalone-uboot-by-usb-download.sh ${RESULT_PATH}/tools/
 
-    cp -a ${META_NEXELL_PATH}/tools/usb-downloader ${RESULT_PATH}/tools/
+        cp -a ${META_NEXELL_PATH}/tools/usb-downloader ${RESULT_PATH}/tools/
 
-    cp -a ${RESULT_PATH}/partition.txt ${RESULT_PATH}/tools/
+        cp -a ${RESULT_PATH}/partition.txt ${RESULT_PATH}/tools/
+    fi
 }
+
+function make_nexell_server_documnets()
+{
+    ${TOOLS_PATH}/make_documents.sh ${MACHINE_NAME} ${RESULT_PATH} ${SDK_RELEASE}
+}
+
 
 function optee_clean()
 {
@@ -378,3 +389,4 @@ move_images
 convert_images
 make_build_info
 make_standalone_tools
+make_nexell_server_documnets

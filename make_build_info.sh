@@ -71,7 +71,6 @@ function make_build_info()
         echo $i >> ${RESULT_PATH}/YOCTO-BUILD-INFO.txt
         echo `git log -1 --pretty=oneline` >> ${RESULT_PATH}/YOCTO-BUILD-INFO.txt
         echo `git log -1 --pretty=format:"%cd"` >> ${RESULT_PATH}/YOCTO-BUILD-INFO.txt
-        echo '--------------------------------------------------------------------------------' >> ${RESULT_PATH}/YOCTO-BUILD-INFO.txt
     done
 
     cd $curpath
