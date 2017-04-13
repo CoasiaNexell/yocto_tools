@@ -34,8 +34,10 @@ function check_usage()
 
 function usage()
 {
-    echo "Usage: $0 <machine-name> <image-type> [-t bl1 -t uboot -t env -t kernel -t rootfs]"
+    echo "Usage: $0 <machine-name> <image-type> [-t bl1 -t bl2 -t dispatcher -t uboot -t env -t kernel -t rootfs]"
     echo " -t bl1\t: if you want to update only bl1, specify this, default no"
+    echo " -t bl2\t: if you want to update only bl2, specify this, default no ** s5p4418 only **"
+    echo " -t dispatcher\t: if you want to update only armv7-dispatcher, specify this, default no ** s5p4418 only **"
     echo " -t uboot\t: if you want to update only bootloader, specify this, default no"
     echo " -t env\t: if you want to update only env, specify this, default no"
     echo " -t kernel\t: if you want to update only boot partition, specify this, default no"
@@ -62,6 +64,8 @@ function parse_args()
         case "$1" in
             -t ) case "$2" in
                      bl1    ) PARTIAL_UPDATE_ARGS+=" -t bl1" ;;
+                     bl2    ) PARTIAL_UPDATE_ARGS+=" -t bl2" ;;
+                     dispatcher    ) PARTIAL_UPDATE_ARGS+=" -t dispatcher" ;;
                      uboot  ) PARTIAL_UPDATE_ARGS+=" -t uboot" ;;
                      env    ) PARTIAL_UPDATE_ARGS+=" -t env" ;;
                      kernel ) PARTIAL_UPDATE_ARGS+=" -t kernel" ;;

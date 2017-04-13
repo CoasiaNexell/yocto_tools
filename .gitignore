@@ -9,8 +9,17 @@ bbappend-files/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware_%.bbappend
 
 bbappend-files/recipes-bsp/bl1/s5p4418-avn-ref-bl1.bbappend
 bbappend-files/recipes-bsp/bl1/s5p4418-navi-ref-bl1.bbappend
+bbappend-files/recipes-bsp/bl1/s5p4418-smart-voice-bl1.bbappend
 bbappend-files/recipes-bsp/bl1/s5p6818-artik710-raptor-bl1.bbappend
 bbappend-files/recipes-bsp/bl1/s5p6818-avn-ref-bl1.bbappend
+
+bbappend-files/recipes-bsp/bl2/s5p4418-avn-ref-bl2.bbappend
+bbappend-files/recipes-bsp/bl2/s5p4418-navi-ref-bl2.bbappend
+bbappend-files/recipes-bsp/bl2/s5p4418-smart-voice-bl2.bbappend
+
+bbappend-files/recipes-bsp/s5p4418-avn-ref-dispatcher.bbappend
+bbappend-files/recipes-bsp/s5p4418-navi-ref-dispatcher.bbappend
+bbappend-files/recipes-bsp/s5p4418-smart-voice-dispatcher.bbappend
 
 bbappend-files/recipes-bsp/l-loader/l-loader_%.bbappend
 

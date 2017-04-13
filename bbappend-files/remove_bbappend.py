@@ -10,6 +10,8 @@ INDEX_GEN_PATH=1
 INDEX_PATCH=2
 
 R_BL1='/recipes-bsp/bl1'
+R_BL2='/recipes-bsp/bl2'
+R_ARMV7_DISPATCHER='/recipes-bsp/armv7-dispatcher'
 R_KERNEL='/recipes-kernel/linux'
 R_OPTEE='/recipes-bsp/optee'
 R_UBOOT='/recipes-bsp/u-boot'
@@ -22,12 +24,19 @@ R_QTAPPS='/recipes-qt/nexell-apps'
 HASH_RECIPENAME_PATH = {
     's5p4418-avn-ref-bl1.bbappend':         ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], []],
     's5p4418-navi-ref-bl1.bbappend':        ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], []],
+    's5p4418-smart-voice-bl1.bbappend':     ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], []],
     's5p6818-artik710-raptor-bl1.bbappend': ['ON',['/bl1/bl1-s5p6818',R_BL1,'/bl1-s5p6818'], []],
     's5p6818-avn-ref-bl1.bbappend':         ['ON',['/bl1/bl1-s5p6818',R_BL1,'/bl1-s5p6818'], []],
-    's5p4418-smart-voice-bl1.bbappend':     ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], []],
 
-    'arm-trusted-firmware_%.bbappend':      ['ON',['/secure/arm-trusted-firmware','/recipes-bsp/arm-trusted-firmware','/arm-trusted-firmware'],
-					     []],
+    's5p4418-avn-ref-bl2.bbappend':         ['ON',['/secure/bl2-s5p4418',R_BL2,'/secure-s5p4418'], []],
+    's5p4418-navi-ref-bl2.bbappend':        ['ON',['/secure/bl2-s5p4418',R_BL2,'/secure-s5p4418'], []],
+    's5p4418-smart-voice-bl2.bbappend':     ['ON',['/secure/bl2-s5p4418',R_BL2,'/secure-s5p4418'], []],
+
+    's5p4418-avn-ref-dispatcher.bbappend':         ['ON',['/secure/armv7-dispatcher',R_ARMV7_DISPATCHER,'/armv7-dispatcher'], []],
+    's5p4418-navi-ref-dispatcher.bbappend':        ['ON',['/secure/armv7-dispatcher',R_ARMV7_DISPATCHER,'/armv7-dispatcher'], []],
+    's5p4418-smart-voice-dispatcher.bbappend':     ['ON',['/secure/armv7-dispatcher',R_ARMV7_DISPATCHER,'/armv7-dispatcher'], []],
+
+    'arm-trusted-firmware_%.bbappend':      ['ON',['/secure/arm-trusted-firmware','/recipes-bsp/arm-trusted-firmware','/arm-trusted-firmware'],[]],
 
     'l-loader_%.bbappend':                  ['ON',['/secure/l-loader','/recipes-bsp/l-loader','/l-loader'],[]],
 
