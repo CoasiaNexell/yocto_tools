@@ -216,8 +216,8 @@ def gen_bbappend_files(bbappendfile,curWorkingPath,hashData) :
         else :
             pass
 
-    f.write("\n_SRC_PATH_BY_GEN_=\""   + INTO_BBAPPEND_SRC_PATH + "\"")
-    f.write("\n_MOV_PATH_BY_GEN_=\""   + INTO_BBAPPEND_MOV_PATH + "\"")
+    f.write("\n_SRC_PATH_BY_GEN_?=\""   + INTO_BBAPPEND_SRC_PATH + "\"")
+    f.write("\n_MOV_PATH_BY_GEN_?=\""   + INTO_BBAPPEND_MOV_PATH + "\"")
 
     f.close()
 

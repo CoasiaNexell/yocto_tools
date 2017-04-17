@@ -30,7 +30,9 @@ BUILD_UBOOT=false
 BUILD_OPTEE=false
 BUILD_KERNEL=false
 
-KERNEL_PATH=`readlink -ev ${ROOT_PATH}/kernel/kernel-4.4.19`
+KERNEL_PATH=`readlink -ev ${ROOT_PATH}/kernel/`
+KERNEL_DIRNAME=
+KERNEL_FULLPATH=
 NEED_KERNEL_MAKE_CLEAN=false
 
 META_NEXELL_PATH=`readlink -ev ${ROOT_PATH}/yocto/meta-nexell`
@@ -162,13 +164,44 @@ function gen_and_copy_bbappend()
     echo -e "\033[47;34m ------------------------ Generate Done ! ------------------------- \033[0m"
 }
 
+function kernel_version_sync()
+{
+    local tempTOP=${PWD}
+
+    cd ${KERNEL_PATH}
+    for entry_d in ./*
+    do
+        if [ -d "$entry_d" ];then
+            cd $entry_d
+            for entry_f in ./Makefile
+            do
+                if [ -f "$entry_f" ];then
+                    echo "file name : $entry_f"
+                    KERNEL_DIRNAME=$entry_d
+                    break
+                fi
+            done
+            echo "dir name : $entry_d"
+            cd ..
+        fi
+    done
+
+    cd $tempTOP
+    echo "Finally kernel dirname : $KERNEL_DIRNAME"
+    KERNEL_FULLPATH=${KERNEL_PATH}/${KERNEL_DIRNAME}
+    python ${TOOLS_PATH}/kernel_version_sync.py \
+           ${META_NEXELL_PATH}/recipes-kernel/linux/linux-${MACHINE_NAME}_%.bbappend \
+           ${ROOT_PATH} \
+           ${KERNEL_DIRNAME}
+}
+
 function bitbake_run()
 {
     local CLEAN_RECIPES=
 
     echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
     echo -e "\033[47;34m                       Bitbake Auto Running                         \033[0m"
-    echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"    
+    echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
 
     if [ ${IMAGE_TYPE} == "genivi" ]; then
         #------------------------ Genivi platform setup ------------------------
@@ -218,7 +251,7 @@ function bitbake_run()
             #NEED_KERNEL_MAKE_CLEAN=true
         fi
         if [ ${BUILD_BL1} == "true" ]; then
-            BITBAKE_ARGS+=" ${MACHINE_NAME}-bl1"
+            BITBAKE_ARGS+=" ${MACHINE_NAME}-bl1 ${MACHINE_NAME}-bl2 ${MACHINE_NAME}-dispatcher"
         fi
         if [ ${BUILD_UBOOT} == "true" ]; then
             BITBAKE_ARGS+=" ${MACHINE_NAME}-uboot"
@@ -280,16 +313,18 @@ function kernel_make_clean()
         echo -e "\n ------------------------------------------------------------------ "
         echo -e "                        make distclean                              "
         echo -e " ------------------------------------------------------------------ "
-        cd ${KERNEL_PATH}
-        file_count=$(ls -Rl ${KERNEL_PATH} | grep ^- | wc -l)
-        dir_size=$(du -sb ${KERNEL_PATH} | cut -f1)
+
+        cd ${KERNEL_FULLPATH}
+
+        file_count=$(ls -Rl ${KERNEL_FULLPATH} | grep ^- | wc -l)
+        dir_size=$(du -sb ${KERNEL_FULLPATH} | cut -f1)
         if [ $file_count -lt 5 ] || [ $dir_size -lt 16 ]; then
             echo -e " Strange kernel source! "
             echo -e " Not exist files or kernel path broken "
-            echo -e " file count = $file_count   ==> ${KERNEL_PATH} "
-            echo -e " dir size   = $dir_size  ==> ${KERNEL_PATH} "
+            echo -e " file count = $file_count   ==> ${KERNEL_FULLPATH} "
+            echo -e " dir size   = $dir_size  ==> ${KERNEL_FULLPATH} "
             echo -e " ------------------------------------------------------------------ "
-            repo sync ${KERNEL_PATH}
+            repo sync ${KERNEL_FULLPATH}
         fi
         make distclean
         cd $oldpath
@@ -334,7 +369,7 @@ function convert_images()
 function make_build_info()
 {
     if [ ${SDK_RELEASE} == "false" ]; then
-        ${TOOLS_PATH}/make_build_info.sh ${RESULT_PATH}
+        ${TOOLS_PATH}/make_build_info.sh ${RESULT_PATH} ${KERNEL_FULLPATH}
     fi
 }
 
@@ -384,6 +419,7 @@ check_usage
 split_machine_name
 
 gen_and_copy_bbappend
+kernel_version_sync
 bitbake_run
 move_images
 convert_images
