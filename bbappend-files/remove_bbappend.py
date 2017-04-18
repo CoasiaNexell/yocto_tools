@@ -64,11 +64,11 @@ HASH_RECIPENAME_PATH = {
     'nx-v4l2_%.bbappend':               ['ON',['/library/nx-v4l2',R_NX_LIBS,'/nx-v4l2'],[]],
     'nx-video-api_%.bbappend':          ['ON',['/library/nx-video-api',R_NX_LIBS,'/nx-video-api'],[]],
 
-    'linux-s5p4418-avn-ref_%.bbappend':         ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],  []],
-    'linux-s5p4418-navi-ref_%.bbappend':        ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],  []],
-    'linux-s5p6818-artik710-raptor_%.bbappend': ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'], []],
-    'linux-s5p6818-avn-ref_%.bbappend':         ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'], []],
-    'linux-s5p4418-smart-voice_%.bbappend':     ['ON',['/kernel/kernel-4.1.15',R_KERNEL,'/kernel-4.1.15'],  []],
+    'linux-s5p4418-avn-ref_%.bbappend':         ['ON',['/kernel/kernel-4.4.x',R_KERNEL,'/kernel-4.4.x'],  []],
+    'linux-s5p4418-navi-ref_%.bbappend':        ['ON',['/kernel/kernel-4.4.x',R_KERNEL,'/kernel-4.4.x'],  []],
+    'linux-s5p6818-artik710-raptor_%.bbappend': ['ON',['/kernel/kernel-4.4.x',R_KERNEL,'/kernel-4.4.x'], []],
+    'linux-s5p6818-avn-ref_%.bbappend':         ['ON',['/kernel/kernel-4.4.x',R_KERNEL,'/kernel-4.4.x'], []],
+    'linux-s5p4418-smart-voice_%.bbappend':     ['ON',['/kernel/kernel-4.4.x',R_KERNEL,'/kernel-4.4.x'],  []],
 
     'testsuite-s5p4418_%.bbappend' :            ['ON',['/apps/testsuite',R_TESTSUITE,'/testsuite'],[]],
     'testsuite-s5p6818_%.bbappend' :            ['ON',['/apps/testsuite',R_TESTSUITE,'/testsuite'],[]],
