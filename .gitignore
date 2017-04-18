@@ -12,6 +12,7 @@ bbappend-files/recipes-bsp/bl1/s5p4418-navi-ref-bl1.bbappend
 bbappend-files/recipes-bsp/bl1/s5p4418-smart-voice-bl1.bbappend
 bbappend-files/recipes-bsp/bl1/s5p6818-artik710-raptor-bl1.bbappend
 bbappend-files/recipes-bsp/bl1/s5p6818-avn-ref-bl1.bbappend
+bbappend-files/recipes-bsp/bl1/s5p6818-kick-st-bl1.bbappend
 
 bbappend-files/recipes-bsp/bl2/s5p4418-avn-ref-bl2.bbappend
 bbappend-files/recipes-bsp/bl2/s5p4418-navi-ref-bl2.bbappend
@@ -33,11 +34,13 @@ bbappend-files/recipes-bsp/u-boot/s5p4418-avn-ref-uboot_%.bbappend
 bbappend-files/recipes-bsp/u-boot/s5p4418-navi-ref-uboot_%.bbappend
 bbappend-files/recipes-bsp/u-boot/s5p6818-artik710-raptor-uboot_%.bbappend
 bbappend-files/recipes-bsp/u-boot/s5p6818-avn-ref-uboot_%.bbappend
+bbappend-files/recipes-bsp/u-boot/s5p6818-kick-st-uboot_%.bbappend
 
 bbappend-files/recipes-kernel/linux/linux-s5p4418-avn-ref_%.bbappend
 bbappend-files/recipes-kernel/linux/linux-s5p4418-navi-ref_%.bbappend
 bbappend-files/recipes-kernel/linux/linux-s5p6818-artik710-raptor_%.bbappend
 bbappend-files/recipes-kernel/linux/linux-s5p6818-avn-ref_%.bbappend
+bbappend-files/recipes-kernel/linux/linux-s5p6818-kick-st_%.bbappend
 
 bbappend-files/recipes-nexell-libs/gst-plugins/gst-plugins-camera_%.bbappend
 bbappend-files/recipes-nexell-libs/gst-plugins/gst-plugins-renderer_%.bbappend

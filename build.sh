@@ -38,7 +38,7 @@ NEED_KERNEL_MAKE_CLEAN=false
 META_NEXELL_PATH=`readlink -ev ${ROOT_PATH}/yocto/meta-nexell`
 GENIVI_PATH=`readlink -e ${ROOT_PATH}/yocto/GENIVI`
 
-declare -a targets=("s5p4418-avn-ref" "s5p4418-navi-ref" "s5p6818-artik710-raptor" "s5p6818-avn-ref" "s5p4418-smart-voice")
+declare -a targets=("s5p4418-avn-ref" "s5p4418-navi-ref" "s5p6818-artik710-raptor" "s5p6818-avn-ref" "s5p4418-smart-voice" "s5p6818-kick-st")
 declare -a imagetypes=("qt" "tiny" "sato" "tinyui" "genivi" "smartvoice")
 
 function check_usage()
