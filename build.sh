@@ -39,7 +39,7 @@ META_NEXELL_PATH=`readlink -ev ${ROOT_PATH}/yocto/meta-nexell`
 GENIVI_PATH=`readlink -e ${ROOT_PATH}/yocto/GENIVI`
 
 declare -a targets=("s5p4418-avn-ref" "s5p4418-navi-ref" "s5p6818-artik710-raptor" "s5p6818-avn-ref" "s5p4418-smart-voice" "s5p6818-kick-st")
-declare -a imagetypes=("qt" "tiny" "sato" "tinyui" "genivi" "smartvoice")
+declare -a imagetypes=("qt" "tiny" "sato" "tinyui" "genivi" "smartvoice" "sdl")
 
 function check_usage()
 {
@@ -131,6 +131,7 @@ function usage()
     echo " ex) $0 s5p4418-navi-ref qt -t kernel -t uboot -t bl1"
     echo " ex) $0 s5p4418-navi-ref tiny -c"
     echo " ex) $0 s5p4418-navi-ref tinyui"
+    echo " ex) $0 s5p4418-navi-ref sdl"
     echo " ex) $0 s5p4418-navi-ref genivi"
     echo " ex) $0 s5p4418-navi-ref qt -s"
     echo " ex) $0 s5p4418-smart-voice smartvoice -c"
@@ -222,8 +223,11 @@ function bitbake_run()
             CLEAN_RECIPES+=" optee-build optee-linuxdriver"
 	fi
 
-        if [ ${IMAGE_TYPE} == "tiny" -o ${IMAGE_TYPE} == "tinyui" -o ${IMAGE_TYPE} == "smartvoice" ]; then
-           echo "tiny or tinyui or smartvoice build"
+        if [ ${IMAGE_TYPE} == "tiny" -o \
+             ${IMAGE_TYPE} == "tinyui" -o \
+             ${IMAGE_TYPE} == "smartvoice" -o \
+             ${IMAGE_TYPE} == "sdl" ]; then
+           echo "tiny or tinyui or smartvoice or sdl build"
         else
            CLEAN_RECIPES+=" testsuite-${BOARD_SOCNAME}"
         fi
