@@ -25,6 +25,7 @@ HASH_RECIPENAME_PATH = {
     's5p4418-avn-ref-bl1.bbappend':         ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], []],
     's5p4418-navi-ref-bl1.bbappend':        ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], []],
     's5p4418-smart-voice-bl1.bbappend':     ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], []],
+    's5p4418-daudio-ref-bl1.bbappend':      ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], []],
     's5p6818-artik710-raptor-bl1.bbappend': ['ON',['/bl1/bl1-s5p6818',R_BL1,'/bl1-s5p6818'], []],
     's5p6818-avn-ref-bl1.bbappend':         ['ON',['/bl1/bl1-s5p6818',R_BL1,'/bl1-s5p6818'], []],
     's5p6818-kick-st-bl1.bbappend':         ['ON',['/bl1/bl1-s5p6818',R_BL1,'/bl1-s5p6818'], []],
@@ -32,10 +33,12 @@ HASH_RECIPENAME_PATH = {
     's5p4418-avn-ref-bl2.bbappend':         ['ON',['/secure/bl2-s5p4418',R_BL2,'/secure-s5p4418'], []],
     's5p4418-navi-ref-bl2.bbappend':        ['ON',['/secure/bl2-s5p4418',R_BL2,'/secure-s5p4418'], []],
     's5p4418-smart-voice-bl2.bbappend':     ['ON',['/secure/bl2-s5p4418',R_BL2,'/secure-s5p4418'], []],
+    's5p4418-daudio-ref-bl2.bbappend':      ['ON',['/secure/bl2-s5p4418',R_BL2,'/secure-s5p4418'], []],
 
     's5p4418-avn-ref-dispatcher.bbappend':         ['ON',['/secure/armv7-dispatcher',R_ARMV7_DISPATCHER,'/armv7-dispatcher'], []],
     's5p4418-navi-ref-dispatcher.bbappend':        ['ON',['/secure/armv7-dispatcher',R_ARMV7_DISPATCHER,'/armv7-dispatcher'], []],
     's5p4418-smart-voice-dispatcher.bbappend':     ['ON',['/secure/armv7-dispatcher',R_ARMV7_DISPATCHER,'/armv7-dispatcher'], []],
+    's5p4418-daudio-ref-dispatcher.bbappend':      ['ON',['/secure/armv7-dispatcher',R_ARMV7_DISPATCHER,'/armv7-dispatcher'], []],
 
     'arm-trusted-firmware_%.bbappend':      ['ON',['/secure/arm-trusted-firmware','/recipes-bsp/arm-trusted-firmware','/arm-trusted-firmware'],[]],
 
@@ -50,6 +53,7 @@ HASH_RECIPENAME_PATH = {
     's5p4418-avn-ref-uboot_%.bbappend':         ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
     's5p4418-navi-ref-uboot_%.bbappend':        ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
     's5p4418-smart-voice-uboot_%.bbappend':     ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
+    's5p4418-daudio-ref-uboot_%.bbappend':      ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
     's5p6818-artik710-raptor-uboot_%.bbappend': ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
     's5p6818-avn-ref-uboot_%.bbappend':         ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
     's5p6818-kick-st-uboot_%.bbappend':         ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
@@ -69,6 +73,7 @@ HASH_RECIPENAME_PATH = {
     'linux-s5p4418-avn-ref_%.bbappend':         ['ON',['/kernel/kernel-4.4.x',R_KERNEL,'/kernel-4.4.x'],  []],
     'linux-s5p4418-navi-ref_%.bbappend':        ['ON',['/kernel/kernel-4.4.x',R_KERNEL,'/kernel-4.4.x'],  []],
     'linux-s5p4418-smart-voice_%.bbappend':     ['ON',['/kernel/kernel-4.4.x',R_KERNEL,'/kernel-4.4.x'],  []],
+    'linux-s5p4418-daudio-ref_%.bbappend':      ['ON',['/kernel/kernel-4.4.x',R_KERNEL,'/kernel-4.4.x'],  []],
     'linux-s5p6818-artik710-raptor_%.bbappend': ['ON',['/kernel/kernel-4.4.x',R_KERNEL,'/kernel-4.4.x'], []],
     'linux-s5p6818-avn-ref_%.bbappend':         ['ON',['/kernel/kernel-4.4.x',R_KERNEL,'/kernel-4.4.x'], []],
     'linux-s5p6818-kick-st_%.bbappend':         ['ON',['/kernel/kernel-4.4.x',R_KERNEL,'/kernel-4.4.x'], []],
