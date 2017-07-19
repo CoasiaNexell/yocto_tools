@@ -28,8 +28,10 @@ function make_releasenote()
     echo "" >> ${RESULT_PATH}/${HOWTO_RELEASE}
 
     echo "** YOCTO COMPONENTs INFO :" >> ${RESULT_PATH}/${HOWTO_RELEASE}
-    echo "poky - krogoth" >> ${RESULT_PATH}/${HOWTO_RELEASE}
-    echo "qt   - qt 5.7" >> ${RESULT_PATH}/${HOWTO_RELEASE}
+    python ${TOOLS_PATH}/yocto_branch_check.py \
+           ${ROOT_PATH} \
+           ${RESULT_PATH}/${HOWTO_RELEASE}
+
     echo "" >> ${RESULT_PATH}/${HOWTO_RELEASE}
     echo "bc. " >> ${RESULT_PATH}/${HOWTO_RELEASE}
     echo "" >> ${RESULT_PATH}/${HOWTO_RELEASE}
@@ -53,7 +55,7 @@ function make_sdk_guide()
 }
 
 split_machine_name
-if [ ${SDK_RELEASE} == "true" ]; then
+if [ "${SDK_RELEASE}" == "true" ]; then
     make_sdk_guide
 else
     make_releasenote

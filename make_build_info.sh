@@ -39,6 +39,9 @@ NEXELL_SOURCE_PATH_NX_AUDIO_PLAYER=${ROOT_PATH}/apps/QT/NxAudioPlayer
 NEXELL_SOURCE_PATH_NX_QUICK_REARCAM=${ROOT_PATH}/apps/QT/NxQuickRearCam
 NEXELL_SOURCE_PATH_NX_VIDEO_PLAYER=${ROOT_PATH}/apps/QT/NxVideoPlayer
 
+NEXELL_SOURCE_PATH_META_NEXELL=${ROOT_PATH}/yocto/meta-nexell
+NEXELL_SOURCE_PATH_TOOLS=${ROOT_PATH}/tools
+
 declare -a nexell_source_paths=($NEXELL_SOURCE_PATH_BL1_S5P4418 $NEXELL_SOURCE_PATH_BL1_S5P6818
                                 $NEXELL_SOURCE_PATH_UBOOT       $NEXELL_SOURCE_PATH_KERNEL
 
@@ -58,7 +61,11 @@ declare -a nexell_source_paths=($NEXELL_SOURCE_PATH_BL1_S5P4418 $NEXELL_SOURCE_P
                                 $NEXELL_SOURCE_PATH_TESTSUITE
 
                                 $NEXELL_SOURCE_PATH_NX_AUDIO_PLAYER $NEXELL_SOURCE_PATH_NX_QUICK_REARCAM
-                                $NEXELL_SOURCE_PATH_NX_VIDEO_PLAYER)
+                                $NEXELL_SOURCE_PATH_NX_VIDEO_PLAYER
+
+                                $NEXELL_SOURCE_PATH_META_NEXELL
+                                $NEXELL_SOURCE_PATH_TOOLS
+)
 
 function make_build_info()
 {

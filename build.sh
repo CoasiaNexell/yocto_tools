@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 CURRENT_PATH=`dirname $0`
 TOOLS_PATH=`readlink -ev $CURRENT_PATH`
 ROOT_PATH=`readlink -ev ${TOOLS_PATH}/..`
@@ -11,6 +9,8 @@ MACHINE_NAME=$1
 IMAGE_TYPE=$2
 RESULT_DIR="result-${MACHINE_NAME}-${IMAGE_TYPE}"
 RESULT_PATH=
+
+BUILD_PATH=
 
 BOARD_SOCNAME=
 BOARD_NAME=
@@ -33,13 +33,30 @@ BUILD_KERNEL=false
 KERNEL_PATH=`readlink -ev ${ROOT_PATH}/kernel/`
 KERNEL_DIRNAME=
 KERNEL_FULLPATH=
+KERNEL_PARTITAL_BUILD=false
 NEED_KERNEL_MAKE_CLEAN=false
 
-META_NEXELL_PATH=`readlink -ev ${ROOT_PATH}/yocto/meta-nexell`
-GENIVI_PATH=`readlink -e ${ROOT_PATH}/yocto/GENIVI`
+META_NEXELL_PATH=
+META_NEXELL_DISTRO_PATH=
 
-declare -a targets=("s5p4418-avn-ref" "s5p4418-navi-ref" "s5p4418-daudio-ref" "s5p6818-artik710-raptor" "s5p6818-avn-ref" "s5p4418-smart-voice" "s5p6818-kick-st")
-declare -a imagetypes=("qt" "tiny" "sato" "tinyui" "genivi" "smartvoice" "sdl")
+POKY_STYLE_MACHINE_NAME=
+
+declare -A KERNEL_IMAGE
+KERNEL_IMAGE["s5p4418"]="zImage"
+KERNEL_IMAGE["s5p6818"]="Image"
+
+declare -a clean_recipes_s5p4418=("nexell-${IMAGE_TYPE}" "virtual/kernel")
+declare -a clean_recipes_s5p6818=("optee-build" "optee-linuxdriver" "nexell-${IMAGE_TYPE}" "virtual/kernel")
+
+# Build allow combination table
+# If you need to add some target board or image type, you have to use below file.
+# SUPPORT board target list : meta-nexell-support-target-list.txt
+# SUPPORT image type   list : meta-nexell-support-images-list.txt
+IFS=$'\n' read -d '' -r -a targets < ${TOOLS_PATH}/meta-nexell-support-target-list.txt
+IFS=$'\n' read -d '' -r -a imagetypes < ${TOOLS_PATH}/meta-nexell-support-images-list.txt
+IFS=''
+
+set -e
 
 function check_usage()
 {
@@ -121,18 +138,12 @@ function usage()
     echo -e " -t uboot : if you want to build only uboot, specify this, default no"
     echo -e " -t kernel : if you want to build only kernel, specify this, default no"
     echo -e " -t optee  : if you want to build only optee, specify this, default no\n"
-    echo " ex) $0 s5p6818-artik710-raptor tiny -c -t kernel"
-    echo " ex) $0 s5p6818-artik710-raptor sato -c -t uboot"
-    echo " ex) $0 s5p6818-artik710-raptor qt"
     echo " ex) $0 s5p6818-avn-ref tiny"
     echo " ex) $0 s5p6818-avn-ref qt"
-    echo " ex) $0 s5p4418-avn-ref qt"
-    echo " ex) $0 s5p4418-avn-ref tiny"
     echo " ex) $0 s5p4418-navi-ref qt -t kernel -t uboot -t bl1"
     echo " ex) $0 s5p4418-navi-ref tiny -c"
     echo " ex) $0 s5p4418-navi-ref tinyui"
     echo " ex) $0 s5p4418-navi-ref sdl"
-    echo " ex) $0 s5p4418-navi-ref genivi"
     echo " ex) $0 s5p4418-navi-ref qt -s"
     echo " ex) $0 s5p4418-daudio-ref qt"
     echo " ex) $0 s5p4418-smart-voice smartvoice -c"
@@ -151,6 +162,19 @@ function split_machine_name()
     else
 	ARM_ARCH="arm"
     fi
+
+    POKY_STYLE_MACHINE_NAME=${BOARD_SOCNAME}_${BOARD_PREFIX}_${BOARD_POSTFIX}
+}
+
+function setup_path()
+{
+    if [ ${SDK_RELEASE} == "false" ]; then
+        META_NEXELL_PATH=`readlink -ev ${ROOT_PATH}/yocto/meta-nexell/meta-nexell-distro`
+    else
+        META_NEXELL_PATH=`readlink -ev ${ROOT_PATH}/yocto/meta-nexell/meta-nexell-sdk`
+        RESULT_DIR="SDK-result-${BOARD_SOCNAME}-${IMAGE_TYPE}"
+    fi
+    META_NEXELL_DISTRO_PATH=`readlink -ev ${ROOT_PATH}/yocto/meta-nexell/meta-nexell-distro`
 }
 
 function gen_and_copy_bbappend()
@@ -159,18 +183,20 @@ function gen_and_copy_bbappend()
     echo -e "\033[47;34m                       .bbappend files generate                     \033[0m"
     echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
 
-    cd ${TOOLS_PATH}/bbappend-files
+    pushd ${TOOLS_PATH}/bbappend-files
     ./gen_bbappend.sh ${ROOT_PATH}
-    cp -a ${TOOLS_PATH}/bbappend-files/recipes-* ${META_NEXELL_PATH}
+
+    cp -a ${TOOLS_PATH}/bbappend-files/recipes-* ${META_NEXELL_DISTRO_PATH}
 
     echo -e "\033[47;34m ------------------------ Generate Done ! ------------------------- \033[0m"
+    popd
 }
 
 function kernel_version_sync()
 {
     local tempTOP=${PWD}
 
-    cd ${KERNEL_PATH}
+    pushd ${KERNEL_PATH}
     for entry_d in ./*
     do
         if [ -d "$entry_d" ];then
@@ -187,61 +213,50 @@ function kernel_version_sync()
             cd ..
         fi
     done
+    popd
 
-    cd $tempTOP
+    pushd $tempTOP
     echo "Finally kernel dirname : $KERNEL_DIRNAME"
     KERNEL_FULLPATH=${KERNEL_PATH}/${KERNEL_DIRNAME}
     python ${TOOLS_PATH}/kernel_version_sync.py \
-           ${META_NEXELL_PATH}/recipes-kernel/linux/linux-${MACHINE_NAME}_%.bbappend \
+           ${META_NEXELL_DISTRO_PATH}/recipes-kernel/linux/linux-${BOARD_SOCNAME}.bbappend \
            ${ROOT_PATH} \
            ${KERNEL_DIRNAME}
+    popd
 }
 
 function bitbake_run()
 {
-    local CLEAN_RECIPES=
-
     echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
     echo -e "\033[47;34m                       Bitbake Auto Running                         \033[0m"
     echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
 
-    if [ ${IMAGE_TYPE} == "genivi" ]; then
-        #------------------------ Genivi platform setup ------------------------
-        cd ${GENIVI_PATH}
-        ${META_NEXELL_PATH}/tools/envsetup_genivi.sh ${MACHINE_NAME} ${NUMBER_THREADS}
-        source init.sh nexell ${MACHINE_NAME}
-        #-----------------------------------------------------------------------
-    else
-        #------------------------ Nexell platform setup ------------------------
-        cd ${ROOT_PATH}/yocto
-        source poky/oe-init-build-env build-${MACHINE_NAME}-${IMAGE_TYPE}
-        ${META_NEXELL_PATH}/tools/envsetup.sh ${MACHINE_NAME} ${IMAGE_TYPE} ${NUMBER_THREADS} ${SDK_RELEASE}
-        #-----------------------------------------------------------------------
+    if ! [ -d ${META_NEXELL_PATH}/../../build ]; then
+        mkdir -p ${META_NEXELL_PATH}/../../build
     fi
+
+    #------------------------ Nexell platform setup ------------------------
+    pushd ${ROOT_PATH}/yocto
+
+    if [ ${SDK_RELEASE} == "false" ]; then
+        source poky/oe-init-build-env build/build-${MACHINE_NAME}-${IMAGE_TYPE}
+        BUILD_PATH=`readlink -ev ${META_NEXELL_PATH}/../../build/build-${MACHINE_NAME}-${IMAGE_TYPE}`
+        ${META_NEXELL_PATH}/tools/envsetup.sh ${MACHINE_NAME} ${IMAGE_TYPE} ${NUMBER_THREADS} "EXTERNALSRC_USING"
+    else        
+        source poky/oe-init-build-env build/SDK-build-${BOARD_SOCNAME}-${IMAGE_TYPE}
+        BUILD_PATH=`readlink -ev ${META_NEXELL_PATH}/../../build/SDK-build-${BOARD_SOCNAME}-${IMAGE_TYPE}`
+        ${META_NEXELL_PATH}/tools/envsetup-sdk.sh ${MACHINE_NAME} ${IMAGE_TYPE} ${NUMBER_THREADS} "EXTERNALSRC_USING"
+    fi
+    #-----------------------------------------------------------------------
+
+    build_status_check
 
     if [ ${CLEAN_BUILD} == "true" ];then
-	if [ ${BOARD_SOCNAME} == "s5p6818" ];then
-            CLEAN_RECIPES+=" optee-build optee-linuxdriver"
-	fi
-
-        if [ ${IMAGE_TYPE} == "tiny" -o \
-             ${IMAGE_TYPE} == "tinyui" -o \
-             ${IMAGE_TYPE} == "smartvoice" -o \
-             ${IMAGE_TYPE} == "sdl" ]; then
-           echo "tiny or tinyui or smartvoice or sdl build"
-        else
-           CLEAN_RECIPES+=" testsuite-${BOARD_SOCNAME}"
-        fi
-
-        if [ ${IMAGE_TYPE} == "genivi" ]; then
-            CLEAN_RECIPES+=" ${MACHINE_NAME}-qt virtual/kernel"
-        else
-            CLEAN_RECIPES+=" ${MACHINE_NAME}-${IMAGE_TYPE} virtual/kernel"
-        fi
-	NEED_KERNEL_MAKE_CLEAN=true
+	NEED_KERNEL_MAKE_CLEAN="true"
     fi
 
-    local BITBAKE_ARGS=
+    local BITBAKE_ARGS=()
+    local CLEAN_RECIPES=()
     if [ ${BUILD_ALL} == "false" ];then
         if [ ${SDK_RELEASE} == "true" ]; then
             echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
@@ -252,74 +267,99 @@ function bitbake_run()
         fi
 
         if [ ${BUILD_KERNEL} == "true" ]; then
-            BITBAKE_ARGS+=" virtual/kernel"
-            #NEED_KERNEL_MAKE_CLEAN=true
-        fi
-        if [ ${BUILD_BL1} == "true" ]; then
-            BITBAKE_ARGS+=" ${MACHINE_NAME}-bl1 ${MACHINE_NAME}-bl2 ${MACHINE_NAME}-dispatcher"
-        fi
-        if [ ${BUILD_UBOOT} == "true" ]; then
-            BITBAKE_ARGS+=" ${MACHINE_NAME}-uboot"
-        fi
-        if [ ${BUILD_OPTEE} == "true" ]; then
-            BITBAKE_ARGS+=" optee-build optee-linuxdriver"
-        else
-            if [ ${BOARD_SOCNAME} == "s5p6818" -a ${BUILD_UBOOT} == "true" -a ${BUILD_OPTEE} == "false" ]; then
-                BITBAKE_ARGS+=" optee-build optee-linuxdriver"
+            if [ ${NEED_KERNEL_MAKE_CLEAN} == "true" ]; then
+                echo -e "\033[40;34m Before kernel built different board type, so need to make clean kernel build \033[0m"
+                kernel_make_clean
+                CLEAN_RECIPES+=("virtual/kernel")
+                BITBAKE_ARGS+=("virtual/kernel")
+            else
+                #check sysroot cross-compiler
+                #If exist poky cross-compiler And once a time full build done.
+                #Run kernel_partial_build                
+                if ! [ -f ${BUILD_PATH}/tmp/work/KBUILD_DEFCONFIG.txt ]; then
+                    echo -e "\n\033[40;34m Never build before virtual/kernel build, At least once Yocto Kernel Build has been performed. \033[0m"
+                    echo -e "\n\033[40;34m Because you need to know the cross compiler and defconfig information. \033[0m"
+                    CLEAN_RECIPES+=("virtual/kernel")
+                    BITBAKE_ARGS+=("virtual/kernel")
+                else
+                    local temp_defconfig
+                    local temp_dtb
+                    read temp_defconfig < ${BUILD_PATH}/tmp/work/KBUILD_DEFCONFIG.txt
+                    read temp_dtb < ${BUILD_PATH}/tmp/work/KBUILD_DEVICETREE.txt
+                    kernel_partial_build $temp_defconfig $temp_dtb
+                fi
             fi
         fi
 
-	CLEAN_RECIPES+=" $BITBAKE_ARGS"
+        if [ ${BUILD_BL1} == "true" ]; then
+            if [ ${BOARD_SOCNAME} == "s5p6818" ]; then
+                BITBAKE_ARGS+=("bl1-${BOARD_SOCNAME}")
+                CLEAN_RECIPES+=("bl1-${BOARD_SOCNAME}")
+            else
+                BITBAKE_ARGS+=("bl1-${BOARD_SOCNAME}" "bl2-${BOARD_SOCNAME}" "dispatcher-${BOARD_SOCNAME}")
+                CLEAN_RECIPES+=("bl1-${BOARD_SOCNAME}" "bl2-${BOARD_SOCNAME}" "dispatcher-${BOARD_SOCNAME}")
+            fi
+        fi
 
-        kernel_make_clean
-	bitbake -c cleanall $CLEAN_RECIPES
-	echo -e "\033[47;34m CLEAN TARGET : $CLEAN_RECIPES \033[0m"
-	echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
-        echo -e "\033[47;34m                          Partial Build                             \033[0m"
-        echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
-	echo -e "\033[47;34m $BITBAKE_ARGS \033[0m"
-	echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
-	bitbake $BITBAKE_ARGS
+        if [ ${BUILD_UBOOT} == "true" ]; then
+            BITBAKE_ARGS+=("u-boot-nexell")
+            CLEAN_RECIPES+=("u-boot-nexell")
+        fi
+
+
+        if [ ${#CLEAN_RECIPES[@]} -gt 0 ]; then
+	    echo -e "\033[47;34m CLEAN TARGET : ${CLEAN_RECIPES[@]} \033[0m"
+            bitbake -c cleanall ${CLEAN_RECIPES[@]}
+        fi
+	
+        if [ ${#BITBAKE_ARGS[@]} -gt 0 ]; then
+            echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
+            echo -e "\033[47;34m                          Partial Build                             \033[0m"
+            echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
+            echo -e "\033[47;34m ${BITBAKE_ARGS[@]}                                             \033[0m"
+            bitbake ${BITBAKE_ARGS[@]}
+        else
+            echo -e "\033[47;34m Nothing to bitbake run  \033[0m"
+        fi
     else
-        kernel_make_clean
 	echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
         echo -e "\033[47;34m                          All Build                                 \033[0m"
         echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
         if [ ${CLEAN_BUILD} == "true" ];then
-            bitbake -c cleanall $CLEAN_RECIPES
+            echo -e "\033[47;34m                      Clean Build True                              \033[0m"
+            echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
+            kernel_make_clean
+            
+            if [ ${BOARD_SOCNAME} == "s5p4418" ];then
+                echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_s5p4418[@]} \033[0m"
+                bitbake -c cleanall ${clean_recipes_s5p4418[@]}
+            else
+                echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_s5p6818[@]} \033[0m"
+                bitbake -c cleanall ${clean_recipes_s5p6818[@]}
+            fi
         fi
-	echo -e "\033[47;34m CLEAN TARGET : $CLEAN_RECIPES \033[0m"
 
-        if [ ${IMAGE_TYPE} == "genivi" ]; then
-            #------------------------ Genivi platform build ------------------------
-            if [ ${SDK_RELEASE} == "true" ]; then
-                bitbake genivi-dev-platform-sdk -c populate_sdk
-            else
-                bitbake genivi-dev-platform
-            fi
-            #-----------------------------------------------------------------------
+        if [ ${SDK_RELEASE} == "true" ]; then
+            echo -e "\033[47;34m bitbake -c populate_sdk nexell-${IMAGE_TYPE}-sdk \033[0m"
+            bitbake -c populate_sdk nexell-${IMAGE_TYPE}-sdk
         else
-            if [ ${SDK_RELEASE} == "true" ]; then
-                echo -e "\033[47;34m bitbake -c populate_sdk ${BOARD_SOCNAME}-${IMAGE_TYPE}-sdk \033[0m"
-                bitbake -c populate_sdk ${BOARD_SOCNAME}-${IMAGE_TYPE}-sdk
-            else
-                #------------------------ Nexell platform build ------------------------
-                bitbake ${MACHINE_NAME}-${IMAGE_TYPE}
-                #-----------------------------------------------------------------------
-            fi
+            #------------------------ Nexell platform build ------------------------
+            bitbake nexell-${IMAGE_TYPE}
+            #-----------------------------------------------------------------------
         fi
     fi
+    popd
+    build_status_update
 }
 
 function kernel_make_clean()
 {
-    local oldpath=`pwd`
     if [ $NEED_KERNEL_MAKE_CLEAN == true ];then
         echo -e "\n ------------------------------------------------------------------ "
         echo -e "                        make distclean                              "
         echo -e " ------------------------------------------------------------------ "
 
-        cd ${KERNEL_FULLPATH}
+        pushd ${KERNEL_FULLPATH}
 
         file_count=$(ls -Rl ${KERNEL_FULLPATH} | grep ^- | wc -l)
         dir_size=$(du -sb ${KERNEL_FULLPATH} | cut -f1)
@@ -332,65 +372,51 @@ function kernel_make_clean()
             repo sync ${KERNEL_FULLPATH}
         fi
         make distclean
-        cd $oldpath
+        rm -rf .kernel-meta oe-logs oe-workdir .metadir .scmversion
+        popd
     fi
 }
 
 function move_images()
 {
-    if [ ${SDK_RELEASE} == "true" ]; then
-        local build_path=`readlink -ev ${META_NEXELL_PATH}/../build-${MACHINE_NAME}-${IMAGE_TYPE}/tmp/deploy/sdk`
-        RESULT_PATH=$build_path
-        echo -e "\n\033[0;34m ------------------------------------------------------------------ \033[0m"
-        echo -e "\033[0;36m  Please check below path                                           \033[0m"
-        echo -e "  $build_path    "
-        echo -e "\033[0;34m ------------------------------------------------------------------ \033[0m"
-    else
-        ${META_NEXELL_PATH}/tools/result-file-move.sh ${MACHINE_NAME} ${IMAGE_TYPE} ${BUILD_ALL}
-        RESULT_PATH=`readlink -ev ${ROOT_PATH}/yocto/${RESULT_DIR}`
+    ${META_NEXELL_PATH}/tools/copyFilesToOutDir.sh ${MACHINE_NAME} ${IMAGE_TYPE} ${BUILD_ALL}
+    RESULT_PATH=`readlink -ev ${ROOT_PATH}/yocto/out/${RESULT_DIR}`
+    if [ ${KERNEL_PARTITAL_BUILD} == "true" ]; then
+        pushd ${KERNEL_FULLPATH}
+        cp -a arch/${ARM_ARCH}/boot/${KERNEL_IMAGE[${BOARD_SOCNAME}]} ${RESULT_PATH}/
+        IFS=' ' read -ra dtbs <<< "$KERNEL_DTBS"
+        for i in "${dtbs[@]}"; do
+            cp -a arch/${ARM_ARCH}/boot/dts/$i ${RESULT_PATH}/
+        done
+        IFS=''
+        popd
     fi
 }
 
 function convert_images()
 {
-    if [ ${SDK_RELEASE} == "true" ]; then
-        echo -e "\033[0;36m The SDK images does not require converting.                        \033[0m"
-    else
-	echo -e "\n\033[0;34m ------------------------------------------------------------------ \033[0m"
-	echo -e "\033[0;36m                      Convert images Running                        \033[0m"
-	echo -e "\033[0;34m ------------------------------------------------------------------ \033[0m"
-
-	cd ${RESULT_PATH}
-	${META_NEXELL_PATH}/tools/convert_images.sh ${MACHINE_NAME} ${IMAGE_TYPE}
-
-	echo -e "\n\033[0;34m ------------------------------------------------------------------------------------------ \033[0m\n"
-	echo -e "\033[0;36m  1. ${META_NEXELL_PATH}/tools/update.sh -p ${RESULT_PATH}/partmap_emmc.txt -r ${RESULT_PATH} \033[0m\n"
-	echo -e "\033[0;36m     or                                                                                       \033[0m\n"
-	echo -e "\033[0;36m  2. ${TOOLS_PATH}/update.sh ${MACHINE_NAME} ${IMAGE_TYPE}                                    \033[0m\n"
-	echo -e "\033[0;34m -------------------------------------------------------------------------------------------- \033[0m\n"
-    fi
+    cd ${RESULT_PATH}
+    ${META_NEXELL_PATH}/tools/convert_tools/convert_images.sh ${MACHINE_NAME} ${IMAGE_TYPE}
 }
 
 function make_build_info()
 {
-    if [ ${SDK_RELEASE} == "false" ]; then
-        ${TOOLS_PATH}/make_build_info.sh ${RESULT_PATH} ${KERNEL_FULLPATH}
-    fi
+    ${TOOLS_PATH}/make_build_info.sh ${RESULT_PATH} ${KERNEL_FULLPATH}
 }
 
 function make_standalone_tools()
 {
-    if [ ${SDK_RELEASE} == "false" ]; then
-        mkdir -p ${RESULT_PATH}/tools
+    mkdir -p ${RESULT_PATH}/tools
 
-        cp -a ${META_NEXELL_PATH}/tools/${MACHINE_NAME}/* ${RESULT_PATH}/tools/
-        cp -a ${META_NEXELL_PATH}/tools/standalone-fastboot-download.sh ${RESULT_PATH}/tools/
-        cp -a ${META_NEXELL_PATH}/tools/standalone-uboot-by-usb-download.sh ${RESULT_PATH}/tools/
+    cp -a ${RESULT_PATH}/bl1-*.bin ${RESULT_PATH}/tools/
+    cp -a ${RESULT_PATH}/partmap_emmc.txt ${RESULT_PATH}/tools/
 
-        cp -a ${META_NEXELL_PATH}/tools/usb-downloader ${RESULT_PATH}/tools/
+    cp -a ${META_NEXELL_PATH}/tools/standalone-fastboot-download.sh ${RESULT_PATH}/tools/
+    cp -a ${META_NEXELL_PATH}/tools/standalone-uboot-by-usb-download.sh ${RESULT_PATH}/tools/
 
-        cp -a ${RESULT_PATH}/partition.txt ${RESULT_PATH}/tools/
-    fi
+    cp -a ${META_NEXELL_PATH}/tools/usb-downloader ${RESULT_PATH}/tools/
+
+    cp -a ${RESULT_PATH}/partition.txt ${RESULT_PATH}/tools/
 }
 
 function make_nexell_server_documnets()
@@ -398,36 +424,90 @@ function make_nexell_server_documnets()
     ${TOOLS_PATH}/make_documents.sh ${MACHINE_NAME} ${RESULT_PATH} ${SDK_RELEASE}
 }
 
-
-function optee_clean()
+function build_status_check()
 {
+    #matched! before build socname with current build socname
+    if [ -e ${BUILD_PATH}/../NEXELL_STATUS-BUILD-${BOARD_SOCNAME} ];then
+        #matched! before build boardname with current build boardname
+        if [ -e ${BUILD_PATH}/../NEXELL_STATUS-BUILD-${BOARD_NAME} ];then
+            echo -e "\033[0;34m ------------------------------------------------------------------ \033[0m"
+            echo -e "\033[0;33m #########  Already same machine name built ########## \033[0m"
+            echo -e "\033[0;34m ------------------------------------------------------------------ \033[0m"
+        else
+            echo -e "\033[0;34m ----------------------------------------------------------------------------------- \033[0m"
+            echo -e "\033[0;33m #########  Already same soc built, but you tried other board type build ########## \033[0m"
+            echo -e "\033[0;33m #########  Need Clean BUILD ########## \033[0m"
+            echo -e "\033[0;34m ----------------------------------------------------------------------------------- \033[0m"
+            CLEAN_BUILD=true
+            rm -rf ${BUILD_PATH}/../NEXELL_STATUS-BUILD-*
+        fi
+    else
+        echo -e "\033[0;34m ------------------------------------------------------------------ \033[0m"
+        echo -e "\033[0;33m #########  You tried other machine build ########## \033[0m"
+        echo -e "\033[0;33m #########  Need Clean BUILD ########## \033[0m"
+        echo -e "\033[0;34m ------------------------------------------------------------------ \033[0m"
+        CLEAN_BUILD=true
+        rm -rf ${BUILD_PATH}/../NEXELL_STATUS-BUILD-*
+    fi    
+}
+
+function build_status_update()
+{
+    #When External Src build, need kernel distclean check
+    local kernelBuildStatusChipName="NEXELL_STATUS-BUILD-${BOARD_SOCNAME}"
+    local kernelBuildStatusBoardName="NEXELL_STATUS-BUILD-${BOARD_NAME}"
+    touch ${BUILD_PATH}/../$kernelBuildStatusChipName
+    touch ${BUILD_PATH}/../$kernelBuildStatusBoardName
+}
+
+function kernel_partial_build()
+{
+    declare -A POKY_CROSS_COMPILE_PATH
+    declare -A EXTRA_PATH
+    declare -A COMPILER
+
     echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
-    echo -e "\033[47;34m                       Optee Clean SSTATE                           \033[0m"
+    echo -e "\033[47;34m                      Kernel Partial Build                            \033[0m"
     echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
 
-    if [ ${IMAGE_TYPE} == "genivi" ]; then
-        #------------------------ Genivi platform build ------------------------
-        source ${GENIVI_PATH}/init.sh nexell ${MACHINE_NAME}
-        #-----------------------------------------------------------------------
-    else
-        #------------------------ Nexell platform build ------------------------
-        cd ${ROOT_PATH}/yocto
-        source poky/oe-init-build-env build-${MACHINE_NAME}-${IMAGE_TYPE}
-        #-----------------------------------------------------------------------
-    fi
+    KERNEL_PARTITAL_BUILD=true
 
-    ${META_NEXELL_PATH}/tools/optee_clean_${BOARD_NAME}.sh
+    POKY_CROSS_COMPILE_PATH["s5p4418"]="${BUILD_PATH}/tmp/work/${POKY_STYLE_MACHINE_NAME}-poky-linux-gnueabi/linux-${BOARD_SOCNAME}/*"
+    POKY_CROSS_COMPILE_PATH["s5p6818"]="${BUILD_PATH}/tmp/work/${POKY_STYLE_MACHINE_NAME}-poky-linux/linux-${BOARD_SOCNAME}/*"
+    EXTRA_PATH["s5p4418"]="recipe-sysroot-native/usr/bin/arm-poky-linux-gnueabi"
+    EXTRA_PATH["s5p6818"]="recipe-sysroot-native/usr/bin/aarch64-poky-linux"
+    COMPILER["s5p4418"]="arm-poky-linux-gnueabi-"
+    COMPILER["s5p6818"]="aarch64-poky-linux-"
+
+    local cross_compiler_path=$(ls -d ${POKY_CROSS_COMPILE_PATH[${BOARD_SOCNAME}]}/${EXTRA_PATH[${BOARD_SOCNAME}]}/)
+    local KERNEL_DEFCONFIG=$1
+    local KERNEL_DTBS=$2
+
+    pushd ${KERNEL_FULLPATH}
+    make clean
+    make ARCH=${ARM_ARCH} CROSS_COMPILE=$cross_compiler_path/${COMPILER[${BOARD_SOCNAME}]} ${KERNEL_DEFCONFIG} -j8
+    make ARCH=${ARM_ARCH} CROSS_COMPILE=$cross_compiler_path/${COMPILER[${BOARD_SOCNAME}]} ${KERNEL_IMAGE[${BOARD_SOCNAME}]} -j8
+    make ARCH=${ARM_ARCH} CROSS_COMPILE=$cross_compiler_path/${COMPILER[${BOARD_SOCNAME}]} dtbs
+    make ARCH=${ARM_ARCH} CROSS_COMPILE=$cross_compiler_path/${COMPILER[${BOARD_SOCNAME}]} modules -j8 
+    #make ARCH=${ARM_ARCH} CROSS_COMPILE=$cross_compiler_path/${COMPILER[${BOARD_SOCNAME}]} modules_install INSTALL_MOD_PATH=${D} INSTALL_MOD_STRIP=1
+    popd
 }
 
 parse_args $@
 check_usage
 split_machine_name
+setup_path
 
 gen_and_copy_bbappend
 kernel_version_sync
+
 bitbake_run
 move_images
-convert_images
-make_build_info
-make_standalone_tools
+
+if [ ${SDK_RELEASE} == "false" ]; then
+    convert_images
+    make_build_info
+    make_standalone_tools
+fi
+
 make_nexell_server_documnets

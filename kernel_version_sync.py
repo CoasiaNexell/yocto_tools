@@ -52,6 +52,8 @@ class KernelVersionSync:
             with open(self.bbappendPath,'a') as f :
                 linux_version = self.KERNEL_VERSION + "." + self.KERNEL_PATCHLEVEL + "." + self.KERNEL_SUBLEVEL
                 print "Linux Kernel VERSION = " + linux_version
+                f.write("\n")
+                f.write("\n#Override for local source using evironment\n")
                 f.write("\nLINUX_VERSION = \"" + linux_version + "\"\n")
                 f.write("PV = \"" + linux_version + "\"\n")
                 f.write("\n_SRC_PATH_BY_GEN_=\"" + self.kernelSrcPath + "\"")

@@ -1,0 +1,6 @@
+qt
+tiny
+sato
+tinyui
+smartvoice
+sdl
