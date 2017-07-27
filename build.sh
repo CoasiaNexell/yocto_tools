@@ -256,7 +256,11 @@ function bitbake_run()
             #NEED_KERNEL_MAKE_CLEAN=true
         fi
         if [ ${BUILD_BL1} == "true" ]; then
-            BITBAKE_ARGS+=" ${MACHINE_NAME}-bl1 ${MACHINE_NAME}-bl2 ${MACHINE_NAME}-dispatcher"
+            if [ ${BOARD_SOCNAME} == "s5p6818" ];then
+                BITBAKE_ARGS+=" ${MACHINE_NAME}-bl1"
+            else
+                BITBAKE_ARGS+=" ${MACHINE_NAME}-bl1 ${MACHINE_NAME}-bl2 ${MACHINE_NAME}-dispatcher"
+            fi
         fi
         if [ ${BUILD_UBOOT} == "true" ]; then
             BITBAKE_ARGS+=" ${MACHINE_NAME}-uboot"
