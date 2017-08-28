@@ -1,7 +1,9 @@
 s5p4418-avn-ref
 s5p4418-navi-ref
 s5p4418-daudio-ref
+s5p4418-daudio-covi
 s5p4418-smart-voice
+s5p4418-ff-voice
 s5p4418-zh-dragon
 s5p6818-avn-ref
 s5p6818-kick-st

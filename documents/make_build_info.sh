@@ -4,7 +4,7 @@ set -e
 
 CURRENT_PATH=`dirname $0`
 TOOLS_PATH=`readlink -ev $CURRENT_PATH`
-ROOT_PATH=`readlink -ev ${TOOLS_PATH}/..`
+ROOT_PATH=`readlink -ev ${TOOLS_PATH}/../..`
 
 RESULT_PATH=$1
 KERNEL_PATH=$2
@@ -71,6 +71,9 @@ function make_build_info()
 {
     local curpath=`pwd`
     cp -a ${TOOLS_PATH}/YOCTO-BUILD-INFO.txt ${RESULT_PATH}
+
+    # build user write
+    echo "BUILD user : $USER" >> ${RESULT_PATH}/YOCTO-BUILD-INFO.txt
 
     for i in ${nexell_source_paths[@]}
     do

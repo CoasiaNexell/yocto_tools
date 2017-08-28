@@ -4,7 +4,7 @@ set -e
 
 CURRENT_PATH=`dirname $0`
 TOOLS_PATH=`readlink -ev $CURRENT_PATH`
-ROOT_PATH=`readlink -ev ${TOOLS_PATH}/..`
+ROOT_PATH=`readlink -ev ${TOOLS_PATH}/../..`
 
 MACHINE_NAME=$1
 RESULT_PATH=$2

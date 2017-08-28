@@ -45,8 +45,8 @@ declare -A KERNEL_IMAGE
 KERNEL_IMAGE["s5p4418"]="zImage"
 KERNEL_IMAGE["s5p6818"]="Image"
 
-declare -a clean_recipes_s5p4418=("nexell-${IMAGE_TYPE}" "virtual/kernel")
-declare -a clean_recipes_s5p6818=("optee-build" "optee-linuxdriver" "nexell-${IMAGE_TYPE}" "virtual/kernel")
+declare -a clean_recipes_s5p4418=("nexell-${IMAGE_TYPE}" "virtual/kernel" "u-boot-nexell" "bl1-s5p4418")
+declare -a clean_recipes_s5p6818=("optee-build" "optee-linuxdriver" "nexell-${IMAGE_TYPE}" "virtual/kernel" "u-boot-nexell" "bl1-s5p4418")
 
 # Build allow combination table
 # If you need to add some target board or image type, you have to use below file.
@@ -371,7 +371,7 @@ function kernel_make_clean()
             echo -e " ------------------------------------------------------------------ "
             repo sync ${KERNEL_FULLPATH}
         fi
-        make distclean
+        make ARCH=${ARM_ARCH} distclean
         rm -rf .kernel-meta oe-logs oe-workdir .metadir .scmversion
         popd
     fi
@@ -401,7 +401,7 @@ function convert_images()
 
 function make_build_info()
 {
-    ${TOOLS_PATH}/make_build_info.sh ${RESULT_PATH} ${KERNEL_FULLPATH}
+    ${TOOLS_PATH}/documents/make_build_info.sh ${RESULT_PATH} ${KERNEL_FULLPATH}
 }
 
 function make_standalone_tools()
@@ -421,7 +421,7 @@ function make_standalone_tools()
 
 function make_nexell_server_documnets()
 {
-    ${TOOLS_PATH}/make_documents.sh ${MACHINE_NAME} ${RESULT_PATH} ${SDK_RELEASE}
+    ${TOOLS_PATH}/documents/make_documents.sh ${MACHINE_NAME} ${RESULT_PATH} ${SDK_RELEASE}
 }
 
 function build_status_check()
