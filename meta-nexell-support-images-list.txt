@@ -1,7 +1,0 @@
-qt
-tiny
-sato
-tinyui
-smartvoice
-smartvoiceui
-sdl

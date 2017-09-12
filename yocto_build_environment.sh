@@ -14,3 +14,6 @@ sudo apt-get install autoconf automake libtool libglib2.0-dev libarchive-dev
 
 #OpenEmbedded Self-Test (oe-selftest): Packages needed if you are going to run oe-selftest:
 sudo apt-get install python-git
+
+#Ubuntu build environment
+sudo apt-get install live-build debootstrap qemu-user-static

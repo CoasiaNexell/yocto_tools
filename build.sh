@@ -48,15 +48,34 @@ KERNEL_IMAGE["s5p6818"]="Image"
 declare -a clean_recipes_s5p4418=("nexell-${IMAGE_TYPE}" "virtual/kernel" "u-boot-nexell" "bl1-s5p4418")
 declare -a clean_recipes_s5p6818=("optee-build" "optee-linuxdriver" "nexell-${IMAGE_TYPE}" "virtual/kernel" "u-boot-nexell" "bl1-s5p4418")
 
-# Build allow combination table
 # If you need to add some target board or image type, you have to use below file.
-# SUPPORT board target list : meta-nexell-support-target-list.txt
-# SUPPORT image type   list : meta-nexell-support-images-list.txt
-IFS=$'\n' read -d '' -r -a targets < ${TOOLS_PATH}/meta-nexell-support-target-list.txt
-IFS=$'\n' read -d '' -r -a imagetypes < ${TOOLS_PATH}/meta-nexell-support-images-list.txt
-IFS=''
+# SUPPORT board target list : meta-nexell/tools/configs/board
+# SUPPORT image type   list : meta-nexell/tools/configs/imagetype
+targets=()
+imagetypes=()
 
 set -e
+
+function update_support_target_list()
+{
+    configs=$(ls -trh ${META_NEXELL_PATH}/tools/configs/board/)
+    for entry in ${configs}
+    do
+        filename="${entry%.*}"
+        targets+=($filename)
+    done
+}
+
+function update_support_image_list()
+{
+    configs=$(ls -trh ${META_NEXELL_PATH}/tools/configs/imagetype)
+    for entry in ${configs}
+    do
+        filename="${entry%.*}"
+        imagetypes+=($filename)
+    done
+}
+
 
 function check_usage()
 {
@@ -89,14 +108,12 @@ function check_usage()
     done
 
     if [ $existTarget == false ]; then
-        echo -e "\033[47;34m Please check you selected machine name ==> ${MACHINE_NAME} \033[0m"
-        echo -e "\033[47;34m Check again \033[0m"
+        echo -e "\033[47;34m Please check machine name ==> \"${MACHINE_NAME}\" does not supported board! \033[0m"
         usage
         exit
     fi
     if [ $existImageTypes == false ]; then
-        echo -e "\033[47;34m Please check you selected image types ==> ${IMAGE_TYPE} \033[0m"
-        echo -e "\033[47;34m Maybe this imagetype does not support \033[0m"
+        echo -e "\033[47;34m Please check image types ==> \"${IMAGE_TYPE}\" does not supported imagetype! \033[0m"
         usage
         exit
     fi
@@ -411,10 +428,10 @@ function make_standalone_tools()
     cp -a ${RESULT_PATH}/bl1-*.bin ${RESULT_PATH}/tools/
     cp -a ${RESULT_PATH}/partmap_emmc.txt ${RESULT_PATH}/tools/
 
-    cp -a ${META_NEXELL_PATH}/tools/standalone-fastboot-download.sh ${RESULT_PATH}/tools/
-    cp -a ${META_NEXELL_PATH}/tools/standalone-uboot-by-usb-download.sh ${RESULT_PATH}/tools/
+    cp -a ${META_NEXELL_PATH}/tools/fusing_tools/standalone-fastboot-download.sh ${RESULT_PATH}/tools/
+    cp -a ${META_NEXELL_PATH}/tools/fusing_tools/standalone-uboot-by-usb-download.sh ${RESULT_PATH}/tools/
 
-    cp -a ${META_NEXELL_PATH}/tools/usb-downloader ${RESULT_PATH}/tools/
+    cp -a ${META_NEXELL_PATH}/tools/fusing_tools/usb-downloader ${RESULT_PATH}/tools/
 
     cp -a ${RESULT_PATH}/partition.txt ${RESULT_PATH}/tools/
 }
@@ -494,9 +511,11 @@ function kernel_partial_build()
 }
 
 parse_args $@
-check_usage
 split_machine_name
 setup_path
+update_support_target_list
+update_support_image_list
+check_usage
 
 gen_and_copy_bbappend
 kernel_version_sync
