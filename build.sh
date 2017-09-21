@@ -41,6 +41,13 @@ META_NEXELL_DISTRO_PATH=
 
 POKY_STYLE_MACHINE_NAME=
 
+QT_VERSION="5.4.x"
+#QT_VERSION="5.8.x"
+
+declare -A META_QT5_SELECT
+META_QT5_SELECT["5.4.x"]="fido"
+META_QT5_SELECT["5.8.x"]="pyro"
+
 declare -A KERNEL_IMAGE
 KERNEL_IMAGE["s5p4418"]="zImage"
 KERNEL_IMAGE["s5p6818"]="Image"
@@ -192,6 +199,14 @@ function setup_path()
         RESULT_DIR="SDK-result-${BOARD_SOCNAME}-${IMAGE_TYPE}"
     fi
     META_NEXELL_DISTRO_PATH=`readlink -ev ${ROOT_PATH}/yocto/meta-nexell/meta-nexell-distro`
+}
+
+function branch_setup()
+{
+
+    cd ${ROOT_PATH}/yocto/meta-qt5
+    git checkout ${META_QT5_SELECT[${QT_VERSION}]}
+    echo "meta-qt5 branch changed!! to ${QT_VERSION}"
 }
 
 function gen_and_copy_bbappend()
@@ -505,7 +520,7 @@ function kernel_partial_build()
     make ARCH=${ARM_ARCH} CROSS_COMPILE=$cross_compiler_path/${COMPILER[${BOARD_SOCNAME}]} ${KERNEL_DEFCONFIG} -j8
     make ARCH=${ARM_ARCH} CROSS_COMPILE=$cross_compiler_path/${COMPILER[${BOARD_SOCNAME}]} ${KERNEL_IMAGE[${BOARD_SOCNAME}]} -j8
     make ARCH=${ARM_ARCH} CROSS_COMPILE=$cross_compiler_path/${COMPILER[${BOARD_SOCNAME}]} dtbs
-    make ARCH=${ARM_ARCH} CROSS_COMPILE=$cross_compiler_path/${COMPILER[${BOARD_SOCNAME}]} modules -j8 
+    make ARCH=${ARM_ARCH} CROSS_COMPILE=$cross_compiler_path/${COMPILER[${BOARD_SOCNAME}]} modules -j8
     #make ARCH=${ARM_ARCH} CROSS_COMPILE=$cross_compiler_path/${COMPILER[${BOARD_SOCNAME}]} modules_install INSTALL_MOD_PATH=${D} INSTALL_MOD_STRIP=1
     popd
 }
@@ -513,6 +528,7 @@ function kernel_partial_build()
 parse_args $@
 split_machine_name
 setup_path
+branch_setup
 update_support_target_list
 update_support_image_list
 check_usage
