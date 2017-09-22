@@ -65,7 +65,7 @@ set -e
 
 function update_support_target_list()
 {
-    configs=$(ls -trh ${META_NEXELL_PATH}/tools/configs/board/)
+    configs=$(ls -trh ${META_NEXELL_DISTRO_PATH}/tools/configs/board/)
     for entry in ${configs}
     do
         filename="${entry%.*}"
@@ -75,7 +75,7 @@ function update_support_target_list()
 
 function update_support_image_list()
 {
-    configs=$(ls -trh ${META_NEXELL_PATH}/tools/configs/imagetype)
+    configs=$(ls -trh ${META_NEXELL_DISTRO_PATH}/tools/configs/imagetype)
     for entry in ${configs}
     do
         filename="${entry%.*}"
