@@ -21,6 +21,7 @@ R_NX_LIBS='/recipes-nexell-libs/nx-libs'
 R_TESTSUITE='/recipes-application/testsuite'
 R_GRAPHICS_XORG='/recipes-graphics/xorg-driver'
 R_QTAPPS='/recipes-qt/nexell-apps'
+R_SMARTVOICE='/recipes-multimedia/smart-voice-app'
 
 TEMPLATE1=[
     '### Nexell - For Yocto build with using local source, Below lines are auto generated codes',
@@ -110,6 +111,8 @@ HASH_RECIPENAME_PATH = {
 
     'testsuite-s5p6818_%.bbappend' :            [['/apps/testsuite',R_TESTSUITE],[]],
     'testsuite-s5p4418_%.bbappend' :            [['/apps/testsuite',R_TESTSUITE],[]],
+
+    'smart-voice-testapp_%.bbappend' :            [['/apps/smartvoice',R_SMARTVOICE],[]],
 
     'xf86-video-armsoc-nexell_%.bbappend' :     [['/library/xf86-video-armsoc',R_GRAPHICS_XORG],[]],
 

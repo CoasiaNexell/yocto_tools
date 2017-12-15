@@ -19,6 +19,7 @@ R_UBOOT='/recipes-bsp/u-boot'
 R_GST_LIBS='/recipes-nexell-libs/gst-plugins'
 R_NX_LIBS='/recipes-nexell-libs/nx-libs'
 R_TESTSUITE='/recipes-application/testsuite'
+R_SMARTVOICE='recipes-multimedia/smart-voice-app'
 R_GRAPHICS_XORG='/recipes-graphics/xorg-driver'
 R_QTAPPS='/recipes-qt/nexell-apps'
 
@@ -59,6 +60,8 @@ HASH_RECIPENAME_PATH = {
 
     'testsuite-s5p6818_%.bbappend' :            [['/apps/testsuite',R_TESTSUITE],[]],
     'testsuite-s5p4418_%.bbappend' :            [['/apps/testsuite',R_TESTSUITE],[]],
+
+    'smart-voice-testapp_%.bbappend' :            [['/apps/smartvoice',R_SMARTVOICE],[]],
 
     'xf86-video-armsoc-nexell_%.bbappend' :     [['/library/xf86-video-armsoc',R_GRAPHICS_XORG],[]],
 
