@@ -20,6 +20,7 @@ R_NX_LIBS='/recipes-nexell-libs/nx-libs'
 R_TESTSUITE='/recipes-application/testsuite'
 R_GRAPHICS_XORG='/recipes-graphics/xorg-driver'
 R_QTAPPS='/recipes-qt/nexell-apps'
+R_SMARTVOICE='/recipes-multimedia/smart-voice-app'
 
 HASH_RECIPENAME_PATH = {
     's5p4418-avn-ref-bl1.bbappend':         ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], []],
@@ -90,6 +91,8 @@ HASH_RECIPENAME_PATH = {
 
     'testsuite-s5p4418_%.bbappend' :            ['ON',['/apps/testsuite',R_TESTSUITE,'/testsuite'],[]],
     'testsuite-s5p6818_%.bbappend' :            ['ON',['/apps/testsuite',R_TESTSUITE,'/testsuite'],[]],
+
+    'smart-voice-testapp_%.bbappend' :          ['ON',['/apps/smartvoice',R_SMARTVOICE,'/smartvoice'],[]],
 
     'xf86-video-armsoc-nexell_%.bbappend' :     ['ON',['/library/xf86-video-armsoc',R_GRAPHICS_XORG,'/xf86-video-armsoc'],[]],
 
