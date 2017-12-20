@@ -92,7 +92,7 @@ HASH_RECIPENAME_PATH = {
     'testsuite-s5p4418_%.bbappend' :            ['ON',['/apps/testsuite',R_TESTSUITE,'/testsuite'],[]],
     'testsuite-s5p6818_%.bbappend' :            ['ON',['/apps/testsuite',R_TESTSUITE,'/testsuite'],[]],
 
-    'smart-voice-testapp_%.bbappend' :          ['ON',['/apps/smartvoice',R_SMARTVOICE,'/smartvoice'],[]],
+    'smart-voice-testapp.bbappend' :          ['ON',['/apps/smartvoice',R_SMARTVOICE,'/smartvoice'],[]],
 
     'xf86-video-armsoc-nexell_%.bbappend' :     ['ON',['/library/xf86-video-armsoc',R_GRAPHICS_XORG,'/xf86-video-armsoc'],[]],
 
