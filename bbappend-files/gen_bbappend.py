@@ -97,6 +97,8 @@ HASH_RECIPENAME_PATH = {
     'gst-plugins-camera_%.bbappend':    [['/library/gst-plugins-camera',R_GST_LIBS],[]],
     'gst-plugins-renderer_%.bbappend':  [['/library/gst-plugins-renderer',R_GST_LIBS],[]],
     'gst-plugins-scaler_%.bbappend':    [['/library/gst-plugins-scaler',R_GST_LIBS],[]],
+    'gst-plugins-video-dec_%.bbappend': [['/library/gst-plugins-video-dec',R_GST_LIBS],[]],
+    'gst-plugins-video-sink_%.bbappend': [['/library/gst-plugins-video-sink',R_GST_LIBS],[]],
 
     'libdrm-nx_%.bbappend':             [['/library/libdrm',R_NX_LIBS],[]],
     'nx-drm-allocator_%.bbappend':      [['/library/nx-drm-allocator',R_NX_LIBS],[]],
@@ -109,10 +111,9 @@ HASH_RECIPENAME_PATH = {
     'linux-s5p4418.bbappend':           [['/kernel/kernel-${LINUX_VERSION}',R_KERNEL],[]],
     'linux-s5p6818.bbappend':           [['/kernel/kernel-${LINUX_VERSION}',R_KERNEL],[]],
 
-    'testsuite-s5p6818_%.bbappend' :            [['/apps/testsuite',R_TESTSUITE],[]],
-    'testsuite-s5p4418_%.bbappend' :            [['/apps/testsuite',R_TESTSUITE],[]],
+    'testsuite_%.bbappend' :            [['/apps/testsuite',R_TESTSUITE],[]],
 
-    'smart-voice-testapp_%.bbappend' :            [['/apps/smartvoice',R_SMARTVOICE],[]],
+    'smart-voice-testapp.bbappend' :            [['/apps/smartvoice',R_SMARTVOICE],[]],
 
     'xf86-video-armsoc-nexell_%.bbappend' :     [['/library/xf86-video-armsoc',R_GRAPHICS_XORG],[]],
 
