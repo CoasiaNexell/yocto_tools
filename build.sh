@@ -155,7 +155,7 @@ function usage()
     echo -e " <machine-name> : "
     echo -e "        s5p6818-artik710-raptor or s5p6818-artik710-raptor or s5p6818-artik710-raptor or s5p4418-avn-ref ...\n"
     echo -e " <image-type> : "
-    echo -e "        qt, tiny, sato, tinyui \n"
+    echo -e "        qt, tiny, sato, tinyui, qtX11 \n"
     echo -e " -s : sdk create"
     echo -e " -c : cleanbuild"
     echo -e " -t bl1    : if you want to build only bl1, specify this, default no"
@@ -203,9 +203,8 @@ function setup_path()
 
 function branch_setup()
 {
-
     cd ${ROOT_PATH}/yocto/meta-qt5
-    git checkout ${META_QT5_SELECT[${QT_VERSION}]}
+    git checkout origin/${META_QT5_SELECT[${QT_VERSION}]}
     echo "meta-qt5 branch changed!! to ${QT_VERSION}"
 }
 
