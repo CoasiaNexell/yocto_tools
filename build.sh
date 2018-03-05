@@ -38,7 +38,7 @@ NEED_KERNEL_MAKE_CLEAN=false
 META_NEXELL_PATH=`readlink -ev ${ROOT_PATH}/yocto/meta-nexell`
 GENIVI_PATH=`readlink -e ${ROOT_PATH}/yocto/GENIVI`
 
-declare -a targets=("s5p4418-avn-ref" "s5p4418-navi-ref" "s5p4418-daudio-ref" "s5p6818-artik710-raptor" "s5p6818-avn-ref" "s5p4418-smart-voice" "s5p6818-kick-st" "s5p4418-daudio-covi" "s5p4418-ff-voice")
+declare -a targets=("s5p4418-avn-ref" "s5p4418-navi-ref" "s5p4418-daudio-ref" "s5p6818-artik710-raptor" "s5p6818-avn-ref" "s5p4418-smart-voice" "s5p6818-kick-st" "s5p4418-daudio-covi" "s5p4418-ff-voice" "s5p4418-svm-ref")
 declare -a imagetypes=("qt" "tiny" "sato" "tinyui" "genivi" "smartvoice" "sdl")
 
 function check_usage()
@@ -137,6 +137,7 @@ function usage()
     echo " ex) $0 s5p4418-daudio-ref qt"
     echo " ex) $0 s5p4418-daudio-covi qt"
     echo " ex) $0 s5p4418-smart-voice smartvoice -c"
+    echo " ex) $0 s5p4418-svm-ref qt"
     echo ""
 }
 
