@@ -32,6 +32,7 @@ HASH_RECIPENAME_PATH = {
     's5p6818-avn-ref-bl1.bbappend':         ['ON',['/bl1/bl1-s5p6818',R_BL1,'/bl1-s5p6818'], []],
     's5p6818-kick-st-bl1.bbappend':         ['ON',['/bl1/bl1-s5p6818',R_BL1,'/bl1-s5p6818'], []],
     's5p4418-daudio-covi-bl1.bbappend':      ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], []],
+	's5p4418-svm-ref-bl1.bbappend':        ['ON',['/bl1/bl1-s5p4418',R_BL1,'/bl1-s5p4418'], []],
 
     's5p4418-avn-ref-bl2.bbappend':         ['ON',['/secure/bl2-s5p4418',R_BL2,'/secure-s5p4418'], []],
     's5p4418-navi-ref-bl2.bbappend':        ['ON',['/secure/bl2-s5p4418',R_BL2,'/secure-s5p4418'], []],
@@ -39,6 +40,7 @@ HASH_RECIPENAME_PATH = {
     's5p4418-ff-voice-bl2.bbappend':     ['ON',['/secure/bl2-s5p4418',R_BL2,'/secure-s5p4418'], []],
     's5p4418-daudio-ref-bl2.bbappend':      ['ON',['/secure/bl2-s5p4418',R_BL2,'/secure-s5p4418'], []],
     's5p4418-daudio-covi-bl2.bbappend':      ['ON',['/secure/bl2-s5p4418',R_BL2,'/secure-s5p4418'], []],
+	's5p4418-svm-ref-bl2.bbappend':        ['ON',['/secure/bl2-s5p4418',R_BL2,'/secure-s5p4418'], []],
 
     's5p4418-avn-ref-dispatcher.bbappend':         ['ON',['/secure/armv7-dispatcher',R_ARMV7_DISPATCHER,'/armv7-dispatcher'], []],
     's5p4418-navi-ref-dispatcher.bbappend':        ['ON',['/secure/armv7-dispatcher',R_ARMV7_DISPATCHER,'/armv7-dispatcher'], []],
@@ -46,6 +48,7 @@ HASH_RECIPENAME_PATH = {
     's5p4418-ff-voice-dispatcher.bbappend':     ['ON',['/secure/armv7-dispatcher',R_ARMV7_DISPATCHER,'/armv7-dispatcher'], []],
     's5p4418-daudio-ref-dispatcher.bbappend':      ['ON',['/secure/armv7-dispatcher',R_ARMV7_DISPATCHER,'/armv7-dispatcher'], []],
     's5p4418-daudio-covi-dispatcher.bbappend':      ['ON',['/secure/armv7-dispatcher',R_ARMV7_DISPATCHER,'/armv7-dispatcher'], []],
+	's5p4418-svm-ref-dispatcher.bbappend':        ['ON',['/secure/armv7-dispatcher',R_ARMV7_DISPATCHER,'/armv7-dispatcher'], []],
 
     'arm-trusted-firmware_%.bbappend':      ['ON',['/secure/arm-trusted-firmware','/recipes-bsp/arm-trusted-firmware','/arm-trusted-firmware'],[]],
 
@@ -66,6 +69,7 @@ HASH_RECIPENAME_PATH = {
     's5p6818-avn-ref-uboot_%.bbappend':         ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
     's5p6818-kick-st-uboot_%.bbappend':         ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
     's5p4418-daudio-covi-uboot_%.bbappend':      ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
+	's5p4418-svm-ref-uboot_%.bbappend':        ['ON',['/u-boot/u-boot-2016.01',R_UBOOT,'/u-boot-2016.01'],[]],
 
     'gst-plugins-camera_%.bbappend':    ['ON',['/library/gst-plugins-camera',R_GST_LIBS,'/gst-plugins-camera'],[]],
     'gst-plugins-renderer_%.bbappend':  ['ON',['/library/gst-plugins-renderer',R_GST_LIBS,'/gst-plugins-renderer'],[]],
@@ -88,6 +92,7 @@ HASH_RECIPENAME_PATH = {
     'linux-s5p6818-avn-ref_%.bbappend':         ['ON',['/kernel/kernel-4.4.x',R_KERNEL,'/kernel-4.4.x'], []],
     'linux-s5p6818-kick-st_%.bbappend':         ['ON',['/kernel/kernel-4.4.x',R_KERNEL,'/kernel-4.4.x'], []],
     'linux-s5p4418-daudio-covi_%.bbappend':      ['ON',['/kernel/kernel-4.4.x',R_KERNEL,'/kernel-4.4.x'],  []],
+	'linux-s5p4418-svm-ref_%.bbappend':        ['ON',['/kernel/kernel-4.4.x',R_KERNEL,'/kernel-4.4.x'],  []],
 
     'testsuite-s5p4418_%.bbappend' :            ['ON',['/apps/testsuite',R_TESTSUITE,'/testsuite'],[]],
     'testsuite-s5p6818_%.bbappend' :            ['ON',['/apps/testsuite',R_TESTSUITE,'/testsuite'],[]],
