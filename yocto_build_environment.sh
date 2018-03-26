@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Essentials: Packages needed to build an image on a headless system:
-sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat
+sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat pycrpyto
 
 #Graphical and Eclipse Plug-In Extras: Packages recommended if the host system has graphics support or  if you are going to use the Eclipse IDE:
 sudo apt-get install libsdl1.2-dev xter
