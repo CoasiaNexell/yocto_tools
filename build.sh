@@ -41,6 +41,7 @@ META_NEXELL_DISTRO_PATH=
 
 POKY_STYLE_MACHINE_NAME=
 
+#default qt version 5.4.x
 QT_VERSION="5.4.x"
 #QT_VERSION="5.8.x"
 
@@ -107,7 +108,11 @@ function check_usage()
 
     for j in ${imagetypes[@]}
     do
-        if [ $j == ${IMAGE_TYPE} ]; then
+        if [ $j == "qt5.4.x" -o $j == "qt5.8.x" ]; then
+            existImageTypes=true
+            echo -e "\033[47;34m Select imageTypes : $j \033[0m"
+            break
+        elif [ $j == ${IMAGE_TYPE} ]; then
             existImageTypes=true
             echo -e "\033[47;34m Select imageTypes : $j \033[0m"
             break
@@ -127,13 +132,14 @@ function check_usage()
 }
 function parse_args()
 {
-    ARGS=$(getopt -o csht:n: -- "$@");
+    ARGS=$(getopt -o csht:n:q: -- "$@");
     eval set -- "$ARGS";
 
     while true; do
             case "$1" in
 		-c ) CLEAN_BUILD=true; shift 1 ;;
 		-s ) SDK_RELEASE=true; shift 1 ;;
+                -q ) QT_VERSION="$2"; shift 2;;
                 -n ) NUMBER_THREADS="$2"; shift 2 ;;
 		-t ) case "$2" in
 			 bl1    ) BUILD_ALL=false; BUILD_BL1=true ;;
@@ -158,12 +164,14 @@ function usage()
     echo -e "        qt, tiny, sato, tinyui, qtX11 \n"
     echo -e " -s : sdk create"
     echo -e " -c : cleanbuild"
+    echo -e " -q : QT version, default value is 5.4.x"
+    echo -e "      support version : 5.4.x and 5.8.x"
     echo -e " -t bl1    : if you want to build only bl1, specify this, default no"
     echo -e " -t uboot : if you want to build only uboot, specify this, default no"
     echo -e " -t kernel : if you want to build only kernel, specify this, default no"
     echo -e " -t optee  : if you want to build only optee, specify this, default no\n"
     echo " ex) $0 s5p6818-avn-ref tiny"
-    echo " ex) $0 s5p6818-avn-ref qt"
+    echo " ex) $0 s5p6818-avn-ref qt -q 5.8.x"
     echo " ex) $0 s5p4418-navi-ref qt -t kernel -t uboot -t bl1"
     echo " ex) $0 s5p4418-navi-ref tiny -c"
     echo " ex) $0 s5p4418-navi-ref tinyui"
@@ -272,11 +280,11 @@ function bitbake_run()
     if [ ${SDK_RELEASE} == "false" ]; then
         source poky/oe-init-build-env build/build-${MACHINE_NAME}-${IMAGE_TYPE}
         BUILD_PATH=`readlink -ev ${META_NEXELL_PATH}/../../build/build-${MACHINE_NAME}-${IMAGE_TYPE}`
-        ${META_NEXELL_PATH}/tools/envsetup.sh ${MACHINE_NAME} ${IMAGE_TYPE} ${NUMBER_THREADS} "EXTERNALSRC_USING"
+        ${META_NEXELL_PATH}/tools/envsetup.sh ${MACHINE_NAME} ${IMAGE_TYPE} ${NUMBER_THREADS} "EXTERNALSRC_USING" ${QT_VERSION}
     else        
         source poky/oe-init-build-env build/SDK-build-${BOARD_SOCNAME}-${IMAGE_TYPE}
         BUILD_PATH=`readlink -ev ${META_NEXELL_PATH}/../../build/SDK-build-${BOARD_SOCNAME}-${IMAGE_TYPE}`
-        ${META_NEXELL_PATH}/tools/envsetup-sdk.sh ${MACHINE_NAME} ${IMAGE_TYPE} ${NUMBER_THREADS} "EXTERNALSRC_USING"
+        ${META_NEXELL_PATH}/tools/envsetup-sdk.sh ${MACHINE_NAME} ${IMAGE_TYPE} ${NUMBER_THREADS} "EXTERNALSRC_USING" ${QT_VERSION}
     fi
     #-----------------------------------------------------------------------
 
