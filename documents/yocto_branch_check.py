@@ -7,13 +7,11 @@ import fileinput
 import os
 
 YOCTO_POKY = ['poky', '/yocto/poky']
-YOCTO_QT5 = ['qt5', '/yocto/meta-qt5']
 YOCTO_META_OE = ['meta-openembedded', '/yocto/meta-openembedded']
 YOCTO_OE_CORE = ['openembedded-core', '/yocto/openembedded-core']
 
 YOCTO_COMPONENTS = [
  YOCTO_POKY,
- YOCTO_QT5,
  YOCTO_META_OE,
  YOCTO_OE_CORE,
 ]
