@@ -42,12 +42,19 @@ META_NEXELL_DISTRO_PATH=
 POKY_STYLE_MACHINE_NAME=
 
 #default qt version 5.4.x
-QT_VERSION="5.4.x"
+#QT_VERSION="5.4.x"
+QT_VERSION="5.6.x"
 #QT_VERSION="5.8.x"
+#QT_VERSION="5.10.x"
+
+#POKY_VERSION="pyro"
+POKY_VERSION="sumo"
 
 declare -A META_QT5_SELECT
 META_QT5_SELECT["5.4.x"]="fido"
+META_QT5_SELECT["5.6.x"]="krogoth"
 META_QT5_SELECT["5.8.x"]="pyro"
+META_QT5_SELECT["5.10.x"]="sumo"
 
 declare -A KERNEL_IMAGE
 KERNEL_IMAGE["s5p4418"]="zImage"
@@ -108,9 +115,9 @@ function check_usage()
 
     for j in ${imagetypes[@]}
     do
-        if [ $j == "qt5.4.x" -o $j == "qt5.8.x" ]; then
+        if [ $j == "qt5.4.x" -o $j == "qt5.6.x" ]; then
             existImageTypes=true
-            echo -e "\033[47;34m Select imageTypes : $j \033[0m"
+            echo -e "\033[47;34m Select imageTypes : ${QT_VERSION} \033[0m"
             break
         elif [ $j == ${IMAGE_TYPE} ]; then
             existImageTypes=true
@@ -164,8 +171,8 @@ function usage()
     echo -e "        qt, tiny, sato, tinyui, qtX11 \n"
     echo -e " -s : sdk create"
     echo -e " -c : cleanbuild"
-    echo -e " -q : QT version, default value is 5.4.x"
-    echo -e "      support version : 5.4.x and 5.8.x"
+    echo -e " -q : QT version, default value is 5.6.x"
+    echo -e "      support version : 5.4.x  5.6.x"
     echo -e " -t bl1    : if you want to build only bl1, specify this, default no"
     echo -e " -t uboot : if you want to build only uboot, specify this, default no"
     echo -e " -t kernel : if you want to build only kernel, specify this, default no"
@@ -212,8 +219,20 @@ function setup_path()
 function branch_setup()
 {
     cd ${ROOT_PATH}/yocto/meta-qt5
+    git clean -f -d;git checkout -f
     git checkout origin/${META_QT5_SELECT[${QT_VERSION}]}
+
+    if [ "${QT_VERSION}" == "5.7.x" ];then
+        git checkout 81fb771c3f31110e50eebcb004809361fdb28194
+        patch -p1 < ${TOOLS_PATH}/patches/0001-Qt5Webkit-install-issue-workaround.patch        
+    fi
+
     echo "meta-qt5 branch changed!! to ${QT_VERSION}"
+
+    # poky is sumo and meta-qt5 is fido ==> base_contains does not working.
+    if [ "${POKY_VERSION}" == "sumo" ];then
+        find . -exec perl -pi -e 's/base_contains/bb\.utils\.contains/g' {} \;
+    fi
 }
 
 function gen_and_copy_bbappend()
@@ -223,7 +242,7 @@ function gen_and_copy_bbappend()
     echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
 
     pushd ${TOOLS_PATH}/bbappend-files
-    ./gen_bbappend.sh ${ROOT_PATH}
+    ./run_bbappend.sh ${ROOT_PATH} "generate"
 
     cp -a ${TOOLS_PATH}/bbappend-files/recipes-* ${META_NEXELL_DISTRO_PATH}
 
@@ -259,6 +278,7 @@ function kernel_version_sync()
     KERNEL_FULLPATH=${KERNEL_PATH}/${KERNEL_DIRNAME}
     python ${TOOLS_PATH}/kernel_version_sync.py \
            ${META_NEXELL_DISTRO_PATH}/recipes-kernel/linux/linux-${BOARD_SOCNAME}.bbappend \
+           ${META_NEXELL_DISTRO_PATH}/recipes-bsp/optee/optee-build_%.bbappend \
            ${ROOT_PATH} \
            ${KERNEL_DIRNAME}
     popd
@@ -368,16 +388,24 @@ function bitbake_run()
             echo -e "\033[47;34m                      Clean Build True                              \033[0m"
             echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
             kernel_make_clean
-            
+            # make-mod-scripts clean + make mrproper virtual/kernel
             if [ ${BOARD_SOCNAME} == "s5p4418" ];then
                 echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_s5p4418[@]} \033[0m"
                 bitbake -c cleanall ${clean_recipes_s5p4418[@]}
             else
                 echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_s5p6818[@]} \033[0m"
-                bitbake -c cleanall ${clean_recipes_s5p6818[@]}
+                if [ -d ${BUILD_PATH}/tmp/work-shared/${MACHINE_NAME}/kernel-source ];then
+                    bitbake -c cleanall ${clean_recipes_s5p6818[@]}
+                fi
             fi
         fi
 
+        # # first kernel build, because optee-linuxdriver build conflict
+        # # not working DEPENS feature in recipe file.
+        # if [ ${BOARD_SOCNAME} == "s5p6818" ];then
+        #     bitbake optee-build virtual/kernel
+        # fi
+        
         if [ ${SDK_RELEASE} == "true" ]; then
             echo -e "\033[47;34m bitbake -c populate_sdk nexell-${IMAGE_TYPE}-sdk \033[0m"
             bitbake -c populate_sdk nexell-${IMAGE_TYPE}-sdk
@@ -395,7 +423,7 @@ function kernel_make_clean()
 {
     if [ $NEED_KERNEL_MAKE_CLEAN == true ];then
         echo -e "\n ------------------------------------------------------------------ "
-        echo -e "                        make distclean                              "
+        echo -e "                        kernel clean                                "
         echo -e " ------------------------------------------------------------------ "
 
         pushd ${KERNEL_FULLPATH}
@@ -410,8 +438,16 @@ function kernel_make_clean()
             echo -e " ------------------------------------------------------------------ "
             repo sync ${KERNEL_FULLPATH}
         fi
-        make ARCH=${ARM_ARCH} distclean
-        rm -rf .kernel-meta oe-logs oe-workdir .metadir .scmversion
+        make ARCH=${ARM_ARCH} clean
+        rm -rf .kernel-meta oe-logs oe-workdir .metadir .scmversion source
+
+        if [ "${POKY_VERSION}" == "sumo" ];then
+            make mrproper
+            rm -rf ${BUILD_PATH}/tmp/work/clone_kernel_src
+            mkdir -p ${BUILD_PATH}/tmp/work/clone_kernel_src
+            cp -a * ${BUILD_PATH}/tmp/work/clone_kernel_src/
+        fi
+
         popd
     fi
 }
