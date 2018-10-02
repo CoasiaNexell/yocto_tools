@@ -20,8 +20,8 @@ R_GST_LIBS='/recipes-nexell-libs/gst-plugins'
 R_NX_LIBS='/recipes-nexell-libs/nx-libs'
 R_TESTSUITE='/recipes-application/testsuite'
 R_GRAPHICS_XORG='/recipes-graphics/xorg-driver'
-R_QTAPPS='/recipes-qt/nexell-apps'
 R_SMARTVOICE='/recipes-multimedia/smart-voice-app'
+R_CGMINER='/recipes-miners/cgminer'
 
 TEMPLATE1=[
     '### Nexell - For Yocto build with using local source, Below lines are auto generated codes',
@@ -116,10 +116,7 @@ HASH_RECIPENAME_PATH = {
     'smart-voice-testapp.bbappend' :            [['/apps/smartvoice',R_SMARTVOICE],[]],
 
     'xf86-video-armsoc-nexell_%.bbappend' :     [['/library/xf86-video-armsoc',R_GRAPHICS_XORG],[]],
-
-    'NxAudioPlayer_%.bbappend' :      [['/apps/QT/NxAudioPlayer',R_QTAPPS],[]],
-    'NxQuickRearCam_%.bbappend' :     [['/apps/QT/NxQuickRearCam',R_QTAPPS],[]],
-    'NxVideoPlayer_%.bbappend' :      [['/apps/QT/NxVideoPlayer',R_QTAPPS],[]],
+    'cgminer-gekko_%.bbappend' :     [['/apps/cgminer',R_CGMINER],[]],
 }
 
 def gen_bbappend_paths(curWorkingPath) :

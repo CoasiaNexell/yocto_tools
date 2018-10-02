@@ -42,7 +42,7 @@ META_NEXELL_DISTRO_PATH=
 POKY_STYLE_MACHINE_NAME=
 
 #default qt version 5.4.x
-QT_VERSION="5.4.x"
+#QT_VERSION="5.4.x"
 #QT_VERSION="5.8.x"
 
 declare -A META_QT5_SELECT
@@ -106,13 +106,22 @@ function check_usage()
         fi
     done
 
+#    for j in ${imagetypes[@]}
+#    do
+#        if [ $j == "qt5.4.x" -o $j == "qt5.8.x" ]; then
+#            existImageTypes=true
+#            echo -e "\033[47;34m Select imageTypes : $j \033[0m"
+#            break
+#        elif [ $j == ${IMAGE_TYPE} ]; then
+#            existImageTypes=true
+#            echo -e "\033[47;34m Select imageTypes : $j \033[0m"
+#            break
+#        fi
+#    done
+
     for j in ${imagetypes[@]}
     do
-        if [ $j == "qt5.4.x" -o $j == "qt5.8.x" ]; then
-            existImageTypes=true
-            echo -e "\033[47;34m Select imageTypes : $j \033[0m"
-            break
-        elif [ $j == ${IMAGE_TYPE} ]; then
+        if [ $j == ${IMAGE_TYPE} ]; then
             existImageTypes=true
             echo -e "\033[47;34m Select imageTypes : $j \033[0m"
             break
@@ -209,12 +218,12 @@ function setup_path()
     META_NEXELL_DISTRO_PATH=`readlink -ev ${ROOT_PATH}/yocto/meta-nexell/meta-nexell-distro`
 }
 
-function branch_setup()
-{
-    cd ${ROOT_PATH}/yocto/meta-qt5
-    git checkout origin/${META_QT5_SELECT[${QT_VERSION}]}
-    echo "meta-qt5 branch changed!! to ${QT_VERSION}"
-}
+#function branch_setup()
+#{
+#    cd ${ROOT_PATH}/yocto/meta-qt5
+#    git checkout origin/${META_QT5_SELECT[${QT_VERSION}]}
+#    echo "meta-qt5 branch changed!! to ${QT_VERSION}"
+#}
 
 function gen_and_copy_bbappend()
 {
@@ -535,7 +544,7 @@ function kernel_partial_build()
 parse_args $@
 split_machine_name
 setup_path
-branch_setup
+#branch_setup
 update_support_target_list
 update_support_image_list
 check_usage
