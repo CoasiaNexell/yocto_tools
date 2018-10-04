@@ -20,7 +20,8 @@ NEXELL_SOURCE_PATH_OPTEE_TEST=${ROOT_PATH}/secure/optee/optee_test
 NEXELL_SOURCE_PATH_UBOOT=${ROOT_PATH}/u-boot/u-boot-2016.01
 
 NEXELL_SOURCE_PATH_KERNEL=${KERNEL_PATH}
-NEXELL_SOURCE_PATH_CGMINER=${ROOT_PATH}/apps/cgminer
+NEXELL_SOURCE_PATH_CGMINER=${ROOT_PATH}/apps/bitminer/cgminer
+NEXELL_SOURCE_PATH_MODBUS_TCP_SERVER=${ROOT_PATH}/apps/bitminer/modbus-tcp-server
 
 NEXELL_SOURCE_PATH_META_NEXELL=${ROOT_PATH}/yocto/meta-nexell
 NEXELL_SOURCE_PATH_TOOLS=${ROOT_PATH}/tools
@@ -34,6 +35,7 @@ declare -a nexell_source_paths=($NEXELL_SOURCE_PATH_BL1_S5P6818
                                 $NEXELL_SOURCE_PATH_OPTEE_OS    $NEXELL_SOURCE_PATH_OPTEE_TEST
 
                                 $NEXELL_SOURCE_PATH_CGMINER
+                                $NEXELL_SOURCE_PATH_MODBUS_TCP_SERVER
 
                                 $NEXELL_SOURCE_PATH_META_NEXELL
                                 $NEXELL_SOURCE_PATH_TOOLS

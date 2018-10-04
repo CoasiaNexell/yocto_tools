@@ -22,6 +22,7 @@ R_TESTSUITE='/recipes-application/testsuite'
 R_GRAPHICS_XORG='/recipes-graphics/xorg-driver'
 R_SMARTVOICE='/recipes-multimedia/smart-voice-app'
 R_CGMINER='/recipes-miners/cgminer'
+R_MODBUS_TCP_SERVER='/recipes-miners/modbus-tcp-server'
 
 TEMPLATE1=[
     '### Nexell - For Yocto build with using local source, Below lines are auto generated codes',
@@ -116,7 +117,8 @@ HASH_RECIPENAME_PATH = {
     'smart-voice-testapp.bbappend' :            [['/apps/smartvoice',R_SMARTVOICE],[]],
 
     'xf86-video-armsoc-nexell_%.bbappend' :     [['/library/xf86-video-armsoc',R_GRAPHICS_XORG],[]],
-    'cgminer-gekko_%.bbappend' :     [['/apps/cgminer',R_CGMINER],[]],
+    'cgminer-gekko_%.bbappend' :     [['/apps/bitminer/cgminer',R_CGMINER],[]],
+    'modbus-tcp-server_%.bbappend' :     [['/apps/bitminer/modbus-tcp-server',R_MODBUS_TCP_SERVER],[]],
 }
 
 def gen_bbappend_paths(curWorkingPath) :
