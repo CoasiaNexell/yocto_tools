@@ -334,6 +334,10 @@ function bitbake_run()
             CLEAN_RECIPES+=("u-boot-nexell")
         fi
 
+        if [ ${BUILD_OPTEE} == "true" ]; then
+            BITBAKE_ARGS+=("optee-build")
+            CLEAN_RECIPES+=("optee-build")
+        fi
 
         if [ ${#CLEAN_RECIPES[@]} -gt 0 ]; then
 	    echo -e "\033[47;34m CLEAN TARGET : ${CLEAN_RECIPES[@]} \033[0m"
