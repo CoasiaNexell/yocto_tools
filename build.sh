@@ -186,6 +186,7 @@ function usage()
     echo " ex) $0 s5p4418-navi-ref qt -s"
     echo " ex) $0 s5p4418-daudio-ref qt"
     echo " ex) $0 s5p4418-smart-voice smartvoice -c"
+    echo " ex) $0 s5p4418-convergence-svmc qt"
     echo ""
 }
 
