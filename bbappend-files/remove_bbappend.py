@@ -23,6 +23,7 @@ R_GRAPHICS_XORG='/recipes-graphics/xorg-driver'
 R_SMARTVOICE='/recipes-multimedia/smart-voice-app'
 R_CGMINER='/recipes-miners/cgminer'
 R_MODBUS_TCP_SERVER='/recipes-miners/modbus-tcp-server'
+R_WATCHEVENT='/recipes-miners/watchevent'
 
 HASH_RECIPENAME_PATH = {
     'bl1-s5p4418.bbappend':        [['/bl1/bl1-s5p4418',R_BL1], []],
@@ -68,6 +69,7 @@ HASH_RECIPENAME_PATH = {
     'xf86-video-armsoc-nexell_%.bbappend' :     [['/library/xf86-video-armsoc',R_GRAPHICS_XORG],[]],
     'cgminer-gekko_%.bbappend' :     [['/apps/bitminer/cgminer',R_CGMINER],[]],
     'modbus-tcp-server_%.bbappend' :     [['/apps/bitminer/modbus-tcp-server',R_MODBUS_TCP_SERVER],[]],
+    'watchevent_%.bbappend' :     [['/apps/bitminer/watchevent',R_WATCHEVENT],[]],
 }
 
 def rm_bbappend_paths(curWorkingPath) :
