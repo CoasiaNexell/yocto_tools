@@ -221,7 +221,7 @@ function branch_setup()
 {
     cd ${ROOT_PATH}/yocto/meta-qt5
     git clean -f -d;git checkout -f
-    git checkout origin/${META_QT5_SELECT[${QT_VERSION}]}
+    git checkout nexell/${META_QT5_SELECT[${QT_VERSION}]}
 
     if [ "${QT_VERSION}" == "5.7.x" ];then
         git checkout 81fb771c3f31110e50eebcb004809361fdb28194
