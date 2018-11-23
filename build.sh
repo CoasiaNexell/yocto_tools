@@ -62,6 +62,8 @@ KERNEL_IMAGE["s5p6818"]="Image"
 
 declare -a clean_recipes_s5p4418=("nexell-${IMAGE_TYPE}" "virtual/kernel" "u-boot-nexell" "bl1-s5p4418")
 declare -a clean_recipes_s5p6818=("optee-build" "optee-linuxdriver" "nexell-${IMAGE_TYPE}" "virtual/kernel" "u-boot-nexell" "bl1-s5p4418")
+declare -a clean_recipes_nxlibs=("libdrm-nx" "nx-drm-allocator" "nx-gst-meta" "nx-renderer" "nx-scaler" "nx-v4l2" "nx-video-api" "nx-vidtex")
+declare -a clean_recipes_gstlibs=("gst-plugins-camera" "gst-plugins-renderer" "gst-plugins-scaler" "gst-plugins-video-dec" "gst-plugins-video-sink")
 
 # If you need to add some target board or image type, you have to use below file.
 # SUPPORT board target list : meta-nexell/tools/configs/board
@@ -392,11 +394,15 @@ function bitbake_run()
             # make-mod-scripts clean + make mrproper virtual/kernel
             if [ ${BOARD_SOCNAME} == "s5p4418" ];then
                 echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_s5p4418[@]} \033[0m"
-                bitbake -c cleanall ${clean_recipes_s5p4418[@]}
+                echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_nxlibs[@]} \033[0m"
+                echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_gstlibs[@]} \033[0m"
+                bitbake -c cleanall ${clean_recipes_s5p4418[@]} ${clean_recipes_nxlibs[@]} ${clean_recipes_gstlibs[@]}
             else
                 echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_s5p6818[@]} \033[0m"
+                echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_nxlibs[@]} \033[0m"
+                echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_gstlibs[@]} \033[0m"
                 if [ -d ${BUILD_PATH}/tmp/work-shared/${MACHINE_NAME}/kernel-source ];then
-                    bitbake -c cleanall ${clean_recipes_s5p6818[@]}
+                    bitbake -c cleanall ${clean_recipes_s5p6818[@]} ${clean_recipes_nxlibs[@]} ${clean_recipes_gstlibs[@]}
                 fi
             fi
         fi
@@ -406,7 +412,7 @@ function bitbake_run()
         # if [ ${BOARD_SOCNAME} == "s5p6818" ];then
         #     bitbake optee-build virtual/kernel
         # fi
-        
+
         if [ ${SDK_RELEASE} == "true" ]; then
             echo -e "\033[47;34m bitbake -c populate_sdk nexell-${IMAGE_TYPE}-sdk \033[0m"
             bitbake -c populate_sdk nexell-${IMAGE_TYPE}-sdk

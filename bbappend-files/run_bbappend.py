@@ -26,9 +26,6 @@ R_SMARTVOICE = '/recipes-multimedia/smart-voice-app'
 TEMPLATE0 = [
     '### Nexell - For Yocto build with using local source, Below lines are auto generated codes',
     '',
-    'EXTERNALSRC = "${_SRC_PATH_BY_GEN_}"',
-    'EXTERNALSRC_BUILD = "${_SRC_PATH_BY_GEN_}"',
-    '',
     'S = "${WORKDIR}/git"',
     '',
     'do_myp() {',
@@ -51,6 +48,10 @@ TEMPLATE1 = [
 ]
 
 TEMPLATE2 = [
+    '',
+    'do_patch() {',
+    '    :',
+    '}',
     '',
     'do_mypatch() {',
     '    cd ${S}',
@@ -200,7 +201,7 @@ def gen_bbappend_files(bbappendfile, curWorkingPath, hashData):
 
     # others
     else:
-        if L_PATHS[1] == R_NX_LIBS:
+        if L_PATHS[1] == R_NX_LIBS or L_PATHS[1] == R_GST_LIBS:
             for i in TEMPLATE0:
                 f.write(i + "\n")
         else:
@@ -212,9 +213,9 @@ def gen_bbappend_files(bbappendfile, curWorkingPath, hashData):
 
         if len(L_PATCH_FILES) > 0:
             for i in L_PATCH_FILES:
-                f.write("SRC_URI += \" file://" + i + "\"" + "\n")
-                INTO_BBAPPEND_PATCH_FILE += "patch -p1 < ${WORKDIR}/" + i + ";"
-                INTO_BBAPPEND_PATCH_R_FILE += "patch -R -p1 < ${WORKDIR}/" + i + ";"
+                f.write("SRC_URI_append = \" file://" + i + "\"" + "\n")
+                INTO_BBAPPEND_PATCH_FILE += "patch -p1 < ${WORKDIR}/" + i + " -f;"
+                INTO_BBAPPEND_PATCH_R_FILE += "patch -R -p1 < ${WORKDIR}/" + i + " -f;"
 
             for i in TEMPLATE2:
                 f.write(i + "\n")
