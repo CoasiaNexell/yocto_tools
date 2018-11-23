@@ -212,7 +212,7 @@ function setup_path()
 function branch_setup()
 {
     cd ${ROOT_PATH}/yocto/meta-qt5
-    git checkout origin/${META_QT5_SELECT[${QT_VERSION}]}
+    git checkout nexell/${META_QT5_SELECT[${QT_VERSION}]}
     echo "meta-qt5 branch changed!! to ${QT_VERSION}"
 }
 
