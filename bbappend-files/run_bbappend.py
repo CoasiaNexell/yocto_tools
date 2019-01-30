@@ -27,6 +27,7 @@ TEMPLATE0 = [
     '### Nexell - For Yocto build with using local source, Below lines are auto generated codes',
     '',
     'S = "${WORKDIR}/git"',
+    'PV = "1.0+EXTERNAL_SRC"',
     '',
     'do_myp() {',
     '    rm -rf ${S}',
@@ -39,6 +40,8 @@ TEMPLATE0 = [
 
 TEMPLATE1 = [
     '### Nexell - For Yocto build with using local source, Below lines are auto generated codes',
+    '',
+    'PV = "1.0+EXTERNAL_SRC"',
     '',
     'EXTERNALSRC = "${_SRC_PATH_BY_GEN_}"',
     'EXTERNALSRC_BUILD = "${_SRC_PATH_BY_GEN_}"',
@@ -76,7 +79,8 @@ TEMPLATE_KERNEL = [
     '#clean .config',
     'do_configure_prepend() {',
     '    echo "" > ${S}/.config',
-    '}'
+    '}',
+    '',
 ]
 
 TEMPLATE_SRC_URI = 'SRC_URI="file://${_SRC_PATH_BY_GEN_}"'
