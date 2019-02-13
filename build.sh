@@ -509,6 +509,10 @@ function make_nexell_server_documnets()
 
 function build_status_check()
 {
+    if [ ! -d ${BUILD_PATH}/../build-${BOARD_SOCNAME}-${BOARD_NAME}[${IMAGE_TYPE} ];then
+           CLEAN_BUILD=true
+    fi
+
     #matched! before build socname with current build socname
     if [ -e ${BUILD_PATH}/../NEXELL_STATUS-BUILD-${BOARD_SOCNAME} ];then
         #matched! before build boardname with current build boardname
