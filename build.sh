@@ -369,12 +369,19 @@ function bitbake_run()
             CLEAN_RECIPES+=("u-boot-nexell")
         fi
 
+        if [ ${BOARD_SOCNAME} == 's5p6818' ]; then
+            if [ ${BUILD_OPTEE} == "true" ]; then
+                BITBAKE_ARGS+=("optee-build")
+                CLEAN_RECIPES+=("optee-build" "arm-trusted-firmware" "l-loader" \
+                                "optee-os" "optee-client" "u-boot-nexell" "bl1-${BOARD_SOCNAME}")
+            fi
+        fi
 
         if [ ${#CLEAN_RECIPES[@]} -gt 0 ]; then
 	    echo -e "\033[47;34m CLEAN TARGET : ${CLEAN_RECIPES[@]} \033[0m"
             bitbake -c cleanall ${CLEAN_RECIPES[@]}
         fi
-	
+
         if [ ${#BITBAKE_ARGS[@]} -gt 0 ]; then
             echo -e "\n\033[47;34m ------------------------------------------------------------------ \033[0m"
             echo -e "\033[47;34m                          Partial Build                             \033[0m"
