@@ -64,6 +64,7 @@ declare -a clean_recipes_s5p4418=("nexell-${IMAGE_TYPE}" "virtual/kernel" "u-boo
 declare -a clean_recipes_s5p6818=("optee-build" "optee-linuxdriver" "nexell-${IMAGE_TYPE}" "virtual/kernel" "u-boot-nexell" "bl1-s5p4418")
 declare -a clean_recipes_nxlibs=("libdrm-nx" "nx-drm-allocator" "nx-gst-meta" "nx-renderer" "nx-scaler" "nx-v4l2" "nx-video-api" "nx-vidtex")
 declare -a clean_recipes_gstlibs=("gst-plugins-camera" "gst-plugins-renderer" "gst-plugins-scaler" "gst-plugins-video-dec" "gst-plugins-video-sink")
+declare -a clean_recipes_sdk=("nexell-daudio-sdk")
 
 # If you need to add some target board or image type, you have to use below file.
 # SUPPORT board target list : meta-nexell/tools/configs/board
@@ -404,7 +405,8 @@ function bitbake_run()
                 echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_s5p4418[@]} \033[0m"
                 echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_nxlibs[@]} \033[0m"
                 echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_gstlibs[@]} \033[0m"
-                bitbake -c cleanall ${clean_recipes_s5p4418[@]} ${clean_recipes_nxlibs[@]} ${clean_recipes_gstlibs[@]}
+                echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_sdk[@]} \033[0m"
+                bitbake -c cleanall ${clean_recipes_s5p4418[@]} ${clean_recipes_nxlibs[@]} ${clean_recipes_gstlibs[@]} ${clean_recipes_sdk[@]}
             else
                 echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_s5p6818[@]} \033[0m"
                 echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_nxlibs[@]} \033[0m"
