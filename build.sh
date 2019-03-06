@@ -405,8 +405,12 @@ function bitbake_run()
                 echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_s5p4418[@]} \033[0m"
                 echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_nxlibs[@]} \033[0m"
                 echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_gstlibs[@]} \033[0m"
-                echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_sdk[@]} \033[0m"
-                bitbake -c cleanall ${clean_recipes_s5p4418[@]} ${clean_recipes_nxlibs[@]} ${clean_recipes_gstlibs[@]} ${clean_recipes_sdk[@]}
+                if [ ${IMAGE_TYPE} == "qt" ];then
+                    echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_sdk[@]} \033[0m"
+                    bitbake -c cleanall ${clean_recipes_s5p4418[@]} ${clean_recipes_nxlibs[@]} ${clean_recipes_gstlibs[@]} ${clean_recipes_sdk[@]}
+                else
+                    bitbake -c cleanall ${clean_recipes_s5p4418[@]} ${clean_recipes_nxlibs[@]} ${clean_recipes_gstlibs[@]}
+                fi
             else
                 echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_s5p6818[@]} \033[0m"
                 echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_nxlibs[@]} \033[0m"
