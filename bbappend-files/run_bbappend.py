@@ -106,7 +106,7 @@ HASH_RECIPENAME_PATH = {
     'bl1-s5p4418.bbappend':        [['/bl1/bl1-s5p4418', R_BL1], []],
     'bl1-s5p6818.bbappend':        [['/bl1/bl1-s5p6818', R_BL1], []],
 
-    'bl2-s5p4418.bbappend':        [['/secure/bl2-s5p4418', R_BL2], ['0001-bl2-link-error-__aeabi_idiv.patch']],
+    'bl2-s5p4418.bbappend':        [['/secure/bl2-s5p4418', R_BL2], []],
 
     'dispatcher-s5p4418.bbappend': [['/secure/armv7-dispatcher', R_ARMV7_DISPATCHER], []],
 
