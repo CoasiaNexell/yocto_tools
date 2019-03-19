@@ -19,6 +19,7 @@ R_UBOOT = '/recipes-bsp/u-boot'
 R_GST_LIBS = '/recipes-nexell-libs/gst-plugins'
 R_NX_LIBS = '/recipes-nexell-libs/nx-libs'
 R_TESTSUITE = '/recipes-application/testsuite'
+R_VID_API_TEST = '/recipes-application/nx_video_api_test'
 R_GRAPHICS_XORG = '/recipes-graphics/xorg-driver'
 R_QTAPPS = '/recipes-qt/nexell-apps'
 R_SMARTVOICE = '/recipes-multimedia/smart-voice-app'
@@ -140,7 +141,7 @@ HASH_RECIPENAME_PATH = {
     'linux-s5p6818.bbappend':           [['/kernel/kernel-${LINUX_VERSION}', R_KERNEL], []],
 
     'testsuite_%.bbappend' :            [['/apps/testsuite', R_TESTSUITE], []],
-
+    'nx-video-api-test_%.bbappend' :            [['/apps/nx_video_api_test', R_VID_API_TEST], []],
     'smart-voice-testapp.bbappend' :            [['/apps/smartvoice', R_SMARTVOICE], []],
 
     'xf86-video-armsoc-nexell_%.bbappend' :     [['/library/xf86-video-armsoc', R_GRAPHICS_XORG], []],
