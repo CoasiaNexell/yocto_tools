@@ -136,6 +136,7 @@ HASH_RECIPENAME_PATH = {
     'nx-scaler_%.bbappend':             [['/library/nx-scaler', R_NX_LIBS], []],
     'nx-v4l2_%.bbappend':               [['/library/nx-v4l2', R_NX_LIBS], []],
     'nx-video-api_%.bbappend':          [['/library/nx-video-api', R_NX_LIBS], []],
+    'nx-uds_%.bbappend':                [['/library/nx-uds', R_NX_LIBS], []],
 
     'linux-s5p4418.bbappend':           [['/kernel/kernel-${LINUX_VERSION}', R_KERNEL], []],
     'linux-s5p6818.bbappend':           [['/kernel/kernel-${LINUX_VERSION}', R_KERNEL], []],
