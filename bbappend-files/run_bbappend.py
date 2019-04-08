@@ -23,6 +23,7 @@ R_VID_API_TEST = '/recipes-application/nx_video_api_test'
 R_GRAPHICS_XORG = '/recipes-graphics/xorg-driver'
 R_QTAPPS = '/recipes-qt/nexell-apps'
 R_SMARTVOICE = '/recipes-multimedia/smart-voice-app'
+R_SDK = '/recipes-solutions/nexell-sdk'
 
 TEMPLATE0 = [
     '### Nexell - For Yocto build with using local source, Below lines are auto generated codes',
@@ -137,6 +138,7 @@ HASH_RECIPENAME_PATH = {
     'nx-v4l2_%.bbappend':               [['/library/nx-v4l2', R_NX_LIBS], []],
     'nx-video-api_%.bbappend':          [['/library/nx-video-api', R_NX_LIBS], []],
     'nx-uds_%.bbappend':                [['/library/nx-uds', R_NX_LIBS], []],
+    'nx-config_%.bbappend':             [['/library/nx-config', R_NX_LIBS], []],
 
     'linux-s5p4418.bbappend':           [['/kernel/kernel-${LINUX_VERSION}', R_KERNEL], []],
     'linux-s5p6818.bbappend':           [['/kernel/kernel-${LINUX_VERSION}', R_KERNEL], []],
@@ -146,6 +148,9 @@ HASH_RECIPENAME_PATH = {
     'smart-voice-testapp.bbappend' :            [['/apps/smartvoice', R_SMARTVOICE], []],
 
     'xf86-video-armsoc-nexell_%.bbappend' :     [['/library/xf86-video-armsoc', R_GRAPHICS_XORG], []],
+
+    'nexell-daudio-sdk.bbappend' :        [['/solutions/displayaudio-sdk', R_SDK], []],
+    'allgo-connectivity-sdk.bbappend' :   [['/solutions/allgo-connectivity-sdk', R_SDK], []],
 }
 
 
@@ -207,7 +212,7 @@ def gen_bbappend_files(bbappendfile, curWorkingPath, hashData):
 
     # others
     else:
-        if L_PATHS[1] == R_NX_LIBS or L_PATHS[1] == R_GST_LIBS:
+        if L_PATHS[1] == R_NX_LIBS or L_PATHS[1] == R_GST_LIBS or L_PATHS[1] == R_SDK:
             for i in TEMPLATE0:
                 f.write(i + "\n")
         else:
