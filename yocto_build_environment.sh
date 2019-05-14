@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Essentials: Packages needed to build an image on a headless system:
-sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat pycrpyto
+sudo apt-get install g++ gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat pycrpytoa libncurses5-dev libstdc++6:i386
 
 #Graphical and Eclipse Plug-In Extras: Packages recommended if the host system has graphics support or  if you are going to use the Eclipse IDE:
 sudo apt-get install libsdl1.2-dev xter
@@ -17,3 +17,4 @@ sudo apt-get install python-git
 
 #Ubuntu build environment
 sudo apt-get install live-build debootstrap qemu-user-static
+
