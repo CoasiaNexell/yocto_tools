@@ -140,6 +140,7 @@ HASH_RECIPENAME_PATH = {
     'nx-scaler_%.bbappend':             [['/library/nx-scaler', R_NX_LIBS], []],
     'nx-v4l2_%.bbappend':               [['/library/nx-v4l2', R_NX_LIBS], []],
     'nx-video-api_%.bbappend':          [['/library/nx-video-api', R_NX_LIBS], []],
+    'nx-gl-tools_%.bbappend':           [['/library/nx-gl-tools', R_NX_LIBS], []],
     'nx-uds_%.bbappend':                [['/library/nx-uds', R_NX_LIBS], []],
     'nx-config_%.bbappend':             [['/library/nx-config', R_NX_LIBS], []],
 
