@@ -62,7 +62,8 @@ KERNEL_IMAGE["s5p6818"]="Image"
 
 declare -a clean_recipes_s5p4418=("nexell-${IMAGE_TYPE}" "virtual/kernel" "u-boot-nexell" "bl1-s5p4418")
 declare -a clean_recipes_s5p6818=("optee-build" "optee-linuxdriver" "nexell-${IMAGE_TYPE}" "virtual/kernel" "u-boot-nexell" "bl1-s5p4418")
-declare -a clean_recipes_nxlibs=("libdrm-nx" "nx-drm-allocator" "nx-gst-meta" "nx-renderer" "nx-scaler" "nx-v4l2" "nx-video-api" "nx-vidtex" "nx-gl-tools" "nx-uds" "nx-config")
+declare -a clean_recipes_nxlibs_1=("libdrm-nx" "nx-drm-allocator" "nx-gst-meta" "nx-renderer" "nx-scaler" "nx-v4l2" "nx-video-api" "nx-vidtex" "nx-gl-tools" "nx-uds" "nx-config")
+declare -a clean_recipes_nxlibs_2=("libdrm-nx" "nx-drm-allocator" "nx-gst-meta" "nx-renderer" "nx-scaler" "nx-v4l2" "nx-video-api" "nx-vidtex" "nx-uds" "nx-config")
 declare -a clean_recipes_gstlibs=("gst-plugins-camera" "gst-plugins-renderer" "gst-plugins-scaler" "gst-plugins-video-dec" "gst-plugins-video-sink")
 declare -a clean_recipes_sdk=("nexell-daudio-sdk" "allgo-connectivity-sdk")
 
@@ -229,7 +230,7 @@ function branch_setup()
 
     if [ "${QT_VERSION}" == "5.7.x" ];then
         git checkout 81fb771c3f31110e50eebcb004809361fdb28194
-        patch -p1 < ${TOOLS_PATH}/patches/0001-Qt5Webkit-install-issue-workaround.patch        
+        patch -p1 < ${TOOLS_PATH}/patches/0001-Qt5Webkit-install-issue-workaround.patch
     fi
 
     echo "meta-qt5 branch changed!! to ${QT_VERSION}"
@@ -339,7 +340,7 @@ function bitbake_run()
             else
                 #check sysroot cross-compiler
                 #If exist poky cross-compiler And once a time full build done.
-                #Run kernel_partial_build                
+                #Run kernel_partial_build
                 if ! [ -f ${BUILD_PATH}/tmp/work/KBUILD_DEFCONFIG.txt ]; then
                     echo -e "\n\033[40;34m Never build before virtual/kernel build, At least once Yocto Kernel Build has been performed. \033[0m"
                     echo -e "\n\033[40;34m Because you need to know the cross compiler and defconfig information. \033[0m"
@@ -403,20 +404,26 @@ function bitbake_run()
             # make-mod-scripts clean + make mrproper virtual/kernel
             if [ ${BOARD_SOCNAME} == "s5p4418" ];then
                 echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_s5p4418[@]} \033[0m"
-                echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_nxlibs[@]} \033[0m"
                 echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_gstlibs[@]} \033[0m"
                 if [ ${IMAGE_TYPE} == "qt" ];then
                     echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_sdk[@]} \033[0m"
-                    bitbake -c cleanall ${clean_recipes_s5p4418[@]} ${clean_recipes_nxlibs[@]} ${clean_recipes_gstlibs[@]} ${clean_recipes_sdk[@]}
+                    echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_nxlibs_1[@]} \033[0m"
+                    bitbake -c cleanall ${clean_recipes_s5p4418[@]} ${clean_recipes_nxlibs_1[@]} ${clean_recipes_gstlibs[@]} ${clean_recipes_sdk[@]}
                 else
-                    bitbake -c cleanall ${clean_recipes_s5p4418[@]} ${clean_recipes_nxlibs[@]} ${clean_recipes_gstlibs[@]}
+                    echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_nxlibs_2[@]} \033[0m"
+                    bitbake -c cleanall ${clean_recipes_s5p4418[@]} ${clean_recipes_nxlibs_2[@]} ${clean_recipes_gstlibs[@]}
                 fi
             else
                 echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_s5p6818[@]} \033[0m"
-                echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_nxlibs[@]} \033[0m"
                 echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_gstlibs[@]} \033[0m"
                 if [ -d ${BUILD_PATH}/tmp/work-shared/${MACHINE_NAME}/kernel-source ];then
-                    bitbake -c cleanall ${clean_recipes_s5p6818[@]} ${clean_recipes_nxlibs[@]} ${clean_recipes_gstlibs[@]}
+                    if [ ${IMAGE_TYPE} == "qt" ];then
+                        echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_nxlibs_1[@]} \033[0m"
+                        bitbake -c cleanall ${clean_recipes_s5p6818[@]} ${clean_recipes_nxlibs_1[@]} ${clean_recipes_gstlibs[@]}
+                    else
+                        echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_nxlibs_2[@]} \033[0m"
+                        bitbake -c cleanall ${clean_recipes_s5p6818[@]} ${clean_recipes_nxlibs_2[@]} ${clean_recipes_gstlibs[@]}
+                    fi
                 fi
             fi
         fi
