@@ -148,7 +148,6 @@ HASH_RECIPENAME_PATH = {
     'linux-s5p6818.bbappend':           [['/kernel/kernel-${LINUX_VERSION}', R_KERNEL], []],
 
     'testsuite_%.bbappend' :            [['/apps/testsuite', R_TESTSUITE], []],
-    'nx-video-api-test_%.bbappend' :            [['/apps/nx_video_api_test', R_VID_API_TEST], []],
     'smart-voice-testapp.bbappend' :            [['/apps/smartvoice', R_SMARTVOICE], []],
 
     'xf86-video-armsoc-nexell_%.bbappend' :     [['/library/xf86-video-armsoc', R_GRAPHICS_XORG], []],

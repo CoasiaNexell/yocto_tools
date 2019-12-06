@@ -43,12 +43,14 @@ POKY_STYLE_MACHINE_NAME=
 
 #default qt version 5.4.x
 #QT_VERSION="5.4.x"
-QT_VERSION="5.6.x"
+#QT_VERSION="5.6.x"
 #QT_VERSION="5.8.x"
 #QT_VERSION="5.10.x"
+QT_VERSION="5.11.x"
 
 #POKY_VERSION="pyro"
-POKY_VERSION="sumo"
+#POKY_VERSION="sumo"
+POKY_VERSION="thud"
 
 declare -A META_QT5_SELECT
 META_QT5_SELECT["5.4.x"]="fido"
@@ -468,6 +470,12 @@ function kernel_make_clean()
             mkdir -p ${BUILD_PATH}/tmp/work/clone_kernel_src
             cp -a * ${BUILD_PATH}/tmp/work/clone_kernel_src/
         fi
+        if [ "${POKY_VERSION}" == "thud" ];then
+            make mrproper
+            rm -rf ${BUILD_PATH}/tmp/work/clone_kernel_src
+            mkdir -p ${BUILD_PATH}/tmp/work/clone_kernel_src
+            cp -a * ${BUILD_PATH}/tmp/work/clone_kernel_src/
+        fi
 
         popd
     fi
@@ -596,7 +604,7 @@ function kernel_partial_build()
 parse_args $@
 split_machine_name
 setup_path
-branch_setup
+#branch_setup
 update_support_target_list
 update_support_image_list
 check_usage
