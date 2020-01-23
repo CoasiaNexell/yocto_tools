@@ -24,6 +24,8 @@ R_GRAPHICS_XORG = '/recipes-graphics/xorg-driver'
 R_QTAPPS = '/recipes-qt/nexell-apps'
 R_SMARTVOICE = '/recipes-multimedia/smart-voice-app'
 R_SDK = '/recipes-solutions/nexell-sdk'
+R_NX_INIT = '/recipes-extended/nexell-init'
+R_NX_QUICKREARCAM = '/recipes-application/nx-quickrearcam'
 
 TEMPLATE0 = [
     '### Nexell - For Yocto build with using local source, Below lines are auto generated codes',
@@ -151,6 +153,9 @@ HASH_RECIPENAME_PATH = {
 
     'nexell-daudio-sdk.bbappend' :        [['/solutions/displayaudio-sdk', R_SDK], []],
     'allgo-connectivity-sdk.bbappend' :   [['/solutions/allgo-connectivity-sdk', R_SDK], []],
+
+    'nexell-init_%.bbappend' :          [['/apps/nx_init', R_NX_INIT], []],
+    'nx-quickrearcam_%.bbappend' :      [['/apps/nx_quickrearcam', R_NX_QUICKREARCAM], []],
 }
 
 
