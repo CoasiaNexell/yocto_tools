@@ -45,6 +45,7 @@ POKY_STYLE_MACHINE_NAME=
 #QT_VERSION="5.4.x"
 QT_VERSION="5.6.x"
 #QT_VERSION="5.8.x"
+#QT_VERSION="5.9.x"
 #QT_VERSION="5.10.x"
 
 #POKY_VERSION="pyro"
@@ -54,6 +55,7 @@ declare -A META_QT5_SELECT
 META_QT5_SELECT["5.4.x"]="fido"
 META_QT5_SELECT["5.6.x"]="krogoth"
 META_QT5_SELECT["5.8.x"]="pyro"
+META_QT5_SELECT["5.9.x"]="rocko"
 META_QT5_SELECT["5.10.x"]="sumo"
 
 declare -A KERNEL_IMAGE
