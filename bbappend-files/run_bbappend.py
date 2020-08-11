@@ -108,57 +108,57 @@ OPTEE_LINUXDRIVER_BBAPPEND_PATH = ''
 # ##  ----------------------------------------------------------------------------------------------------------------------------------------
 
 HASH_RECIPENAME_PATH = {
-    'bl1-s5p4418.bbappend':        [['/bl1/bl1-s5p4418', R_BL1], []],
-    'bl1-s5p6818.bbappend':        [['/bl1/bl1-s5p6818', R_BL1], []],
+    'bl1-s5p4418.bbappend':        [['/vendor/nexell/bl1/bl1-s5p4418', R_BL1], []],
+    'bl1-s5p6818.bbappend':        [['/vendor/nexell/bl1/bl1-s5p6818', R_BL1], []],
 
-    'bl2-s5p4418.bbappend':        [['/secure/bl2-s5p4418', R_BL2], []],
+    'bl2-s5p4418.bbappend':        [['/vendor/nexell/secure/bl2-s5p4418', R_BL2], []],
 
-    'dispatcher-s5p4418.bbappend': [['/secure/armv7-dispatcher', R_ARMV7_DISPATCHER], []],
+    'dispatcher-s5p4418.bbappend': [['/vendor/nexell/secure/armv7-dispatcher', R_ARMV7_DISPATCHER], []],
 
-    'arm-trusted-firmware_%.bbappend':      [['/secure/arm-trusted-firmware', R_ATF], []],
+    'arm-trusted-firmware_%.bbappend':      [['/vendor/nexell/secure/arm-trusted-firmware', R_ATF], []],
 
-    'l-loader_%.bbappend':                  [['/secure/l-loader', R_LLOADER], []],
+    'l-loader_%.bbappend':                  [['/vendor/nexell/secure/l-loader', R_LLOADER], []],
 
-    'u-boot-nexell.bbappend':           [['/u-boot/u-boot-2016.01', R_UBOOT], []],
+    'u-boot-nexell.bbappend':           [['/vendor/nexell/u-boot/u-boot-2016.01', R_UBOOT], []],
 
-    'optee-build_%.bbappend':           [['/secure/optee/optee_build', R_OPTEE], ['0001-optee-build-customize-for-yocto.patch']],
-    'optee-client_%.bbappend':          [['/secure/optee/optee_client', R_OPTEE], []],
-    'optee-linuxdriver_%.bbappend':     [['/secure/optee/optee_linuxdriver', R_OPTEE], []],
-    'optee-os_%.bbappend':              [['/secure/optee/optee_os', R_OPTEE], ['0001-optee-os-compile-error-patch.patch']],
-    'optee-test_%.bbappend':            [['/secure/optee/optee_test', R_OPTEE], ['0001-optee-test-compile-error-patch.patch']],
+    'optee-build_%.bbappend':           [['/vendor/nexell/secure/optee/optee_build', R_OPTEE], ['0001-optee-build-customize-for-yocto.patch']],
+    'optee-client_%.bbappend':          [['/vendor/nexell/secure/optee/optee_client', R_OPTEE], []],
+    'optee-linuxdriver_%.bbappend':     [['/vendor/nexell/secure/optee/optee_linuxdriver', R_OPTEE], []],
+    'optee-os_%.bbappend':              [['/vendor/nexell/secure/optee/optee_os', R_OPTEE], ['0001-optee-os-compile-error-patch.patch']],
+    'optee-test_%.bbappend':            [['/vendor/nexell/secure/optee/optee_test', R_OPTEE], ['0001-optee-test-compile-error-patch.patch']],
 
-    'gst-plugins-camera_%.bbappend':    [['/library/gst-plugins-camera', R_GST_LIBS], []],
-    'gst-plugins-renderer_%.bbappend':  [['/library/gst-plugins-renderer', R_GST_LIBS], []],
-    'gst-plugins-scaler_%.bbappend':    [['/library/gst-plugins-scaler', R_GST_LIBS], []],
-    'gst-plugins-video-dec_%.bbappend': [['/library/gst-plugins-video-dec', R_GST_LIBS], []],
-    'gst-plugins-video-sink_%.bbappend': [['/library/gst-plugins-video-sink', R_GST_LIBS], []],
+    'gst-plugins-camera_%.bbappend':    [['/vendor/nexell/library/gst-plugins-camera', R_GST_LIBS], []],
+    'gst-plugins-renderer_%.bbappend':  [['/vendor/nexell/library/gst-plugins-renderer', R_GST_LIBS], []],
+    'gst-plugins-scaler_%.bbappend':    [['/vendor/nexell/library/gst-plugins-scaler', R_GST_LIBS], []],
+    'gst-plugins-video-dec_%.bbappend': [['/vendor/nexell/library/gst-plugins-video-dec', R_GST_LIBS], []],
+    'gst-plugins-video-sink_%.bbappend': [['/vendor/nexell/library/gst-plugins-video-sink', R_GST_LIBS], []],
 
-    'libdrm-nx_%.bbappend':             [['/library/libdrm', R_NX_LIBS], []],
-    'nx-drm-allocator_%.bbappend':      [['/library/nx-drm-allocator', R_NX_LIBS], []],
-    'nx-gst-meta_%.bbappend':           [['/library/nx-gst-meta', R_NX_LIBS], []],
-    'nx-renderer_%.bbappend':           [['/library/nx-renderer', R_NX_LIBS], []],
-    'nx-scaler_%.bbappend':             [['/library/nx-scaler', R_NX_LIBS], []],
-    'nx-v4l2_%.bbappend':               [['/library/nx-v4l2', R_NX_LIBS], []],
-    'nx-video-api_%.bbappend':          [['/library/nx-video-api', R_NX_LIBS], []],
-    'nx-gl-tools_%.bbappend':           [['/library/nx-gl-tools', R_NX_LIBS], []],
-    'nx-uds_%.bbappend':                [['/library/nx-uds', R_NX_LIBS], []],
-    'nx-config_%.bbappend':             [['/library/nx-config', R_NX_LIBS], []],
+    'libdrm-nx_%.bbappend':             [['/vendor/nexell/library/libdrm', R_NX_LIBS], []],
+    'nx-drm-allocator_%.bbappend':      [['/vendor/nexell/library/nx-drm-allocator', R_NX_LIBS], []],
+    'nx-gst-meta_%.bbappend':           [['/vendor/nexell/library/nx-gst-meta', R_NX_LIBS], []],
+    'nx-renderer_%.bbappend':           [['/vendor/nexell/library/nx-renderer', R_NX_LIBS], []],
+    'nx-scaler_%.bbappend':             [['/vendor/nexell/library/nx-scaler', R_NX_LIBS], []],
+    'nx-v4l2_%.bbappend':               [['/vendor/nexell/library/nx-v4l2', R_NX_LIBS], []],
+    'nx-video-api_%.bbappend':          [['/vendor/nexell/library/nx-video-api', R_NX_LIBS], []],
+    'nx-gl-tools_%.bbappend':           [['/vendor/nexell/library/nx-gl-tools', R_NX_LIBS], []],
+    'nx-uds_%.bbappend':                [['/vendor/nexell/library/nx-uds', R_NX_LIBS], []],
+    'nx-config_%.bbappend':             [['/vendor/nexell/library/nx-config', R_NX_LIBS], []],
 
-    'linux-s5p4418.bbappend':           [['/kernel/kernel-${LINUX_VERSION}', R_KERNEL], []],
-    'linux-s5p6818.bbappend':           [['/kernel/kernel-${LINUX_VERSION}', R_KERNEL], []],
+    'linux-s5p4418.bbappend':           [['/vendor/nexell/kernel/kernel-${LINUX_VERSION}', R_KERNEL], []],
+    'linux-s5p6818.bbappend':           [['/vendor/nexell/kernel/kernel-${LINUX_VERSION}', R_KERNEL], []],
 
-    'testsuite_%.bbappend' :            [['/apps/testsuite', R_TESTSUITE], []],
-    'nx-video-api-test_%.bbappend' :            [['/apps/nx_video_api_test', R_VID_API_TEST], []],
-    'smart-voice-testapp.bbappend' :            [['/apps/smartvoice', R_SMARTVOICE], []],
+    'testsuite_%.bbappend' :            [['/vendor/nexell/apps/testsuite', R_TESTSUITE], []],
+    'nx-video-api-test_%.bbappend' :            [['/vendor/nexell/apps/nx_video_api_test', R_VID_API_TEST], []],
+    'smart-voice-testapp.bbappend' :            [['/vendor/nexell/apps/smartvoice', R_SMARTVOICE], []],
 
-    'xf86-video-armsoc-nexell_%.bbappend' :     [['/library/xf86-video-armsoc', R_GRAPHICS_XORG], []],
+    'xf86-video-armsoc-nexell_%.bbappend' :     [['/vendor/nexell/library/xf86-video-armsoc', R_GRAPHICS_XORG], []],
 
-    'nexell-daudio-sdk.bbappend' :        [['/solutions/displayaudio-sdk', R_SDK], []],
-    'allgo-connectivity-sdk.bbappend' :   [['/solutions/allgo-connectivity-sdk', R_SDK], []],
+    'nexell-daudio-sdk.bbappend' :        [['/vendor/nexell/solutions/displayaudio-sdk', R_SDK], []],
+    'allgo-connectivity-sdk.bbappend' :   [['/vendor/nexell/solutions/allgo-connectivity-sdk', R_SDK], []],
 
-    'nexell-init_%.bbappend' :          [['/apps/nx_init', R_NX_INIT], []],
-    'svm-daemon_%.bbappend' :           [['/apps/svm_daemon', R_SVM_DAEMON], []],
-    'nx-quickrearcam_%.bbappend' :      [['/apps/nx_quickrearcam', R_NX_QUICKREARCAM], []],
+    'nexell-init_%.bbappend' :          [['/vendor/nexell/apps/nx_init', R_NX_INIT], []],
+    'svm-daemon_%.bbappend' :           [['/vendor/nexell/apps/svm_daemon', R_SVM_DAEMON], []],
+    'nx-quickrearcam_%.bbappend' :      [['/vendor/nexell/apps/nx_quickrearcam', R_NX_QUICKREARCAM], []],
 }
 
 
@@ -210,7 +210,7 @@ def gen_bbappend_files(bbappendfile, curWorkingPath, hashData):
     # kernel
     if L_PATHS[1] == R_KERNEL:
         for patch in L_PATCH_FILES:
-            kernel_patch_copy(curWorkingPath + "/yocto/meta-nexell/meta-nexell-distro" + R_KERNEL + "/files/" + patch, INTO_BBAPPEND_SRC_PATH)
+            kernel_patch_copy(curWorkingPath + "/layers/meta-nexell/meta-nexell-distro" + R_KERNEL + "/files/" + patch, INTO_BBAPPEND_SRC_PATH)
 
         for i in TEMPLATE_KERNEL:
             f.write(i + "\n")
@@ -292,8 +292,8 @@ def rm_bbappend_paths(curWorkingPath):
 def rm_bbappend_files(bbappendfile, curWorkingPath, hashData):
     L_PATHS = hashData[INDEX_GEN_PATH]
 
-    BBAPPEND_FILE_PATH = curWorkingPath + "/yocto/meta-nexell/meta-nexell-distro" + L_PATHS[1] + '/' + bbappendfile
-    dummy_FILE_PATH = curWorkingPath + "/yocto/meta-nexell/meta-nexell-distro" + L_PATHS[1] + '/dummy'
+    BBAPPEND_FILE_PATH = curWorkingPath + "/layers/meta-nexell/meta-nexell-distro" + L_PATHS[1] + '/' + bbappendfile
+    dummy_FILE_PATH = curWorkingPath + "/layers/meta-nexell/meta-nexell-distro" + L_PATHS[1] + '/dummy'
     os.system("rm -rf " + BBAPPEND_FILE_PATH)
     os.system("rm -rf " + dummy_FILE_PATH)
 

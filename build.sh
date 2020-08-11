@@ -30,7 +30,7 @@ BUILD_UBOOT=false
 BUILD_OPTEE=false
 BUILD_KERNEL=false
 
-KERNEL_PATH=`readlink -ev ${ROOT_PATH}/kernel/`
+KERNEL_PATH=`readlink -ev ${ROOT_PATH}/vendor/nexell/kernel/`
 KERNEL_DIRNAME=
 KERNEL_FULLPATH=
 KERNEL_PARTITAL_BUILD=false
@@ -216,17 +216,17 @@ function split_machine_name()
 function setup_path()
 {
     if [ ${SDK_RELEASE} == "false" ]; then
-        META_NEXELL_PATH=`readlink -ev ${ROOT_PATH}/yocto/meta-nexell/meta-nexell-distro`
+        META_NEXELL_PATH=`readlink -ev ${ROOT_PATH}/layers/meta-nexell/meta-nexell-distro`
     else
-        META_NEXELL_PATH=`readlink -ev ${ROOT_PATH}/yocto/meta-nexell/meta-nexell-sdk`
+        META_NEXELL_PATH=`readlink -ev ${ROOT_PATH}/layers/meta-nexell/meta-nexell-sdk`
         RESULT_DIR="SDK-result-${BOARD_SOCNAME}-${IMAGE_TYPE}"
     fi
-    META_NEXELL_DISTRO_PATH=`readlink -ev ${ROOT_PATH}/yocto/meta-nexell/meta-nexell-distro`
+    META_NEXELL_DISTRO_PATH=`readlink -ev ${ROOT_PATH}/layers/meta-nexell/meta-nexell-distro`
 }
 
 function branch_setup()
 {
-    cd ${ROOT_PATH}/yocto/meta-qt5
+    cd ${ROOT_PATH}/layers/meta-qt5
     git clean -f -d;git checkout -f
     git checkout nexell/${META_QT5_SELECT[${QT_VERSION}]}
 
@@ -287,7 +287,7 @@ function kernel_version_sync()
     python ${TOOLS_PATH}/kernel_version_sync.py \
            ${META_NEXELL_DISTRO_PATH}/recipes-kernel/linux/linux-${BOARD_SOCNAME}.bbappend \
            ${META_NEXELL_DISTRO_PATH}/recipes-bsp/optee/optee-build_%.bbappend \
-           ${ROOT_PATH} \
+           ${ROOT_PATH}/vendor/nexell \
            ${KERNEL_DIRNAME}
     popd
 }
@@ -303,7 +303,7 @@ function bitbake_run()
     fi
 
     #------------------------ Nexell platform setup ------------------------
-    pushd ${ROOT_PATH}/yocto
+    pushd ${ROOT_PATH}/layers
 
     if [ ${SDK_RELEASE} == "false" ]; then
         source poky/oe-init-build-env build/build-${MACHINE_NAME}-${IMAGE_TYPE}
@@ -485,7 +485,7 @@ function kernel_make_clean()
 function move_images()
 {
     ${META_NEXELL_PATH}/tools/copyFilesToOutDir.sh ${MACHINE_NAME} ${IMAGE_TYPE} ${BUILD_ALL}
-    RESULT_PATH=`readlink -ev ${ROOT_PATH}/yocto/out/${RESULT_DIR}`
+    RESULT_PATH=`readlink -ev ${ROOT_PATH}/layers/out/${RESULT_DIR}`
     if [ ${KERNEL_PARTITAL_BUILD} == "true" ]; then
         pushd ${KERNEL_FULLPATH}
         cp -a arch/${ARM_ARCH}/boot/${KERNEL_IMAGE[${BOARD_SOCNAME}]} ${RESULT_PATH}/
