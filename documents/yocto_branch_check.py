@@ -6,10 +6,10 @@ import subprocess
 import fileinput
 import os
 
-YOCTO_POKY = ['poky', '/yocto/poky']
-YOCTO_QT5 = ['qt5', '/yocto/meta-qt5']
-YOCTO_META_OE = ['meta-openembedded', '/yocto/meta-openembedded']
-YOCTO_OE_CORE = ['openembedded-core', '/yocto/openembedded-core']
+YOCTO_POKY = ['poky', '/layers/poky']
+YOCTO_QT5 = ['qt5', '/layers/meta-qt5']
+YOCTO_META_OE = ['meta-openembedded', '/layers/meta-openembedded']
+YOCTO_OE_CORE = ['openembedded-core', '/layers/openembedded-core']
 
 YOCTO_COMPONENTS = [
  YOCTO_POKY,
