@@ -298,20 +298,20 @@ function bitbake_run()
     echo -e "\033[47;34m                       Bitbake Auto Running                         \033[0m"
     echo -e "\033[47;34m ------------------------------------------------------------------ \033[0m"
 
-    if ! [ -d ${META_NEXELL_PATH}/../../build ]; then
-        mkdir -p ${META_NEXELL_PATH}/../../build
+    if ! [ -d ${ROOT_PATH}/build ]; then
+        mkdir -p ${ROOT_PATH}/build
     fi
 
     #------------------------ Nexell platform setup ------------------------
-    pushd ${ROOT_PATH}/layers
+    #pushd ${ROOT_PATH}/layers
 
     if [ ${SDK_RELEASE} == "false" ]; then
-        source poky/oe-init-build-env build/build-${MACHINE_NAME}-${IMAGE_TYPE}
-        BUILD_PATH=`readlink -ev ${META_NEXELL_PATH}/../../build/build-${MACHINE_NAME}-${IMAGE_TYPE}`
+        source layers/poky/oe-init-build-env build/build-${MACHINE_NAME}-${IMAGE_TYPE}
+        BUILD_PATH=`readlink -ev ${META_NEXELL_PATH}/../../../build/build-${MACHINE_NAME}-${IMAGE_TYPE}`
         ${META_NEXELL_PATH}/tools/envsetup.sh ${MACHINE_NAME} ${IMAGE_TYPE} ${NUMBER_THREADS} "EXTERNALSRC_USING" ${QT_VERSION}
-    else        
+    else
         source poky/oe-init-build-env build/SDK-build-${BOARD_SOCNAME}-${IMAGE_TYPE}
-        BUILD_PATH=`readlink -ev ${META_NEXELL_PATH}/../../build/SDK-build-${BOARD_SOCNAME}-${IMAGE_TYPE}`
+        BUILD_PATH=`readlink -ev ${META_NEXELL_PATH}/../../../build/SDK-build-${BOARD_SOCNAME}-${IMAGE_TYPE}`
         ${META_NEXELL_PATH}/tools/envsetup-sdk.sh ${MACHINE_NAME} ${IMAGE_TYPE} ${NUMBER_THREADS} "EXTERNALSRC_USING" ${QT_VERSION}
     fi
     #-----------------------------------------------------------------------
@@ -605,7 +605,7 @@ function kernel_partial_build()
 parse_args $@
 split_machine_name
 setup_path
-branch_setup
+#branch_setup
 update_support_target_list
 update_support_image_list
 check_usage
