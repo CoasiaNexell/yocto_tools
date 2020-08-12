@@ -445,7 +445,7 @@ function bitbake_run()
             #-----------------------------------------------------------------------
         fi
     fi
-    popd
+#popd
     build_status_update
 }
 
@@ -485,7 +485,7 @@ function kernel_make_clean()
 function move_images()
 {
     ${META_NEXELL_PATH}/tools/copyFilesToOutDir.sh ${MACHINE_NAME} ${IMAGE_TYPE} ${BUILD_ALL}
-    RESULT_PATH=`readlink -ev ${ROOT_PATH}/layers/out/${RESULT_DIR}`
+    RESULT_PATH=`readlink -ev ${ROOT_PATH}/out/${RESULT_DIR}`
     if [ ${KERNEL_PARTITAL_BUILD} == "true" ]; then
         pushd ${KERNEL_FULLPATH}
         cp -a arch/${ARM_ARCH}/boot/${KERNEL_IMAGE[${BOARD_SOCNAME}]} ${RESULT_PATH}/
