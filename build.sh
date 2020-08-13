@@ -610,7 +610,7 @@ update_support_target_list
 update_support_image_list
 check_usage
 
-gen_and_copy_bbappend
+#gen_and_copy_bbappend
 kernel_version_sync
 
 bitbake_run
