@@ -31,8 +31,8 @@ BUILD_OPTEE=false
 BUILD_KERNEL=false
 
 KERNEL_PATH=`readlink -ev ${ROOT_PATH}/vendor/nexell/kernel/`
-KERNEL_DIRNAME=
-KERNEL_FULLPATH=
+KERNEL_DIRNAME=kernel-4.4.x
+KERNEL_FULLPATH="${KERNEL_PATH}/${KERNEL_DIRNAME}"
 KERNEL_PARTITAL_BUILD=false
 NEED_KERNEL_MAKE_CLEAN=false
 
@@ -557,7 +557,7 @@ function build_status_check()
         echo -e "\033[0;34m ------------------------------------------------------------------ \033[0m"
         CLEAN_BUILD=true
         rm -rf ${BUILD_PATH}/../NEXELL_STATUS-BUILD-*
-    fi    
+    fi
 }
 
 function build_status_update()
@@ -611,7 +611,7 @@ update_support_image_list
 check_usage
 
 #gen_and_copy_bbappend
-kernel_version_sync
+#kernel_version_sync
 
 bitbake_run
 move_images
