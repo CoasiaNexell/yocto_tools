@@ -19,7 +19,7 @@ BOARD_POSTFIX=${BOARD_NAME#*-}
 POKY_VERSION="sumo"
 
 # Top path
-BSP_ROOT_DIR=`readlink -e -n "$(cd "$(dirname "$0")" && pwd)"`
+BSP_ROOT_DIR=`readlink -e -n "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"`
 BSP_YOCTO_DIR=$BSP_ROOT_DIR/layers
 META_NEXELL_PATH=$BSP_YOCTO_DIR/meta-nexell/meta-nexell-distro
 YOCTO_BUILD_OUT=$BSP_ROOT_DIR/build/build-${MACHINE_NAME}-${IMAGE_TYPE}
