@@ -16,8 +16,6 @@ BOARD_PREFIX=${BOARD_NAME%-*}
 # covi, voice ...
 BOARD_POSTFIX=${BOARD_NAME#*-}
 
-POKY_VERSION="sumo"
-
 # Top path
 BSP_ROOT_DIR=`readlink -e -n "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"`
 BSP_YOCTO_DIR=$BSP_ROOT_DIR/layers
@@ -289,29 +287,6 @@ parse_conf_machine
 parse_conf_image
 parse_conf_bblayer
 
-# make-mod-scripts clean + make mrproper virtual/kernel
-function kernel_make_clean()
-{
-	echo -e "\n ------------------------------------------------------------------ "
-	echo -e "                        kernel clean                                "
-	echo -e " ------------------------------------------------------------------ "
-
-	pushd ${BSP_VENDOR_DIR}/kernel/kernel-4.4.x
-	make ARCH=${ARM_ARCH} clean
-	rm -rf .kernel-meta oe-logs oe-workdir .metadir .scmversion source
-
-	# make-mod-scripts.bb build error fix
-	if [ "${POKY_VERSION}" == "sumo" ];then
-		make mrproper
-		if [ -e ${YOCTO_BUILD_OUT}/tmp/work/clone_kernel_src ]; then
-			rm -rf ${YOCTO_BUILD_OUT}/tmp/work/clone_kernel_src
-		fi
-		mkdir -p ${YOCTO_BUILD_OUT}/tmp/work/clone_kernel_src
-		cp -a * ${YOCTO_BUILD_OUT}/tmp/work/clone_kernel_src/
-	fi
-
-	popd
-}
 
 declare -a clean_recipes_s5p4418=("nexell-${IMAGE_TYPE}" "virtual/kernel" "u-boot-nexell" "bl1-s5p4418")
 declare -a clean_recipes_s5p6818=("optee-build" "optee-linuxdriver" "nexell-${IMAGE_TYPE}" "virtual/kernel" "u-boot-nexell" "bl1-s5p4418")
@@ -356,42 +331,13 @@ function copy_build_scripts()
 
 if [ "${BOARD_SOCNAME}" == "s5p4418" ];then
 	ARM_ARCH="arm"
-	if [ "${IMAGE_TYPE}" == "ubuntu" ]; then
-        cd ${YOCTO_BUILD_OUT}
-        mkdir -p tmp/work/extra-rootfs-support
-    fi
-	copy_build_scripts
-	kernel_make_clean
-	echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_s5p4418[@]} \033[0m"
-	echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_gstlibs[@]} \033[0m"
-	if [ ${IMAGE_TYPE} == "qt" ];then
-		echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_sdk[@]} \033[0m"
-		echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_nxlibs_1[@]} \033[0m"
-		bitbake -c cleanall ${clean_recipes_s5p4418[@]} ${clean_recipes_nxlibs_1[@]} ${clean_recipes_gstlibs[@]} ${clean_recipes_sdk[@]}
-	else
-		echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_nxlibs_2[@]} \033[0m"
-		bitbake -c cleanall ${clean_recipes_s5p4418[@]} ${clean_recipes_nxlibs_2[@]} ${clean_recipes_gstlibs[@]}
-	fi
 fi
 
 if [ "${BOARD_SOCNAME}" == "s5p6818" ];then
 	ARM_ARCH="arm64"
-	if [ "${IMAGE_TYPE}" == "ubuntu" ]; then
-        cd ${YOCTO_BUILD_OUT}
-        mkdir -p tmp/work/extra-rootfs-support
-    fi
-	copy_build_scripts
-	kernel_make_clean
-	echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_s5p6818[@]} \033[0m"
-	echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_gstlibs[@]} \033[0m"
-	if [ ${IMAGE_TYPE} == "qt" ];then
-		echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_nxlibs_1[@]} \033[0m"
-		bitbake -c cleanall ${clean_recipes_s5p6818[@]} ${clean_recipes_nxlibs_1[@]} ${clean_recipes_gstlibs[@]}
-	else
-		echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_nxlibs_2[@]} \033[0m"
-		bitbake -c cleanall ${clean_recipes_s5p6818[@]} ${clean_recipes_nxlibs_2[@]} ${clean_recipes_gstlibs[@]}
-	fi
 fi
+
+copy_build_scripts
 
 magenta "You can now run 'bitbake <image_type> \t"
 magenta "Your image_types are: \t"
