@@ -619,7 +619,7 @@ move_images
 
 if [ ${SDK_RELEASE} == "false" ]; then
     convert_images
-    make_build_info
+    #make_build_info
     make_standalone_tools
 fi
 
