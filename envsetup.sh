@@ -305,28 +305,28 @@ function copy_build_scripts()
     fi
 
     #for secure boot support
-    if [ "${BOARD_SOCNAME}" == "s5p6818" ]; then
-        echo "SECURE OFF" > ${YOCTO_BUILD_OUT}/secure.cfg; secure="OFF"
-        python ${META_NEXELL_PATH}/tools/secure_tools/secure-setup.py ${secure} ${BOARD_SOCNAME} ${MACHINE_NAME} ${META_NEXELL_PATH}
+#if [ "${BOARD_SOCNAME}" == "s5p6818" ]; then
+#        echo "SECURE OFF" > ${YOCTO_BUILD_OUT}/secure.cfg; secure="OFF"
+#        python ${META_NEXELL_PATH}/tools/secure_tools/secure-setup.py ${secure} ${BOARD_SOCNAME} ${MACHINE_NAME} ${META_NEXELL_PATH}
 
-    fi
+#    fi
 
-    touch ${TMP_WORK_PATH}/SOURCE_PATH_FOR_OPTEE.txt
-    touch ${TMP_WORK_PATH}/LINUX_STANDARD_BUILD_PATH.txt
+#touch ${TMP_WORK_PATH}/SOURCE_PATH_FOR_OPTEE.txt
+#    touch ${TMP_WORK_PATH}/LINUX_STANDARD_BUILD_PATH.txt
 
-    cp -a ${META_NEXELL_PATH}/tools/optee_pre_operation.sh ${YOCTO_BUILD_OUT}
-    echo -e "\033[0;33m                                                                    \033[0m"
-    echo -e "\033[0;33m #########  Start bitbake pre operateion for optee & ATF ########## \033[0m"
-    echo -e "\033[0;33m                                                                    \033[0m"
+#    cp -a ${META_NEXELL_PATH}/tools/optee_pre_operation.sh ${YOCTO_BUILD_OUT}
+#    echo -e "\033[0;33m                                                                    \033[0m"
+#    echo -e "\033[0;33m #########  Start bitbake pre operateion for optee & ATF ########## \033[0m"
+#    echo -e "\033[0;33m                                                                    \033[0m"
 
-    if [ ! -e ${YOCTO_BUILD_OUT}/OPTEE_PRE_OPERATION_DONE ];then
-		${YOCTO_BUILD_OUT}/optee_pre_operation.sh ${MACHINE_NAME}
-		touch ${YOCTO_BUILD_OUT}/OPTEE_PRE_OPERATION_DONE
-    else
-		echo -e "\033[0;33m #########  Already Done, optee & ATF pre-fetch & pre-unpack ########## \033[0m"
-    fi
+#    if [ ! -e ${YOCTO_BUILD_OUT}/OPTEE_PRE_OPERATION_DONE ];then
+#		${YOCTO_BUILD_OUT}/optee_pre_operation.sh ${MACHINE_NAME}
+#		touch ${YOCTO_BUILD_OUT}/OPTEE_PRE_OPERATION_DONE
+#    else
+#		echo -e "\033[0;33m #########  Already Done, optee & ATF pre-fetch & pre-unpack ########## \033[0m"
+#    fi
 
-    mkdir -p ${TMP_WORK_PATH}/use-post-process
+#    mkdir -p ${TMP_WORK_PATH}/use-post-process
 }
 
 if [ "${BOARD_SOCNAME}" == "s5p4418" ];then
