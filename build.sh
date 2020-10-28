@@ -183,17 +183,7 @@ function usage()
     echo -e " -t uboot : if you want to build only uboot, specify this, default no"
     echo -e " -t kernel : if you want to build only kernel, specify this, default no"
     echo -e " -t optee  : if you want to build only optee, specify this, default no\n"
-    echo " ex) $0 s5p6818-avn-ref tiny"
-    echo " ex) $0 s5p6818-avn-ref qt -q 5.8.x"
-    echo " ex) $0 s5p4418-navi-ref qt -t kernel -t uboot -t bl1"
-    echo " ex) $0 s5p4418-navi-ref tiny -c"
-    echo " ex) $0 s5p4418-navi-ref tinyui"
-    echo " ex) $0 s5p4418-navi-ref sdl"
-    echo " ex) $0 s5p4418-navi-ref qt -s"
-    echo " ex) $0 s5p4418-daudio-ref qt"
-    echo " ex) $0 s5p4418-smart-voice smartvoice -c"
-    echo " ex) $0 s5p4418-convergence-svmc qt"
-    echo " ex) $0 s5p4418-convergence-daudio qt"
+    echo " ex) $0 s5p6818-vapor-gang vapor-gang"
     echo ""
 }
 
@@ -417,14 +407,18 @@ function bitbake_run()
                 fi
             else
                 echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_s5p6818[@]} \033[0m"
-                echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_gstlibs[@]} \033[0m"
                 if [ -d ${BUILD_PATH}/tmp/work-shared/${MACHINE_NAME}/kernel-source ];then
                     if [ ${IMAGE_TYPE} == "qt" ];then
                         echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_nxlibs_1[@]} \033[0m"
+                        echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_gstlibs[@]} \033[0m"
                         bitbake -c cleanall ${clean_recipes_s5p6818[@]} ${clean_recipes_nxlibs_1[@]} ${clean_recipes_gstlibs[@]}
                     else
-                        echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_nxlibs_2[@]} \033[0m"
-                        bitbake -c cleanall ${clean_recipes_s5p6818[@]} ${clean_recipes_nxlibs_2[@]} ${clean_recipes_gstlibs[@]}
+                        if [ ${IMAGE_TYPE} == "vapor-gang" ];then
+                            echo -e "\033[47;34m CLEAN TARGET : none \033[0m"
+                        else
+                            echo -e "\033[47;34m CLEAN TARGET : ${clean_recipes_nxlibs_2[@]} \033[0m"
+                            bitbake -c cleanall ${clean_recipes_s5p6818[@]} ${clean_recipes_nxlibs_2[@]} ${clean_recipes_gstlibs[@]}
+                        fi
                     fi
                 fi
             fi
@@ -618,7 +612,6 @@ move_images
 
 if [ ${SDK_RELEASE} == "false" ]; then
     convert_images
-    make_build_info
     make_standalone_tools
 fi
 
