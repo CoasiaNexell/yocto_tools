@@ -314,7 +314,7 @@ function merge_conf_file () {
 	while IFS='' read -r i;
     do
 		merge=true
-		while IFS='' read -r n;
+		while IFS='' read n;
 		do
 			[[ -z $i ]] && break;
 			[[ $i == *BBMASK* ]] || [[ $i == *_append* ]] && break;
