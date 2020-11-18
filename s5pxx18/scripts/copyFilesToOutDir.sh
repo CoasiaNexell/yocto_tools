@@ -3,23 +3,29 @@
 set -e
 
 argc=$#
-CURRENT_PATH=`dirname $0`
-TOOLS_PATH=`readlink -ev $CURRENT_PATH`
+# CURRENT_PATH=`dirname $0`
+# TOOLS_PATH=`readlink -ev $CURRENT_PATH`
 
-RESULT_DIR="result-$1-$2"
-RESULT_PATH=
-IMAGE_TYPE=$2
+ROOT_DIR=$1
+TOOLS_DIR=$2
+FILES_DIR=$3
+MACHINE_NAME=$4
+IMAGE_TYPE=$5
+BUILD_ALL=$6
 
-MACHINE_NAME=$1
+BUILD_MACHINE_NAME="$(echo "$MACHINE_NAME" | cut -d'-' -f 1)"
+
+IMAGE_TYPE_POSTFIX=${IMAGE_TYPE##*-}
+RESULT_DIR="result-$MACHINE_NAME-$IMAGE_TYPE_POSTFIX"
+#RESULT_PATH=
 BOARD_SOCNAME=
 BOARD_NAME=
 BOARD_PREFIX=
 BOARD_POSTFIX=
 
-BUILD_ALL=$3
+BUILD_PATH=$ROOT_DIR/build/build-${MACHINE_NAME}-${IMAGE_TYPE_POSTFIX}
+RESULT_PATH=$ROOT_DIR/out/${RESULT_DIR}
 
-META_NEXELL_PATH=`readlink -ev ${TOOLS_PATH}/..`
-BUILD_PATH=
 TMP_DEPLOY_PATH=
 
 declare -A KERNEL_BIN_NAME
@@ -44,9 +50,9 @@ UBUNTU_NX_LIBS="nxlibs.tar.gz"
 
 function check_usage()
 {
-    if [ $argc -lt 3 ];then
+    if [ $argc -lt 6 ];then
 	BUILD_ALL=true
-    elif [ $argc -eq 3 ];then
+    elif [ $argc -eq 6 ];then
         echo "Run at $PWD"
     else
         echo "Invalid argument check usage please"
@@ -75,9 +81,9 @@ function split_args()
 
 function path_setup()
 {
-    BUILD_PATH=`readlink -ev ${META_NEXELL_PATH}/../../../build/build-${MACHINE_NAME}-${IMAGE_TYPE}`
-    RESULT_PATH=${BUILD_PATH}/../../out/${RESULT_DIR}
-    TMP_DEPLOY_PATH=${BUILD_PATH}/tmp/deploy/images/${MACHINE_NAME}
+    # BUILD_PATH=${BUILD_DIR}
+    # RESULT_PATH=${BUILD_PATH}/../../out/${RESULT_DIR}
+    TMP_DEPLOY_PATH=${BUILD_PATH}/tmp/deploy/images/${BUILD_MACHINE_NAME}
 }
 
 function cleanup_dirs()
@@ -125,6 +131,7 @@ function copy_bin_files()
         cp ${TMP_DEPLOY_PATH}/u-boot.bin ${RESULT_PATH}
         cp ${TMP_DEPLOY_PATH}/default_envs.txt ${RESULT_PATH}
     else
+        cp ${TMP_DEPLOY_PATH}/default_envs.txt ${RESULT_PATH}
         cp -af ${TMP_DEPLOY_PATH}/bl1-*.bin ${RESULT_PATH}
         cp -af ${TMP_DEPLOY_PATH}/params.bin ${RESULT_PATH}
     fi
@@ -176,9 +183,9 @@ function copy_ramdisk_image()
     echo -e "\033[40;33m  >>>>   copy_ramdisk_image       \033[0m"
     # temporary
     if [ "${BOARD_NAME}" == "ff-voice" -o "${IMAGE_TYPE}" == "ubuntu" ]; then
-        cp ${TMP_DEPLOY_PATH}/"core-image-tiny-initramfs-${MACHINE_NAME}.cpio.gz" ${RESULT_PATH}
+        cp ${TMP_DEPLOY_PATH}/"core-image-tiny-initramfs-${BUILD_MACHINE_NAME}.cpio.gz" ${RESULT_PATH}
     else
-        cp ${TMP_DEPLOY_PATH}/"core-image-minimal-initramfs-${MACHINE_NAME}.cpio.gz" ${RESULT_PATH}
+        cp ${TMP_DEPLOY_PATH}/"core-image-minimal-initramfs-${BUILD_MACHINE_NAME}.cpio.gz" ${RESULT_PATH}
     fi
 }
 
@@ -220,20 +227,29 @@ function copy_rootfs_image()
         cp ${TMP_DEPLOY_PATH}/"nexell-${IMAGE_TYPE}-${MACHINE_NAME}.tar.bz2" ${RESULT_PATH}
         cp ${TMP_DEPLOY_PATH}/"nexell-${IMAGE_TYPE}-${MACHINE_NAME}.ext4" ${RESULT_PATH}
     fi
-    cp ${META_NEXELL_PATH}/tools/fusing_tools/partition.txt ${RESULT_PATH}
+    cp ${TOOLS_DIR}/fusing_tools/partition.txt ${RESULT_PATH}
+}
+
+function copy_swupdate_image()
+{
+    echo -e "\033[40;33m  >>>>   copy_swupdate_image        \033[0m"
+    copy_files ${TMP_DEPLOY_PATH} ${RESULT_PATH} ".swu"
 }
 
 function copy_partmap_file()
 {
+    echo -e "\033[40;33m  >>>>   copy_swupdate_image        \033[0m"
     if [ "${IMAGE_TYPE}" == "ubuntu" ]; then
-        cp ${META_NEXELL_PATH}/tools/configs/board_partmap/partmap_emmc_${MACHINE_NAME}-ubuntu.txt ${RESULT_PATH}/partmap_emmc.txt
+        cp ${FILES_DIR}/partmap/partmap_emmc_${MACHINE_NAME}-ubuntu.txt ${RESULT_PATH}/tools/partmap_emmc.txt
     else
-        cp ${META_NEXELL_PATH}/tools/configs/board_partmap/partmap_emmc_${MACHINE_NAME}.txt ${RESULT_PATH}/partmap_emmc.txt
+        #cp ${FILES_DIR}/partmap/partmap_emmc_${MACHINE_NAME}.txt ${RESULT_PATH}/tools/partmap_emmc.txt
+        copy_files "${FILES_DIR}/partmap" "${RESULT_PATH}/tools" "_${MACHINE_NAME}" "true"
     fi
 }
 
 function post_process()
 {
+    echo -e "\033[40;33m  >>>>   post_process        \033[0m"
     if [ -f secure.cfg ]; then
 	cp secure.cfg ${RESULT_PATH}
         echo -e "\n secure.cfg file copy Done!"
@@ -242,29 +258,61 @@ function post_process()
     touch ${RESULT_PATH}/YOCTO.${RESULT_DIR}.INFO.DoNotChange
     echo -e "\033[40;33m  Maybe you need to convert some binary images                                \033[0m"
     echo -e "\033[40;33m  You can use below operation                                                 \033[0m"
-    echo -e "\033[40;33m  ex) ${META_NEXELL_PATH}/tools/convert_tools/convert_images.sh ${MACHINE_NAME} ${IMAGE_TYPE}  \033[0m\n"
+    echo -e "\033[40;33m  ex) ${TOOLS_DIR}/convert_tools/convert_images.sh ${MACHINE_NAME} ${IMAGE_TYPE}  \033[0m\n"
 
-    cp ${META_NEXELL_PATH}/tools/convert_tools/nsihbingen.py ${RESULT_PATH}
-    cp ${META_NEXELL_PATH}/tools/convert_tools/nsihtxtmod.py ${RESULT_PATH}
-    cp ${META_NEXELL_PATH}/tools/convert_tools/nsih-dummy.txt ${RESULT_PATH}
+    cp ${TOOLS_DIR}/convert_tools/nsihbingen.py ${RESULT_PATH}
+    cp ${TOOLS_DIR}/convert_tools/nsihtxtmod.py ${RESULT_PATH}
+    cp ${TOOLS_DIR}/convert_tools/nsih-dummy.txt ${RESULT_PATH}
+}
+
+function copy_files() {
+    # echo -e "\033[40;33m ================================================= \033[0m"
+    # echo -e "\033[40;33m copy_files \033[0m"
+    # echo -e "\033[40;33m ------------------------------------------------- \033[0m"
+	# echo -e "\033[40;33m in_dir : '$1' \033[0m"
+    # echo -e "\033[40;33m out_dir : '$2' \033[0m"
+    # echo -e "\033[40;33m comp_str : '$3' \033[0m"
+    # echo -e "\033[40;33m is_exclude : '$4' \033[0m"
+    # echo -e "\033[40;33m ================================================= \033[0m"
+
+    local in_dir=$1 out_dir=$2 comp_str=$3 is_exclude=$4
+
+    if [ -z "$comp_str" ]; then
+        cp -af $in_dir/* $out_dir
+        return
+    fi
+
+    for file in $in_dir/*
+    do
+        filename=${file##*/}
+        #extension="${file_name##*.}"
+        # echo -e "\033[40;33m filename=$filename \033[0m"
+        # echo -e "\033[40;33m comp_str=$comp_str \033[0m"
+        # echo -e "\033[40;33m is_exclude=$is_exclude \033[0m"
+
+        if echo "$filename" | grep -q "$comp_str"; then
+    		if [ "$is_exclude" = "true" ] ; then
+                newfilename=$(echo "$filename" | sed "s/$comp_str//g")
+                # echo "newfilename=$newfilename"
+		    	cp -af $file $out_dir/$newfilename
+		    else
+			    cp -af $file $out_dir
+		    fi
+	    fi
+    done
 }
 
 function copy_partition_files()
 {
-    if [ "${IMAGE_TYPE}" == "ubuntu" ]; then
-        cp ${META_NEXELL_PATH}/tools/configs/board_partmap/partmap_emmc_${MACHINE_NAME}-ubuntu.txt ${RESULT_PATH}/tools/partmap_emmc.txt
-    else
-        cp ${META_NEXELL_PATH}/tools/configs/board_partmap/partmap_emmc_${MACHINE_NAME}.txt ${RESULT_PATH}/tools/partmap_emmc.txt
-    fi
-
+    echo -e "\033[40;33m  >>>>   copy_partition_files        \033[0m"
     cp -af ${TMP_DEPLOY_PATH}/partition.txt ${RESULT_PATH}/tools
-
 }
 
 function copy_tools_files() {
-    cp -af ${META_NEXELL_PATH}/tools/fusing_tools/standalone-fastboot-download.sh ${RESULT_PATH}/tools/
-    cp -af ${META_NEXELL_PATH}/tools/fusing_tools/standalone-uboot-by-usb-download.sh ${RESULT_PATH}/tools/
-    cp -af ${META_NEXELL_PATH}/tools/fusing_tools/usb-downloader ${RESULT_PATH}/tools/
+    echo -e "\033[40;33m  >>>>   copy_tools_files        \033[0m"
+    cp -af ${TOOLS_DIR}/fusing_tools/standalone-fastboot-download.sh ${RESULT_PATH}/tools/
+    cp -af ${TOOLS_DIR}/fusing_tools/standalone-uboot-by-usb-download.sh ${RESULT_PATH}/tools/
+    cp -af ${TOOLS_DIR}/fusing_tools/usb-downloader ${RESULT_PATH}/tools/
 }
 
 check_usage
@@ -272,6 +320,7 @@ split_args
 path_setup
 cleanup_dirs
 copy_bin_files
+copy_swupdate_image
 if [ "${USE_CONVERT_IMAGE_SCRIPT}" == "true" ]; then
 copy_kernel_image
 copy_dtb_file
@@ -283,6 +332,7 @@ copy_partmap_file
 post_process
 else
 copy_img_files
+copy_partmap_file
 copy_partition_files
 copy_tools_files
 touch ${RESULT_PATH}/YOCTO.${RESULT_DIR}.INFO.DoNotChange

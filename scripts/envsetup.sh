@@ -19,10 +19,9 @@ BSP_ROOT_DIR=`readlink -e -n "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"`
 BSP_YOCTO_DIR=$BSP_ROOT_DIR/layers
 META_NEXELL_PATH=$BSP_YOCTO_DIR/meta-nexell/meta-nexell-distro
 BSP_VENDOR_DIR=$BSP_ROOT_DIR/vendor/nexell
-BSP_CONFIGS_PATH=$BSP_ROOT_DIR/tools/configs
-BSP_FILES_DIR=$BSP_ROOT_DIR/tools/configs/files
+BSP_CONFIGS_PATH=$META_NEXELL_PATH/settings
 
-source ${BSP_ROOT_DIR}/tools/common_functions.sh
+source ${BSP_ROOT_DIR}/tools/scripts/common_functions.sh
 
 ################################################################################
 # Parsing arguments
@@ -101,6 +100,8 @@ if [ "${BOARD_SOCNAME}" == "s5p4418" ] || [ "${BOARD_SOCNAME}" == "s5p6818" ]; t
 else
 	BSP_TOOLS_DIR=$BSP_ROOT_DIR/tools/$BOARD_SOCNAME
 fi
+
+BSP_FILES_DIR=$BSP_TOOLS_DIR/files
 
 TARGET_IMGAE_CONFIG_PATH=$BSP_CONFIGS_PATH/$BOARD_SOCNAME/images
 TARGET_MACHINE_CONFIG_PATH=$BSP_CONFIGS_PATH/$BOARD_SOCNAME/machines
@@ -190,7 +191,7 @@ msg_verbose "Please refer to the official documentation of bitbake as below :"
 msg_verbose "URL : https://docs.yoctoproject.org/bitbake \n"
 
 #-------------------------------------------------------------------------------
-# Export some configuration for use in bblayer
+# Export some configuration to use in the copy-results-images.sh
 #-------------------------------------------------------------------------------
-#export BOARD_SOCNAME BSP_ROOT_DIR BSP_YOCTO_DIR META_NEXELL_PATH MACHINE_NAME IMAGE_TYPE
+export BSP_ROOT_DIR BSP_TOOLS_DIR BSP_FILES_DIR BSP_OUTPUT_DIR MACHINE_NAME IMAGE_TYPE
 
