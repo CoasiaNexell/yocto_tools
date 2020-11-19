@@ -311,10 +311,10 @@ function set_target_image ()
 function merge_conf_file () {
 	local src=$1 cmp=$2 dst=$3
 
-	while IFS='' read -r i;
+	while IFS='' read -r i || [ -n "$i" ];
     do
 		merge=true
-		while IFS='' read n;
+		while IFS='' read n || [ -n "$n" ];
 		do
 			[[ -z $i ]] && break;
 			[[ $i == *BBMASK* ]] || [[ $i == *_append* ]] && break;
@@ -404,7 +404,7 @@ function parse_conf_image () {
 		echo "# PARSING: $i" >> "$dst"
 		merge_conf_file "$dst" "$i" "$dst"
 		echo "# PARSING DONE" >> "$dst"
-        done
+    done
 }
 
 ################################################################################
