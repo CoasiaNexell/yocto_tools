@@ -60,5 +60,5 @@ if [ "${SDK_RELEASE}" == "true" ]; then
 else
     make_releasenote
     make_install_guide
-    make_build_guide
+#make_build_guide
 fi
