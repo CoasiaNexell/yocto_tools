@@ -36,7 +36,7 @@ function make_releasenote()
     echo "bc. " >> ${RESULT_PATH}/${HOWTO_RELEASE}
     echo "" >> ${RESULT_PATH}/${HOWTO_RELEASE}
 
-    cat ${RESULT_PATH}/YOCTO-BUILD-INFO.txt >> ${RESULT_PATH}/HOWTO_releasenotes.txt
+#    cat ${RESULT_PATH}/YOCTO-BUILD-INFO.txt >> ${RESULT_PATH}/HOWTO_releasenotes.txt
 }
 
 function make_install_guide()
